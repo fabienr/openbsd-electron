@@ -1,0 +1,12 @@
+Index: electron/default_app/default_app.ts
+--- electron/default_app/default_app.ts.orig
++++ electron/default_app/default_app.ts
+@@ -60,7 +60,7 @@ async function createWindow (backgroundColor?: string)
+     show: false
+   };
+ 
+-  if (process.platform === 'linux') {
++  if (process.platform === 'linux' || process.platform === 'openbsd') {
+     options.icon = url.fileURLToPath(new URL('icon.png', import.meta.url));
+   }
+ 

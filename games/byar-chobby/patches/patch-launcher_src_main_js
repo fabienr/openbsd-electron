@@ -1,0 +1,12 @@
+Index: launcher/src/main.js
+--- launcher/src/main.js.orig
++++ launcher/src/main.js
+@@ -28,7 +28,7 @@ if (process.platform == 'win32' && !('PRD_SSL_CERT_FIL
+ 
+ // Enable happy eyeballs for IPv6/IPv4 dual stack.
+ const net = require('node:net');
+-net.setDefaultAutoSelectFamily(true);
++//net.setDefaultAutoSelectFamily(true);
+ 
+ const { log } = require('./spring_log');
+ // Setup error handling

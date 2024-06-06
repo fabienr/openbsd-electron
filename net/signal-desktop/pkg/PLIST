@@ -1,0 +1,22 @@
+bin/signal-desktop
+${ELECTRON_DIST_APPS}/
+${ELECTRON_DIST_APPS}/signal-desktop.asar
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/better-sqlite3/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/better-sqlite3/build/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/better-sqlite3/build/Release/
+@bin ${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/better-sqlite3/build/Release/better_sqlite3.node
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/libsignal-client/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/libsignal-client/prebuilds/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/libsignal-client/prebuilds/openbsd-x64/
+@bin ${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/libsignal-client/prebuilds/openbsd-x64/node.napi.node
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/ringrtc/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/ringrtc/build/
+${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/ringrtc/build/openbsd/
+@bin ${ELECTRON_DIST_APPS}/signal-desktop.asar.unpacked/node_modules/@signalapp/ringrtc/build/openbsd/libringrtc-x64.node
+share/applications/signal-desktop.desktop
+share/pixmaps/
+share/pixmaps/signal-desktop.png
+@tag update-desktop-database

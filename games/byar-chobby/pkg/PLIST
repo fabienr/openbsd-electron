@@ -1,0 +1,13 @@
+bin/byar_chobby_launcher
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/7x.sh
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/LICENSE.txt
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/index.js
+${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/package.json
+share/applications/byar_chobby_launcher.desktop
+share/pixmaps/
+share/pixmaps/byar_chobby_launcher.png
+@tag update-desktop-database

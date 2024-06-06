@@ -1,0 +1,46 @@
+python-dbusmock
+
+Purpose
+
+With this program/Python library you can easily create mock objects
+on D-Bus. This is useful for writing tests for software which talks
+to D-Bus services such as upower, systemd, logind, gnome-session
+or others, and it is hard (or impossible without root privileges)
+to set the state of the real services to what you expect in your
+tests.
+
+Suppose you want to write tests for gnome-settings-daemon's power
+plugin, or another program that talks to upower. You want to verify
+that after the configured idle time the program suspends the machine.
+So your program calls org.freedesktop.UPower.Suspend() on the system
+D-Bus.
+
+Now, your test suite should not really talk to the actual system
+D-Bus and the real upower; a make check that suspends your machine
+will not be considered very friendly by most people, and if you
+want to run this in continuous integration test servers or package
+build environments, chances are that your process does not have the
+privilege to suspend, or there is no system bus or upower to begin
+with. Likewise, there is no way for an user process to forcefully
+set the system/seat idle flag in logind, so your tests cannot set
+up the expected test environment on the real daemon.
+
+That's where mock objects come into play: They look like the real
+API (or at least the parts that you actually need), but they do not
+actually do anything (or only some action that you specify yourself).
+You can configure their state, behaviour and responses as you like
+in your test, without making any assumptions about the real system
+status.
+
+When using a local system/session bus, you can do unit or integration
+testing without needing root privileges or disturbing a running
+system. The Python API offers some convenience functions like
+start_session_bus() and start_system_bus() for this, in a DBusTestCase
+class (subclass of the standard unittest.TestCase) or alternatively
+as a @pytest.fixture.
+
+You can use this with any programming language, as you can run the
+mocker as a normal program. The actual setup of the mock (adding
+objects, methods, properties, and signals) all happen via D-Bus
+methods on the org.freedesktop.DBus.Mock interface. You just don't
+have the convenience D-Bus launch API that way.

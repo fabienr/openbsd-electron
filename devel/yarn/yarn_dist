@@ -1,0 +1,138 @@
+#!/usr/bin/perl -w
+
+# $OpenBSD$
+
+# Copyright (c) 2024 Fabien Romano <fabien@openbsd.org>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all copies.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+use 5.012;
+use strict;
+use warnings;
+
+# XXX blacklist feature, yarn need those depends by default (omit optional ?)
+# use OpenBSD::Getopt;
+# my @blacklists = ('android', 'darwin', 'freebsd', 'linux', 'netbsd',
+# 	'sunos', 'windows', 'win32');
+# my %includes;
+# getopts('i:', {
+# 	'i' => sub {
+# 		my $pkg = shift;
+# 		$pkg =~ s/^\s+//;
+# 		$includes{$pkg} = 1;
+# 	}
+# });
+
+# XXX proper git archive // raw url support ?
+# var GIT_HOSTS = ['github.com', 'gitlab.com', 'bitbucket.com', 'bitbucket.org'];
+# var GIT_PATTERN_MATCHERS = [/^git:/, /^git+.+:/, /^ssh:/, /^https?:.+.git$/, /^https?:.+.git#.+/];
+#const my $git_pattern = "^(git:)|(git+.+:)|(ssh:)|(https?:.+.git($)|(#.+))"
+
+die if @ARGV < 1;
+
+my $dists = ();
+
+while (my $file = shift) {
+
+	open my $h, '<', $file or die $!;
+
+	my $version;
+	my $id;
+	my $project;
+	my $pkg;
+	my $type;
+	my $dist;
+	my $k;
+	my $v;
+	while(my $line = <$h>) {
+		$line =~ s/\R//g;
+		if ('#' eq substr $line, 0) {next;}
+		if ($line =~ /^\s*$/) {next;}
+		# XXX catch optionalDependencies ?
+		if (':' eq substr $line, -1) {next;}
+		$line =~ s/^\s+|\s+$//g;
+		($k, $v) = split " ", $line, 2;
+		$k =~ s/^\s+|\s+$//g; $k =~ s/"//g;
+		$v =~ s/^\s+|\s+$//g; $v =~ s/"//g;
+		if ($k eq "version") {
+			$version = $v;
+			next;
+		}
+		if ($k ne "resolved") {next;}
+		$project = ".";
+		$pkg = "";
+		$id = $v;
+		if (index($id, "https://registry.yarnpkg.com/") == 0) {
+			$id =~ s|https://registry.yarnpkg.com/||;
+			$id =~ s|/\-/.*||;
+			$pkg = $id;
+			$type = "yarn";
+		}
+		elsif (index($id, "https://registry.npmjs.org/") == 0) {
+			$id =~ s|https://registry.npmjs.org/||;
+			$id =~ s|/-/.*||;
+			$pkg = $id;
+			$type = "yarn_npm";
+		}
+		elsif (index($id, "https://codeload.github.com/") == 0) {
+			$id =~ s|https://codeload.github.com/||;
+			$version = $id;
+			$version =~ s|.*/tar.gz/||;
+			$id =~ s|/tar.gz/.*||;
+			$pkg = $id;
+			$type = "yarn_codeload";
+		}
+		elsif (index($id, "https://github.com/") == 0) {
+			$id =~ s|https://github.com/||;
+			$version = $id;
+			$version =~ s|.*git#||;
+			$id =~ s|.git#.*||;
+			$pkg = $id;
+			$type = "yarn_github";
+		}
+		if (not $pkg) {
+			say STDERR "invalid resolved : " . $id;
+			next;
+		}
+		# XXX blacklist feature, yarn need everything (really ??)
+		# if (exists $includes{$id}) {
+		# 	say STDERR "include : " . $id;
+		# } else {
+		# 	foreach my $blacklist (@blacklists) {
+		# 		my $s = $id;
+		# 		$s =~ s|/|-|;
+		# 		if (index("-".$s."-".$version,
+		# 		    "-".$blacklist."-") >= 0) {
+		# 			say STDERR (
+		# 			    "blacklist ".$blacklist.
+		# 			    " : ".$id);
+		# 			$pkg = "";
+		# 			last;
+		# 		}
+		# 	}
+		# }
+		if (not $pkg) {next;}
+		if (scalar $id =~ /\Q\//g) {
+			($project, $pkg) = split '/', $id;
+		}
+		$dist = $type." ".$project." ".$pkg." ".$version." .";
+		if (grep(/^$dist$/, @{$dists})) {next;}
+		push @{$dists}, $dist
+	}
+}
+
+say "DIST_TUPLE += \\";
+foreach my $dist (sort @{$dists}) {
+	say $dist." \\";
+}
+say "";

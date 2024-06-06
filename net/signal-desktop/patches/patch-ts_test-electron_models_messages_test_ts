@@ -1,0 +1,13 @@
+Index: ts/test-electron/models/messages_test.ts
+--- ts/test-electron/models/messages_test.ts.orig
++++ ts/test-electron/models/messages_test.ts
+@@ -696,6 +696,9 @@ describe('Message', () => {
+         isLinux() {
+           return false;
+         },
++        isBSD() {
++          return false;
++        },
+       });
+ 
+       assert.strictEqual(

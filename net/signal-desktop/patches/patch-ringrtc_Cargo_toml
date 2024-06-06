@@ -1,0 +1,12 @@
+Index: ringrtc/Cargo.toml
+--- ringrtc/Cargo.toml.orig
++++ ringrtc/Cargo.toml
+@@ -10,6 +10,6 @@ members = [
+     "src/rust",
+ ]
+ 
+-[patch.crates-io]
++#[patch.crates-io]
+ # Use our fork of curve25519-dalek for zkgroup compatibility.
+-curve25519-dalek = { git = 'https://github.com/signalapp/curve25519-dalek', tag = 'signal-curve25519-4.1.1' }
++#curve25519-dalek = { git = 'https://github.com/signalapp/curve25519-dalek', tag = 'signal-curve25519-4.1.1' }

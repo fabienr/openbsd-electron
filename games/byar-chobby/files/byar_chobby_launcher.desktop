@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Beyond All Reason
+Exec=byar_chobby_launcher
+Terminal=false
+Type=Application
+Icon=byar_chobby_launcher
+StartupWMClass=Beyond All Reason
+Comment=launcher for Beyond All Reason
+Categories=Game;

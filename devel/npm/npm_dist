@@ -1,0 +1,167 @@
+#!/usr/bin/perl -w
+
+# $OpenBSD$
+
+# Copyright (c) 2024 Fabien Romano <fabien@openbsd.org>
+#
+# Permission to use, copy, modify, and distribute this software for any
+# purpose with or without fee is hereby granted, provided that the above
+# copyright notice and this permission notice appear in all cp.
+#
+# THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+# WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+# MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+# ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+# WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+# ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+# OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+use 5.012;
+use strict;
+use warnings;
+use JSON::PP;
+
+use OpenBSD::Getopt;
+
+my $omitdev = 0;
+my $omitoptional = 0;
+my %includes;
+my %excludes;
+getopts('doi:x:', {
+	'd' => sub {$omitdev = 1;},
+	'o' => sub {$omitoptional = 1;},
+	'i' => sub {
+		my $pkg = shift;
+		$pkg =~ s/^\s+//;
+		$includes{$pkg} = 1;
+	},
+	'x' => sub {
+		my $pkg = shift;
+		$pkg =~ s/^\s+//;
+		$excludes{$pkg} = 1;
+	}
+});
+
+die if @ARGV != 1;
+my $file = shift;
+my %modules;
+
+# from Port.pm
+sub get_json_file
+{
+	my ( $file, ) = @_;
+
+	open my $h, '<', $file or die $!;
+	my $data = do { local $/ = undef; <$h> };
+	return decode_json $data;
+}
+
+sub _modules_add
+{
+	my ( $path, $node ) = @_;
+	$path =~ s|node_modules/||;
+	my $version = $node->{version};
+	if (index($version, "npm:") == 0) {
+		$version =~ s/.*@//;
+	}
+	my $id = $node->{resolved};
+	if (index($id, "https://registry.npmjs.org") != 0) {
+		# XXX handle git+ssh://git@github.com/ ?
+		say STDERR "invalid resolved : " . $id;
+		return;
+	}
+	$id =~ s|https://registry.npmjs.org/||;
+	$id =~ s|/\-/.*||;
+	if (exists $excludes{$id}) {
+		say STDERR "exclude : " . $path;
+		return;
+	} elsif (exists $includes{$id}) {
+		say STDERR "include : " . $path;
+	} elsif (exists $node->{optional} && $omitoptional) {
+		say STDERR "skip optional : " . $path;
+		return;
+	} elsif (exists $node->{dev} && $omitdev) {
+		say STDERR "skip dev : " . $path;
+		return;
+	}
+	if ( not exists $modules{$id}{$version} ) {
+		$modules{$id}{$version} = ();
+	}
+	push @{$modules{$id}{$version}}, $path;
+}
+
+sub _dependencies
+{
+	my ($path, $nodes) = @_;
+	if (not exists $nodes->{dependencies}) {return;}
+	foreach my $node (sort keys %{$nodes->{dependencies}}) {
+		_modules_add($path."/".$node, $nodes->{dependencies}{$node});
+		_dependencies($path."/".$node."/node_modules",
+			$nodes->{dependencies}{$node});
+	}
+}
+
+my $nodes = get_json_file($file);
+# flat package-lock.json format
+foreach my $node (sort keys %{$nodes->{packages}}) {
+	if ($node eq "") {next;}
+	_modules_add($node, $nodes->{packages}{$node})
+}
+# tree package-lock.json format
+_dependencies("node_modules", $nodes);
+
+my $dists = ();
+my $mv = ();
+my $cp = ();
+foreach my $id (keys %modules) {
+	my $project = ".";
+	my $pkg = $id;
+	my $version;
+	my $location;
+	my $target;
+	if (scalar $id =~ /\Q\//g) {
+		($project, $pkg) = split '/', $id;
+	}
+	my $dist = "npm ".$project." ".$pkg;
+	if (scalar keys %{$modules{$id}} == 1) {
+		$version = (keys %{$modules{$id}})[0];
+		$location = $project."-".$pkg."-".$version;
+		push @{$dists}, $dist." ".$version." .";
+		push @{$mv}, $location." node_modules/".$id;
+		if (scalar @{$modules{$id}{$version}} == 1) {next;}
+		foreach my $path (@{$modules{$id}{$version}}) {
+			if ($path eq $id) {next;}
+			if (scalar $path =~ /node_modules\//g) {next;}
+			push @{$cp}, $path." ".$id;
+		}
+		next;
+	}
+	foreach my $version (keys %{$modules{$id}}) {
+		$location = $project."-".$pkg."-".$version;
+		push @{$dists}, $dist." ".$version." .";
+		push @{$mv}, $location." .npm/".$location;
+		foreach my $path (@{$modules{$id}{$version}}) {
+			push @{$cp}, $path." .npm/".$location;
+		}
+	}
+}
+
+say "DIST_TUPLE += \\";
+foreach my $l (sort @{$dists}) {
+	say $l." \\";
+}
+say "";
+say "MODNPM_MV += \\";
+foreach my $l (sort @{$mv}) {
+	say $l." \\";
+}
+say "";
+# XXX note it should be possible to avoid cp in each dir
+#    and use links instead but then there is issue to resolve them
+# XXX take a look at pnpm
+# XXX take a look at npm experimental shape
+say "MODNPM_CP += \\";
+foreach my $l (sort @{$cp}) {
+	say $l." \\";
+}
+say "";

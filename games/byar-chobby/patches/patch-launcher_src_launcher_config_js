@@ -1,0 +1,12 @@
+Index: launcher/src/launcher_config.js
+--- launcher/src/launcher_config.js.orig
++++ launcher/src/launcher_config.js
+@@ -80,7 +80,7 @@ const defaultSetup = {
+ 
+ function canUse(config) {
+ 	if (config.package.platform != 'all') {
+-		if (config.package.platform != process.platform) {
++		if (config.package.platform != 'linux') {
+ 			return false;
+ 		}
+ 	}

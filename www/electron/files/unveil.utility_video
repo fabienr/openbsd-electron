@@ -1,0 +1,8 @@
+# needed for electron
+/etc/electron r
+
+# needed for IPC communication, X.Org, etc.
+/tmp rwc
+
+# needed for video(4)
+/dev/video rw

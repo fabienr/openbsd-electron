@@ -1,0 +1,11 @@
+[patch.crates-io]
+boring = { path = '${WRKSRC}/boring/boring' }
+curve25519-dalek = { path = '${WRKSRC}/curve25519-dalek/curve25519-dalek' }
+zkgroup = { path = '${WRKSRC}/libsignal/rust/zkgroup' }
+[patch.'https://github.com/signalapp/boring']
+boring = { path = '${WRKSRC}/boring/boring' }
+boring-sys = { path = '${WRKSRC}/boring/boring-sys' }
+tokio-boring = { path = '${WRKSRC}/boring/tokio-boring' }
+[patch.'https://github.com/signalapp/curve25519-dalek']
+curve25519-dalek = { path = '${WRKSRC}/curve25519-dalek/curve25519-dalek' }
+curve25519-dalek-derive = { path = '${WRKSRC}/curve25519-dalek/curve25519-dalek-derive' }

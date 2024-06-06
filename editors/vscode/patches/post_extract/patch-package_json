@@ -1,0 +1,11 @@
+Index: package.json
+--- package.json.orig
++++ package.json
+@@ -92,7 +92,6 @@
+     "http-proxy-agent": "^7.0.0",
+     "https-proxy-agent": "^7.0.2",
+     "jschardet": "3.0.0",
+-    "kerberos": "^2.0.1",
+     "minimist": "^1.2.6",
+     "native-is-elevated": "0.7.0",
+     "native-keymap": "^3.3.4",

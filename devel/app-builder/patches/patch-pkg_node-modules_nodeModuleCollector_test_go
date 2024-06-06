@@ -1,0 +1,33 @@
+Index: pkg/node-modules/nodeModuleCollector_test.go
+--- pkg/node-modules/nodeModuleCollector_test.go.orig
++++ pkg/node-modules/nodeModuleCollector_test.go
+@@ -57,3 +57,28 @@ func TestReadDependencyTreeByPnpm(t *testing.T) {
+ 		"js-tokens", "react", "loose-envify",
+ 	}))
+ }
++
++func TestReadDependencyTreeByYarn(t *testing.T) {
++	g := NewGomegaWithT(t)
++
++	collector := &Collector{
++		unresolvedDependencies:       make(map[string]bool),
++		excludedDependencies:         make(map[string]bool),
++		NodeModuleDirToDependencyMap: make(map[string]*map[string]*Dependency),
++	}
++
++	dir := path.Join(Dirname(), "yarn-demo")
++
++	dependency, err := readPackageJson(dir)
++	dependency.dir = dir
++	g.Expect(err).NotTo(HaveOccurred())
++
++	err = collector.readDependencyTree(dependency)
++	g.Expect(err).NotTo(HaveOccurred())
++	r := lo.FlatMap(lo.Values(collector.NodeModuleDirToDependencyMap), func(it *map[string]*Dependency, i int) []string {
++		return lo.Keys(*it)
++	})
++	g.Expect(r).To(ConsistOf([]string{
++		"js-tokens", "react", "loose-envify",
++	}))
++}
+\ No newline at end of file

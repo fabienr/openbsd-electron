@@ -1,0 +1,12 @@
+Index: ringrtc/src/webrtc/src/system_wrappers/BUILD.gn
+--- ringrtc/src/webrtc/src/system_wrappers/BUILD.gn.orig
++++ ringrtc/src/webrtc/src/system_wrappers/BUILD.gn
+@@ -61,7 +61,7 @@ rtc_library("system_wrappers") {
+   }
+ 
+   if (is_linux || is_chromeos) {
+-    if (!build_with_chromium) {
++    if (!build_with_chromium && !is_bsd) {
+       sources += [ "source/cpu_features_linux.cc" ]
+     }
+   }

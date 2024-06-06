@@ -1,0 +1,30 @@
+Index: app/main.ts
+--- app/main.ts.orig
++++ app/main.ts
+@@ -606,7 +606,7 @@ let windowIcon: string;
+ 
+ if (OS.isWindows()) {
+   windowIcon = join(__dirname, '../build/icons/win/icon.ico');
+-} else if (OS.isLinux()) {
++} else if (OS.isLinux() || OS.isBSD()) {
+   windowIcon = join(__dirname, '../images/signal-logo-desktop-linux.png');
+ } else {
+   windowIcon = join(__dirname, '../build/icons/png/512x512.png');
+@@ -656,6 +656,8 @@ async function safeLoadURL(window: BrowserWindow, url:
+ }
+ 
+ async function createWindow() {
++// XXX debug
++//const usePreloadBundle = false;
+   const usePreloadBundle =
+     !isTestEnvironment(getEnvironment()) || forcePreloadBundle;
+ 
+@@ -2293,7 +2295,7 @@ ipc.on('draw-attention', () => {
+     return;
+   }
+ 
+-  if (OS.isWindows() || OS.isLinux()) {
++  if (OS.isWindows() || OS.isLinux() || OS.isBSD()) {
+     mainWindow.flashFrame(true);
+   }
+ });

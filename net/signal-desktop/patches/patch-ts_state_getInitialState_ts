@@ -1,0 +1,23 @@
+Index: ts/state/getInitialState.ts
+--- ts/state/getInitialState.ts.orig
++++ ts/state/getInitialState.ts
+@@ -77,7 +77,7 @@ export function getInitialState({
+     window.ConversationController.getOurConversationId();
+   const ourDeviceId = window.textsecure.storage.user.getDeviceId();
+ 
+-  let osName: 'windows' | 'macos' | 'linux' | undefined;
++  let osName: 'windows' | 'macos' | 'linux' | 'freebsd' | 'openbsd' | undefined;
+ 
+   if (OS.isWindows()) {
+     osName = 'windows';
+@@ -85,6 +85,10 @@ export function getInitialState({
+     osName = 'macos';
+   } else if (OS.isLinux()) {
+     osName = 'linux';
++  } else if (OS.isFreeBSD()) {
++    osName = 'freebsd';
++  } else if (OS.isOpenBSD()) {
++    osName = 'openbsd';
+   }
+ 
+   return {

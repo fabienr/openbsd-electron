@@ -1,0 +1,13 @@
+Index: ringrtc/src/webrtc/src/BUILD.gn
+--- ringrtc/src/webrtc/src/BUILD.gn.orig
++++ ringrtc/src/webrtc/src/BUILD.gn
+@@ -220,6 +220,9 @@ config("common_inherited_config") {
+   if (is_bsd) {
+     defines += [ "WEBRTC_BSD" ]
+   }
++  if (is_openbsd) {
++    defines += [ "WEBRTC_OPENBSD" ]
++  }
+   if (is_mac) {
+     defines += [ "WEBRTC_MAC" ]
+   }

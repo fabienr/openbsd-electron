@@ -1,0 +1,53 @@
+Index: launcher/src/launcher_wizard.js
+--- launcher/src/launcher_wizard.js.orig
++++ launcher/src/launcher_wizard.js
+@@ -92,27 +92,29 @@ class Wizard extends EventEmitter {
+ 				}
+ 			}
+ 
+-			config.downloads.resources.forEach((resource) => {
+-				steps.push({
+-					name: 'resource',
+-					item: resource,
+-					action: () => {
+-						this.isActive = true;
+-						springDownloader.downloadResource(resource);
+-					}
+-				});
+-			});
++			// XXX skip resource : use system engine, pool optionnal
++			// config.downloads.resources.forEach((resource) => {
++			// 	steps.push({
++			// 		name: 'resource',
++			// 		item: resource,
++			// 		action: () => {
++			// 			this.isActive = true;
++			// 			springDownloader.downloadResource(resource);
++			// 		}
++			// 	});
++			// });
+ 
+-			config.downloads.engines.forEach((engine) => {
+-				steps.push({
+-					name: 'engine',
+-					item: engine,
+-					action: () => {
+-						this.isActive = true;
+-						springDownloader.downloadEngine(engine);
+-					}
+-				});
+-			});
++			// XXX skip engine, use system engine
++			// config.downloads.engines.forEach((engine) => {
++			// 	steps.push({
++			// 		name: 'engine',
++			// 		item: engine,
++			// 		action: () => {
++			// 			this.isActive = true;
++			// 			springDownloader.downloadEngine(engine);
++			// 		}
++			// 	});
++			// });
+ 
+ 			if (config.downloads.games && config.downloads.games.length > 0) {
+ 				steps.push({

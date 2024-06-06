@@ -1,0 +1,9 @@
+Index: electron/build/args/testing.gn
+--- electron/build/args/testing.gn.orig
++++ electron/build/args/testing.gn
+@@ -11,4 +11,4 @@ symbol_level = 1
+ # explicitly override here to build OpenH264 encoder/FFmpeg decoder.
+ # The initialization of the decoder depends on whether ffmpeg has
+ # been built with H.264 support.
+-rtc_use_h264 = proprietary_codecs
++# rtc_use_h264 = proprietary_codecs

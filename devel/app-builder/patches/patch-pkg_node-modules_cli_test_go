@@ -1,0 +1,11 @@
+Index: pkg/node-modules/cli_test.go
+--- pkg/node-modules/cli_test.go.orig
++++ pkg/node-modules/cli_test.go
+@@ -67,6 +67,7 @@ func nodeDepTree(t *testing.T, dir string) {
+ func TestNodeDepTreeCmd(t *testing.T) {
+ 	nodeDepTree(t, path.Join(Dirname(), "npm-demo"))
+ 	nodeDepTree(t, path.Join(Dirname(), "pnpm-demo"))
++	nodeDepTree(t, path.Join(Dirname(), "yarn-demo"))
+ }
+ 
+ func TestNodeDepPathCmd(t *testing.T) {

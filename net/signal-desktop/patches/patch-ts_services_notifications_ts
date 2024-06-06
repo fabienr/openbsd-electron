@@ -1,0 +1,12 @@
+Index: ts/services/notifications.ts
+--- ts/services/notifications.ts.orig
++++ ts/services/notifications.ts
+@@ -193,7 +193,7 @@ class NotificationService extends EventEmitter {
+       this.lastNotification?.close();
+ 
+       const notification = new window.Notification(title, {
+-        body: OS.isLinux() ? filterNotificationText(message) : message,
++        body: (OS.isLinux() || OS.isBSD()) ? filterNotificationText(message) : message,
+         icon: iconUrl,
+         silent: true,
+         tag: messageId,

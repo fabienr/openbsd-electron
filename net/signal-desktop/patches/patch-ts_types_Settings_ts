@@ -1,0 +1,12 @@
+Index: ts/types/Settings.ts
+--- ts/types/Settings.ts.orig
++++ ts/types/Settings.ts
+@@ -31,7 +31,7 @@ export const isDrawAttentionSupported = (OS: OSType): 
+  * option with a command line flag, but that is not officially supported.
+  */
+ export const isSystemTraySupported = (OS: OSType): boolean =>
+-  OS.isWindows() || OS.isLinux();
++  OS.isWindows() || OS.isLinux() || OS.isBSD();
+ 
+ export const getDefaultSystemTraySetting = (
+   OS: OSType,

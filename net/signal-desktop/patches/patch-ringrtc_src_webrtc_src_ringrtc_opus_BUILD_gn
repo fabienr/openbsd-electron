@@ -1,0 +1,17 @@
+Index: ringrtc/src/webrtc/src/ringrtc/opus/BUILD.gn
+--- ringrtc/src/webrtc/src/ringrtc/opus/BUILD.gn.orig
++++ ringrtc/src/webrtc/src/ringrtc/opus/BUILD.gn
+@@ -32,10 +32,11 @@ config("opus_private_config") {
+     "ENABLE_HARDENING",
+     "DISABLE_DEBUG_FLOAT",
+ 
++    "VAR_ARRAYS",
+     # Prefer alloca() over variable length arrays which are often inefficient;
+     # the opus code will automatically handle this correctly per-platform.
+-    "USE_ALLOCA",
+-    "HAVE_ALLOCA_H",
++    #"USE_ALLOCA",
++    #"HAVE_ALLOCA_H",
+   ]
+ 
+   include_dirs = [

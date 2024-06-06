@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# XXX also --ms-enable-electron-run-as-node ?
+ELECTRON_RUN_AS_NODE=1 exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
+	"${TRUEPREFIX}/${ELECTRON_DIST_APPS}/code-oss/out/cli.js" \
+	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/code-oss" \
+	--no-sandbox "${@}"

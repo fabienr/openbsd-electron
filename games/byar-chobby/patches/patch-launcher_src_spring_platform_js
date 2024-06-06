@@ -1,0 +1,22 @@
+Index: launcher/src/spring_platform.js
+--- launcher/src/spring_platform.js.orig
++++ launcher/src/spring_platform.js
+@@ -71,7 +71,7 @@ let prDownloaderBin;
+ if (platformName === 'win32') {
+ 	prDownloaderBin = 'pr-downloader.exe';
+ 	exports.springBin = 'spring.exe';
+-} else if (platformName === 'linux') {
++} else if (platformName === 'linux' || platformName === 'openbsd') {
+ 	prDownloaderBin = 'pr-downloader';
+ 	exports.springBin = 'spring';
+ } else {
+@@ -82,6 +82,9 @@ if (platformName === 'win32') {
+ exports.prDownloaderPath = path.resolve(`${__dirname}/../bin/${prDownloaderBin}`);
+ if (!existsSync(exports.prDownloaderPath)) {
+ 	exports.prDownloaderPath = path.resolve(`${process.resourcesPath}/../bin/${prDownloaderBin}`);
++}
++if (!existsSync(exports.prDownloaderPath)) {
++	exports.prDownloaderPath = path.resolve(`/usr/local/bin/${prDownloaderBin}`);
+ }
+ 
+ exports.writePath = writePath;

@@ -1,0 +1,17 @@
+Index: libsignal/Cargo.toml
+--- libsignal/Cargo.toml.orig
++++ libsignal/Cargo.toml
+@@ -33,10 +33,10 @@ default-members = [
+ ]
+ resolver = "2" # so that our dev-dependency features don't leak into products
+ 
+-[patch.crates-io]
++#[patch.crates-io]
+ # Use our fork of curve25519-dalek for zkgroup support.
+-curve25519-dalek = { git = 'https://github.com/signalapp/curve25519-dalek', tag = 'signal-curve25519-4.1.1' }
+-boring = { git = 'https://github.com/signalapp/boring', tag = 'signal-v4.6.0' }
++#curve25519-dalek = { git = 'https://github.com/signalapp/curve25519-dalek', tag = 'signal-curve25519-4.1.1' }
++#boring = { git = 'https://github.com/signalapp/boring', tag = 'signal-v4.6.0' }
+ 
+ [profile.dev.package.argon2]
+ opt-level = 2 # signal-signal-pin unit tests are too slow with an unoptimized argon2

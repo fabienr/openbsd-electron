@@ -1,0 +1,25 @@
+The break time reminder app
+
+Stretchly is a cross-platform open source app that reminds you to
+take breaks when working on your computer.
+
+When you run Stretchly for the first time, you are presented with
+a Welcome window that allows you to change the language, review the
+preferences, view the online tutorial or simply continue with the
+default preferences.
+
+Stretchly itself lives in your tray, only displaying a reminder
+window from time to time, which contains an idea for a break.
+
+By default, there is a 20 second Mini Break every 10 minutes and a
+5 minute Long Break every 30 minutes (after 2 Mini Breaks).
+
+You'll be notified 10 seconds before a Mini Break (and 30 seconds
+before a Long Break) so that you can prepare to pause your work.
+
+When a break starts, you can postpone it once for 2 minutes (Mini
+Breaks) or 5 minutes (Long Breaks). Then, after a specific time
+interval passes, you can skip the break. Both actions are available
+by clicking on the link at the bottom of window or by using the
+Ctrl/Cmd + X keyboard shortcut.
+

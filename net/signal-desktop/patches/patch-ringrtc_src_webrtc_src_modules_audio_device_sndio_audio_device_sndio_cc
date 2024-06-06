@@ -1,0 +1,501 @@
+Index: ringrtc/src/webrtc/src/modules/audio_device/sndio/audio_device_sndio.cc
+--- ringrtc/src/webrtc/src/modules/audio_device/sndio/audio_device_sndio.cc.orig
++++ ringrtc/src/webrtc/src/modules/audio_device/sndio/audio_device_sndio.cc
+@@ -0,0 +1,497 @@
++/*
++ *  Copyright (c) 2024 The WebRTC project authors. All Rights Reserved.
++ *
++ *  Use of this source code is governed by a BSD-style license
++ *  that can be found in the LICENSE file in the root of the source
++ *  tree. An additional intellectual property rights grant can be found
++ *  in the file PATENTS.  All contributing project authors may
++ *  be found in the AUTHORS file in the root of the source tree.
++ */
++
++#include "modules/audio_device/sndio/audio_device_sndio.h"
++#include "rtc_base/logging.h"
++
++namespace webrtc {
++
++// Sndio private, c callback
++
++void *AudioDeviceSndio::PlayThreadEntry(void *arg) {
++  AudioDeviceSndio* self = static_cast<AudioDeviceSndio*>(arg);
++  self->PlayThreadLoop();
++  return NULL;
++}
++
++void *AudioDeviceSndio::RecordThreadEntry(void *arg) {
++  AudioDeviceSndio* self = static_cast<AudioDeviceSndio*>(arg);
++  self->RecordThreadLoop();
++  return NULL;
++}
++
++// Sndio private
++
++void AudioDeviceSndio::PlayThreadLoop(void) {
++  uint32_t count;
++  size_t bufsz = ppar.bps * ppar.pchan * ppar.rate / 100;
++  char* buf = new char[bufsz];
++
++  if (!buf) {
++    RTC_LOG(LS_ERROR) << "failed to alloc playout buf";
++    playing = false;
++    return;
++  }
++
++  RTC_LOG(LS_VERBOSE) << "start playing " << ppar.bits << "s" << ppar.sig
++    << "(" << ppar.bps << ") *" << ppar.pchan << " @" << ppar.rate
++    << " on " << bufsz;
++
++  while (playing && !sio_eof(phdl)) {
++    // Get data to play
++    buffer->RequestPlayoutData(ppar.rate / 100);
++    count = buffer->GetPlayoutData(buf);
++    RTC_DCHECK_EQ(count, ppar.rate / 100);
++    // Submit data to the device
++    if (sio_write(phdl, buf, bufsz) == 0) {
++      RTC_LOG(LS_ERROR) << "Play Audio device disconnected.";
++      break;
++    }
++  }
++  delete [] buf;
++  // sio_eof ?
++  playing = false;
++}
++
++void AudioDeviceSndio::RecordThreadLoop(void) {
++  size_t todo, n;
++  char *data;
++  size_t bufsz = rpar.bps * rpar.rchan * rpar.rate / 100;
++  char* buf = new char[bufsz];
++
++  if (!buf) {
++    RTC_LOG(LS_ERROR) << "failed to alloc record buf";
++    recording = false;
++    return;
++  }
++
++  RTC_LOG(LS_VERBOSE) << "start recording " << rpar.bits << "s" << rpar.sig
++    << "(" << ppar.bps << ") *" << rpar.rchan << " @" << rpar.rate
++    << " on " << bufsz;
++
++  while (recording && !sio_eof(rhdl)) {
++    // read one block
++    data = buf;
++    todo = bufsz;
++    while (todo > 0) {
++      n = sio_read(rhdl, data, todo);
++      if (n == 0) { // unrecoverable I/O error
++        data = NULL;
++        break;
++      }
++      todo -= n;
++      data += n;
++    }
++    if (data == NULL) {
++      RTC_LOG(LS_ERROR) << "Record Audio device disconnected.";
++      break;
++    }
++    // store the recorded buffer
++    buffer->SetRecordedBuffer(buf, rpar.rate / 100);
++    buffer->DeliverRecordedData();
++  }
++  delete [] buf;
++  // sio_eof ?
++  recording = false;
++}
++
++// PUBLIC API
++
++int32_t AudioDeviceSndio::ActiveAudioLayer(
++    AudioDeviceModule::AudioLayer& audioLayer) const {
++  audioLayer = AudioDeviceModule::kPlatformDefaultAudio;
++  return 0;
++}
++
++AudioDeviceGeneric::InitStatus AudioDeviceSndio::Init() {
++  //return InitStatus::OTHER_ERROR;
++
++  sio_initpar(&par);
++  par.bits = 16;
++  par.sig = 1;
++  par.rate = 48000;
++  par.pchan = 2;
++  par.rchan = 1;
++  par.appbufsz = par.rate / 100;
++
++  phdl = NULL;
++  rhdl = NULL;
++  playing = false;
++  recording = false;
++  play = NULL;
++  record = NULL;
++
++  init = true;
++
++  return InitStatus::OK;
++}
++
++int32_t AudioDeviceSndio::Terminate() {
++  if (phdl)
++    sio_close(phdl);
++  if (rhdl)
++    sio_close(rhdl);
++  return 0;
++}
++
++bool AudioDeviceSndio::Initialized() const {
++  if (init)
++    return false;
++  return true;
++}
++
++int16_t AudioDeviceSndio::PlayoutDevices() {
++  return 1;
++}
++
++int16_t AudioDeviceSndio::RecordingDevices() {
++  return 1;
++}
++
++int32_t AudioDeviceSndio::PlayoutDeviceName(uint16_t index,
++                                            char name[kAdmMaxDeviceNameSize],
++                                            char guid[kAdmMaxGuidSize]) {
++  if (name == NULL)
++    return -1;
++  strlcpy(name, "sndio", kAdmMaxDeviceNameSize);
++  if (guid != NULL)
++    memset(guid, 0, kAdmMaxGuidSize);
++  return 0;
++}
++
++int32_t AudioDeviceSndio::RecordingDeviceName(uint16_t index,
++                                              char name[kAdmMaxDeviceNameSize],
++                                              char guid[kAdmMaxGuidSize]) {
++  if (name == NULL)
++    return -1;
++  strlcpy(name, "sndio", kAdmMaxDeviceNameSize);
++  if (guid != NULL)
++    memset(guid, 0, kAdmMaxGuidSize);
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetPlayoutDevice(uint16_t index) {
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetPlayoutDevice(
++    AudioDeviceModule::WindowsDeviceType device) {
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetRecordingDevice(uint16_t index) {
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetRecordingDevice(
++    AudioDeviceModule::WindowsDeviceType device) {
++  return 0;
++}
++
++int32_t AudioDeviceSndio::PlayoutIsAvailable(bool& available) {
++  available = true;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::InitPlayout() {
++  phdl = sio_open(SIO_DEVANY, SIO_PLAY, 0);
++  if (phdl == NULL) {
++    RTC_LOG(LS_ERROR) << "Couldn't open play audio device.";
++    return -1;
++  }
++  if (!sio_setpar(phdl, &par) || !sio_getpar(phdl, &ppar)) {
++    RTC_LOG(LS_ERROR) << "Couldn't set play audio parameters.";
++    sio_close(phdl);
++    phdl = NULL;
++    return -1;
++  }
++  if (ppar.bits != par.bits ||
++      ppar.sig != par.sig ||
++      ppar.rate != par.rate ||
++      ppar.pchan != par.pchan) {
++    RTC_LOG(LS_ERROR) << "Unsupported audio play parameters.";
++    sio_close(phdl);
++    phdl = NULL;
++    return -1;
++  }
++  buffer->SetPlayoutChannels(ppar.pchan);
++  buffer->SetPlayoutSampleRate(ppar.rate);
++  return 0;
++}
++
++bool AudioDeviceSndio::PlayoutIsInitialized() const {
++  if (phdl != NULL)
++    return true;
++  return false;
++}
++
++int32_t AudioDeviceSndio::RecordingIsAvailable(bool& available) {
++  available = true;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::InitRecording() {
++  rhdl = sio_open(SIO_DEVANY, SIO_REC, 0);
++  if (rhdl == NULL) {
++    RTC_LOG(LS_ERROR) << "Couldn't open rec audio device.";
++    return -1;
++  }
++  if (!sio_setpar(rhdl, &par) || !sio_getpar(rhdl, &rpar)) {
++    RTC_LOG(LS_ERROR) << "Couldn't set rec audio parameters.";
++    sio_close(rhdl);
++    rhdl = NULL;
++    return -1;
++  }
++  if (rpar.bits != par.bits ||
++      rpar.sig != par.sig ||
++      rpar.rate != par.rate ||
++      rpar.rchan != par.rchan) {
++    RTC_LOG(LS_ERROR) << "Unsupported audio rec parameters.";
++    sio_close(phdl);
++    phdl = NULL;
++    return -1;
++  }
++  buffer->SetRecordingChannels(rpar.rchan);
++  buffer->SetRecordingSampleRate(rpar.rate);
++  return 0;
++}
++
++bool AudioDeviceSndio::RecordingIsInitialized() const {
++  if (rhdl != NULL)
++    return true;
++  return false;
++}
++
++int32_t AudioDeviceSndio::StartPlayout() {
++  if (playing)
++    return 0;
++  playing = true;
++  RTC_LOG(LS_VERBOSE) << "playing=true";
++  sio_start(phdl);
++  RTC_LOG(LS_VERBOSE) << "sio_start(phdl)";
++  if (pthread_create(&play, NULL, &PlayThreadEntry, this) != 0) {
++    RTC_LOG(LS_ERROR) << "Failed to create real-time thread.";
++    playing = false;
++    sio_stop(phdl);
++    return -1;
++  }
++  RTC_LOG(LS_VERBOSE) << "pthread_create(play)";
++  return 0;
++}
++
++int32_t AudioDeviceSndio::StopPlayout() {
++  if (!playing)
++    return 0;
++  playing = false;
++  RTC_LOG(LS_VERBOSE) << "playing=false";
++  pthread_join(play, NULL);
++  RTC_LOG(LS_VERBOSE) << "pthread_join(play)";
++  sio_stop(phdl);
++  RTC_LOG(LS_VERBOSE) << "sio_stop(phdl)";
++  return 0;
++}
++
++bool AudioDeviceSndio::Playing() const {
++  if (playing)
++    return true;
++  return false;
++}
++
++int32_t AudioDeviceSndio::StartRecording() {
++  if (recording)
++    return 0;
++  recording = true;
++  RTC_LOG(LS_VERBOSE) << "recording=true";
++  sio_start(rhdl);
++  RTC_LOG(LS_VERBOSE) << "sio_start(rhdl)";
++  if (pthread_create(&record, NULL, &RecordThreadEntry, this) != 0) {
++    RTC_LOG(LS_ERROR) << "Failed to create real-time thread.";
++    recording = false;
++    sio_stop(rhdl);
++    return -1;
++  }
++  RTC_LOG(LS_VERBOSE) << "pthread_create(record)";
++  return 0;
++}
++
++int32_t AudioDeviceSndio::StopRecording() {
++  if (!recording)
++    return 0;
++  recording = false;
++  RTC_LOG(LS_VERBOSE) << "recording=false";
++  pthread_join(record, NULL);
++  RTC_LOG(LS_VERBOSE) << "pthread_join(record)";
++  sio_stop(rhdl);
++  RTC_LOG(LS_VERBOSE) << "sio_stop(rhdl)";
++  return 0;
++}
++
++bool AudioDeviceSndio::Recording() const {
++  if (recording)
++    return true;
++  return false;
++}
++
++int32_t AudioDeviceSndio::InitSpeaker() {
++  return 0;
++}
++
++bool AudioDeviceSndio::SpeakerIsInitialized() const {
++  return true;
++}
++
++int32_t AudioDeviceSndio::InitMicrophone() {
++  return 0;
++}
++
++bool AudioDeviceSndio::MicrophoneIsInitialized() const {
++  return true;
++}
++
++int32_t AudioDeviceSndio::SpeakerVolumeIsAvailable(bool& available) {
++  available = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetSpeakerVolume(uint32_t volume) {
++  RTC_LOG(LS_ERROR) << "SetSpeakerVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::SpeakerVolume(uint32_t& volume) const {
++  RTC_LOG(LS_ERROR) << "SpeakerVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MaxSpeakerVolume(uint32_t& maxVolume) const {
++  RTC_LOG(LS_ERROR) << "MaxSpeakerVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MinSpeakerVolume(uint32_t& minVolume) const {
++  RTC_LOG(LS_ERROR) << "MinSpeakerVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MicrophoneVolumeIsAvailable(bool& available) {
++  available = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetMicrophoneVolume(uint32_t volume) {
++  RTC_LOG(LS_ERROR) << "SetMicrophoneVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MicrophoneVolume(uint32_t& volume) const {
++  RTC_LOG(LS_ERROR) << "MicrophoneVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MaxMicrophoneVolume(uint32_t& maxVolume) const {
++  RTC_LOG(LS_ERROR) << "MaxMicrophoneVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MinMicrophoneVolume(uint32_t& minVolume) const {
++  RTC_LOG(LS_ERROR) << "MinMicrophoneVolume not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::SpeakerMuteIsAvailable(bool& available) {
++  available = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetSpeakerMute(bool enable) {
++  RTC_LOG(LS_ERROR) << "SetSpeakerMute not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::SpeakerMute(bool& enabled) const {
++  RTC_LOG(LS_ERROR) << "SpeakerMute not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MicrophoneMuteIsAvailable(bool& available) {
++  available = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetMicrophoneMute(bool enable) {
++  RTC_LOG(LS_ERROR) << "SetMicrophoneMute not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::MicrophoneMute(bool& enabled) const {
++  RTC_LOG(LS_ERROR) << "MicrophoneMute not available";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::StereoPlayoutIsAvailable(bool& available) {
++  if (par.pchan == 2)
++    available = true;
++  else
++    available = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetStereoPlayout(bool enable) {
++  if (par.pchan == 2 && enable)
++    return 0;
++  else if (par.pchan == 1 && !enable)
++    return 0;
++  RTC_LOG(LS_ERROR) << "SetStereoPlayout not implemented";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::StereoPlayout(bool& enabled) const {
++  enabled = true;
++  if (par.pchan >= 2)
++    enabled = true;
++  else
++    enabled = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::StereoRecordingIsAvailable(bool& available) {
++  if (par.rchan == 2)
++    available = true;
++  else
++    available = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::SetStereoRecording(bool enable) {
++  if (par.rchan == 2 && enable)
++    return 0;
++  else if (par.rchan == 1 && !enable)
++    return 0;
++  RTC_LOG(LS_ERROR) << "SetStereoPlayout not implemented";
++  return -1;
++}
++
++int32_t AudioDeviceSndio::StereoRecording(bool& enabled) const {
++  if (par.rchan == 2)
++    enabled = true;
++  else
++    enabled = false;
++  return 0;
++}
++
++int32_t AudioDeviceSndio::PlayoutDelay(uint16_t& delayMS) const {
++  delayMS = 10;
++  return 0;
++}
++
++void AudioDeviceSndio::AttachAudioBuffer(AudioDeviceBuffer* audioBuffer) {
++  buffer = audioBuffer;
++}
++}  // namespace webrtc

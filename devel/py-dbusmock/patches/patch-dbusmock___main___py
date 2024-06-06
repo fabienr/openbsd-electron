@@ -1,0 +1,13 @@
+Index: dbusmock/__main__.py
+--- dbusmock/__main__.py.orig
++++ dbusmock/__main__.py
+@@ -160,7 +160,8 @@ if __name__ == "__main__":
+     if args.template:
+         main_object.AddTemplate(args.template, parameters)
+ 
+-    libglib = ctypes.cdll.LoadLibrary("libglib-2.0.so.0")
++    #libglib = ctypes.cdll.LoadLibrary("libglib-2.0.so.0")
++    libglib = ctypes.cdll.LoadLibrary("libglib-2.0.so")
+ 
+     dbusmock.mockobject.objects[args.path] = main_object
+ 

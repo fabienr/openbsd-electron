@@ -1,0 +1,40 @@
+Index: common.gypi
+--- common.gypi.orig
++++ common.gypi
+@@ -189,7 +189,6 @@
+             }],
+           ],
+         },
+-        'cflags': [ '-O3' ],
+         'conditions': [
+           ['enable_lto=="true"', {
+             'cflags': ['<(lto)'],
+@@ -473,7 +472,9 @@
+           }],
+           ['OS=="openbsd"', {
+             'cflags': [ '-I/usr/local/include' ],
+-            'ldflags': [ '-Wl,-z,wxneeded' ],
++            'ldflags': [ '-Wl,-z,wxneeded'
++                , '-Wl,-rpath,${EOPENSSL_LIB}'
++            ],
+           }],
+           ['_toolset=="host"', {
+             'conditions': [
+@@ -490,7 +491,7 @@
+                 'ldflags': [ '-m32' ],
+               }],
+               [ 'host_arch=="ppc64" and OS not in "aix os400"', {
+-                'cflags': [ '-m64', '-mminimal-toc' ],
++                'cflags': [ '-m64' ],
+                 'ldflags': [ '-m64' ],
+               }],
+               [ 'host_arch=="s390x" and OS=="linux"', {
+@@ -514,7 +515,7 @@
+                 'ldflags': [ '-m32' ],
+               }],
+               [ 'target_arch=="ppc64" and OS not in "aix os400"', {
+-                'cflags': [ '-m64', '-mminimal-toc' ],
++                'cflags': [ '-m64' ],
+                 'ldflags': [ '-m64' ],
+               }],
+               [ 'target_arch=="s390x" and OS=="linux"', {

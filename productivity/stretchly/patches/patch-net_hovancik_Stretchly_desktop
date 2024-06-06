@@ -1,0 +1,16 @@
+Index: net.hovancik.Stretchly.desktop
+--- net.hovancik.Stretchly.desktop.orig
++++ net.hovancik.Stretchly.desktop
+@@ -1,9 +1,9 @@
+ [Desktop Entry]
+ Name=Stretchly
+-Exec=run.sh %U
++Exec=stretchly %U
+ Terminal=false
+ Type=Application
+-Icon=net.hovancik.Stretchly
++Icon=stretchly
+ StartupWMClass=Stretchly
+ Comment=The break time reminder app
+ Categories=Utility;
+\ No newline at end of file

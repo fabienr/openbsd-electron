@@ -1,0 +1,46 @@
+Index: sandbox/policy/openbsd/sandbox_openbsd.cc
+--- sandbox/policy/openbsd/sandbox_openbsd.cc.orig
++++ sandbox/policy/openbsd/sandbox_openbsd.cc
+@@ -64,11 +64,11 @@
+ 
+ #define MAXTOKENS	3
+ 
+-#define _UNVEIL_MAIN		"/etc/chromium/unveil.main";
+-#define _UNVEIL_GPU		"/etc/chromium/unveil.gpu";
+-#define _UNVEIL_UTILITY_NETWORK	"/etc/chromium/unveil.utility_network";
+-#define _UNVEIL_UTILITY_AUDIO	"/etc/chromium/unveil.utility_audio";
+-#define _UNVEIL_UTILITY_VIDEO	"/etc/chromium/unveil.utility_video";
++#define _UNVEIL_MAIN		"/etc/electron/unveil.main";
++#define _UNVEIL_GPU		"/etc/electron/unveil.gpu";
++#define _UNVEIL_UTILITY_NETWORK	"/etc/electron/unveil.utility_network";
++#define _UNVEIL_UTILITY_AUDIO	"/etc/electron/unveil.utility_audio";
++#define _UNVEIL_UTILITY_VIDEO	"/etc/electron/unveil.utility_video";
+ 
+ namespace sandbox {
+ namespace policy {
+@@ -316,7 +316,7 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
+ 
+   switch(sandbox_type) {
+     case sandbox::mojom::Sandbox::kNoSandbox:
+-      SetPledge(NULL, "/etc/chromium/pledge.main");
++      SetPledge(NULL, "/etc/electron/pledge.main");
+       break;
+     case sandbox::mojom::Sandbox::kRenderer:
+       // prot_exec needed by v8
+@@ -333,13 +333,13 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
+       break;
+ #endif
+     case sandbox::mojom::Sandbox::kAudio:
+-      SetPledge(NULL, "/etc/chromium/pledge.utility_audio");
++      SetPledge(NULL, "/etc/electron/pledge.utility_audio");
+       break;
+     case sandbox::mojom::Sandbox::kNetwork:
+-      SetPledge(NULL, "/etc/chromium/pledge.utility_network");
++      SetPledge(NULL, "/etc/electron/pledge.utility_network");
+       break;
+     case sandbox::mojom::Sandbox::kVideoCapture:
+-      SetPledge(NULL, "/etc/chromium/pledge.utility_video");
++      SetPledge(NULL, "/etc/electron/pledge.utility_video");
+       break;
+     case sandbox::mojom::Sandbox::kUtility:
+     case sandbox::mojom::Sandbox::kService:

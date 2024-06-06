@@ -1,0 +1,12 @@
+Index: net.hovancik.Stretchly.metainfo.xml
+--- net.hovancik.Stretchly.metainfo.xml.orig
++++ net.hovancik.Stretchly.metainfo.xml
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <component type="desktop-application">
+   <id>net.hovancik.Stretchly</id>
+-  <launchable type="desktop-id">net.hovancik.Stretchly.desktop</launchable>
++  <launchable type="desktop-id">stretchly.desktop</launchable>
+   <provides>
+     <id>stretchly.desktop</id>
+   </provides>

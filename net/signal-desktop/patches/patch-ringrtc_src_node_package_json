@@ -1,0 +1,12 @@
+Index: ringrtc/src/node/package.json
+--- ringrtc/src/node/package.json.orig
++++ ringrtc/src/node/package.json
+@@ -15,7 +15,7 @@
+   "scripts": {
+     "build": "tsc",
+     "clean": "rimraf dist",
+-    "test": "electron-mocha --renderer --recursive dist/test --timeout 10000 --require source-map-support/register",
++    "test": "electron-mocha --recursive dist/test --timeout 10000 --require source-map-support/register",
+     "eslint": "eslint .",
+     "lint": "yarn format --list-different && yarn eslint",
+     "format": "prettier --write .",

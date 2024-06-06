@@ -1,0 +1,4 @@
+#!/bin/sh
+
+exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
+	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar" $@

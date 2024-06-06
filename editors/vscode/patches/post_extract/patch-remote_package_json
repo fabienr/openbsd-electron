@@ -1,0 +1,11 @@
+Index: remote/package.json
+--- remote/package.json.orig
++++ remote/package.json
+@@ -26,7 +26,6 @@
+     "http-proxy-agent": "^7.0.0",
+     "https-proxy-agent": "^7.0.2",
+     "jschardet": "3.0.0",
+-    "kerberos": "^2.0.1",
+     "minimist": "^1.2.6",
+     "native-watchdog": "^1.4.1",
+     "node-pty": "1.1.0-beta5",

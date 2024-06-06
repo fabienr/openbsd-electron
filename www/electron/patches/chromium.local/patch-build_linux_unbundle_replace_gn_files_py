@@ -1,0 +1,29 @@
+Index: build/linux/unbundle/replace_gn_files.py
+--- build/linux/unbundle/replace_gn_files.py.orig
++++ build/linux/unbundle/replace_gn_files.py
+@@ -87,6 +87,8 @@ def DoMain(argv):
+   source_tree_root = os.path.abspath(
+     os.path.join(my_dirname, '..', '..', '..'))
+ 
++  orig = '.orig.bundle'
++
+   parser = argparse.ArgumentParser()
+   parser.add_argument('--system-libraries', nargs='*', default=[])
+   parser.add_argument('--undo', action='store_true')
+@@ -102,12 +104,13 @@ def DoMain(argv):
+     if args.undo:
+       # Restore original file, and also remove the backup.
+       # This is meant to restore the source tree to its original state.
+-      os.rename(os.path.join(source_tree_root, path + '.orig'),
++      os.rename(os.path.join(source_tree_root, path + orig),
+                 os.path.join(source_tree_root, path))
+     else:
+       # Create a backup copy for --undo.
+-      shutil.copyfile(os.path.join(source_tree_root, path),
+-                      os.path.join(source_tree_root, path + '.orig'))
++      if not os.path.exists(os.path.join(source_tree_root, path + orig)):
++        shutil.copyfile(os.path.join(source_tree_root, path),
++                        os.path.join(source_tree_root, path + orig))
+ 
+       # Copy the GN file from directory of this script to target path.
+       shutil.copyfile(os.path.join(my_dirname, '%s.gn' % lib),

@@ -1,0 +1,19 @@
+Yarn is a package manager for your code. It allows you to use and share
+(e.g. JavaScript) code with other developers from around the world.
+
+Fast: Yarn caches every package it has downloaded, so it never needs to
+download the same package again. It also does almost everything concurrently to
+maximize resource utilization. This means even faster installs.
+
+Reliable: Using a detailed but concise lockfile format and a deterministic
+algorithm for install operations, Yarn is able to guarantee that any
+installation that works on one system will work exactly the same on another
+system.
+
+Secure: Yarn uses checksums to verify the integrity of every installed package
+before its code is executed.
+
+N.B. This package of yarn 1.x provides "Yarn Classic" which can be fetched
+with a simple download, but is in maintenance mode and has been for some time.
+Current versions, "Yarn Modern", should be installed per-project via the
+"corepack" tool instead.
