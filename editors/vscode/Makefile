@@ -1,21 +1,17 @@
 # XXX _pbuild default to openfiles-max=1024 is not eough ?
 
-# XXX vscode 1.88.0 version mismatch :
-# .yarnrc, electron 28.2.8 vs 28.2.10
-# remote/.yarnrc, node 18.18.2 vs 18.19.1
+# XXX vscode 1.90.0 version mismatch :
+# .yarnrc, electron 29.4.0 vs 29.4.1
+# remote/.yarnrc, node 20.11.1 vs 20.13.1
 
 # XXX too restrictive ?
 ONLY_FOR_ARCHS=	amd64
 
 COMMENT=	Visual Studio Code - Open Source ("Code - OSS")
 
-COMMIT=		c98f749f7e2a41e0d7c1798e33e4575a81a6c49b
 V=		1.90.0
-# XXX 1.90.0 not released yet
-#REVISION=	0
-DISTNAME=	vscode-${COMMIT}
-PKGNAME=	vscode-${V}
-DIST_TUPLE=	github microsoft vscode ${COMMIT} .
+REVISION=	0
+DIST_TUPLE=	github microsoft vscode ${V} .
 
 CATEGORIES=	editors
 
