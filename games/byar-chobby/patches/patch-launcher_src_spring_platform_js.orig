@@ -10,14 +10,13 @@ Index: launcher/src/spring_platform.js
  	prDownloaderBin = 'pr-downloader';
  	exports.springBin = 'spring';
  } else {
-@@ -79,9 +79,6 @@ if (platformName === 'win32') {
- 	process.exit(-1);
+@@ -82,6 +82,9 @@ if (platformName === 'win32') {
+ exports.prDownloaderPath = path.resolve(`${__dirname}/../bin/${prDownloaderBin}`);
+ if (!existsSync(exports.prDownloaderPath)) {
+ 	exports.prDownloaderPath = path.resolve(`${process.resourcesPath}/../bin/${prDownloaderBin}`);
++}
++if (!existsSync(exports.prDownloaderPath)) {
++	exports.prDownloaderPath = path.resolve(`/usr/local/bin/${prDownloaderBin}`);
  }
- 
--exports.prDownloaderPath = path.resolve(`${__dirname}/../bin/${prDownloaderBin}`);
--if (!existsSync(exports.prDownloaderPath)) {
--	exports.prDownloaderPath = path.resolve(`${process.resourcesPath}/../bin/${prDownloaderBin}`);
--}
-+exports.prDownloaderPath = path.resolve(`/usr/local/bin/${prDownloaderBin}`);
  
  exports.writePath = writePath;

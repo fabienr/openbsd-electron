@@ -1,18 +1,7 @@
 Index: launcher/src/launcher_wizard.js
 --- launcher/src/launcher_wizard.js.orig
 +++ launcher/src/launcher_wizard.js
-@@ -92,7 +92,10 @@ class Wizard extends EventEmitter {
- 				}
- 			}
- 
-+			// XXX skip engine (not optional) use system one
-+			// XXX preserve pool (optional)
- 			config.downloads.resources.forEach((resource) => {
-+				if (!resource['optional']) {return;};
- 				steps.push({
- 					name: 'resource',
- 					item: resource,
-@@ -103,16 +106,17 @@ class Wizard extends EventEmitter {
+@@ -103,16 +103,17 @@ class Wizard extends EventEmitter {
  				});
  			});
  
@@ -40,7 +29,7 @@ Index: launcher/src/launcher_wizard.js
  
  			if (config.downloads.games && config.downloads.games.length > 0) {
  				steps.push({
-@@ -266,14 +270,15 @@ class Wizard extends EventEmitter {
+@@ -266,14 +267,15 @@ class Wizard extends EventEmitter {
  		}
  
  		let enginePath;
