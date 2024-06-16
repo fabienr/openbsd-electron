@@ -28,7 +28,7 @@ do-install:
 	ln -s ../lib/node_modules/pnpm/bin/pnpx.cjs ${PREFIX}/bin/pnpx
 
 post-install:
-	${MODPY_BIN} ${MODPY_LIBDIR}/compileall.py \
-		${PREFIX}/lib/node_modules/pnpm/dist/node_modules/node-gyp/*
+	${MODPY_COMPILEALL} \
+		${PREFIX}/lib/node_modules/pnpm/dist/node_modules/node-gyp
 
 .include <bsd.port.mk>
