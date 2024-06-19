@@ -1,3 +1,6 @@
+Does not allow us to remove 7zip-bin.
+It just helps to remove an ENV variable which can be used to override the path.
+
 Index: launcher/src/path_7za.js
 --- launcher/src/path_7za.js.orig
 +++ launcher/src/path_7za.js

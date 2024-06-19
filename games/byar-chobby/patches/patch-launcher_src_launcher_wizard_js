@@ -1,49 +1,37 @@
+It happens game's files got corrupted.
+Skip downloading pre-made data & pool cache from BYAR http Server.
+Not sure about the root cause but looks like using only pr-downloader works.
+Otherwise this can be related to mismatch from BYAR & system pr-downloader, only
+when versions get out of sync.
+
+While there, also skip downloading engine updates (not built for openbsd).
+
+Fix enginePath to use system bin only.
+
 Index: launcher/src/launcher_wizard.js
 --- launcher/src/launcher_wizard.js.orig
 +++ launcher/src/launcher_wizard.js
-@@ -92,7 +92,10 @@ class Wizard extends EventEmitter {
+@@ -92,6 +92,7 @@ class Wizard extends EventEmitter {
  				}
  			}
  
-+			// XXX skip engine (not optional) use system one
-+			// XXX preserve pool (optional)
++			/*
  			config.downloads.resources.forEach((resource) => {
-+				if (!resource['optional']) {return;};
  				steps.push({
  					name: 'resource',
- 					item: resource,
-@@ -103,16 +106,17 @@ class Wizard extends EventEmitter {
+@@ -113,6 +114,7 @@ class Wizard extends EventEmitter {
+ 					}
  				});
  			});
- 
--			config.downloads.engines.forEach((engine) => {
--				steps.push({
--					name: 'engine',
--					item: engine,
--					action: () => {
--						this.isActive = true;
--						springDownloader.downloadEngine(engine);
--					}
--				});
--			});
-+			// XXX skip engine, use system engine
-+			// config.downloads.engines.forEach((engine) => {
-+			// 	steps.push({
-+			// 		name: 'engine',
-+			// 		item: engine,
-+			// 		action: () => {
-+			// 			this.isActive = true;
-+			// 			springDownloader.downloadEngine(engine);
-+			// 		}
-+			// 	});
-+			// });
++			*/
  
  			if (config.downloads.games && config.downloads.games.length > 0) {
  				steps.push({
-@@ -266,14 +270,15 @@ class Wizard extends EventEmitter {
+@@ -265,15 +267,7 @@ class Wizard extends EventEmitter {
+ 			}
  		}
  
- 		let enginePath;
+-		let enginePath;
 -		if (config.launch.engine_path != null) {
 -			enginePath = config.launch.engine_path;
 -		} else {
@@ -52,15 +40,7 @@ Index: launcher/src/launcher_wizard.js
 -				enginePath = path.join(springPlatform.writePath, 'engine', engineName, springPlatform.springBin);
 -			}
 -		}
-+		// if (config.launch.engine_path != null) {
-+		// 	enginePath = config.launch.engine_path;
-+		// } else {
-+		// 	const engineName = config.launch.engine || config.downloads.engines[0];
-+		// 	if (engineName != null) {
-+		// 		enginePath = path.join(springPlatform.writePath, 'engine', engineName, springPlatform.springBin);
-+		// 	}
-+		// }
-+		enginePath = '/usr/local/bin/spring';
++		let enginePath = '/usr/local/bin/spring';
  		if (enginePath != null) {
  			steps.push({
  				name: 'start',

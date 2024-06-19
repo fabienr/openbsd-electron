@@ -1,0 +1,41 @@
+Get rid of app.getPath() which looks broken.
+Calling getPath() end in xdg internal fallback to env $HOME.
+Base nix then try to read or create it (not using its own fallback).
+This fail (~/ is not unveiled) then it throw an error and stop.
+
+It's broken because it was designed to fallback to $HOME/Documents but the
+call to xdg use the wrong function which return env $HOME as a valid answer.
+
+While there, remove win32.
+
+Index: launcher/src/write_path.js
+--- launcher/src/write_path.js.orig
++++ launcher/src/write_path.js
+@@ -1,8 +1,4 @@
+-const { app } = require('electron');
+ const path = require('path');
+-const fs = require('fs');
+-const platformName = process.platform;
+-const isDev = !require('electron').app.isPackaged;
+ 
+ function resolveWritePath(title) {
+ 	const argv = require('./launcher_args');
+@@ -14,18 +10,6 @@ function resolveWritePath(title) {
+ 		return path.join(process.env.PORTABLE_EXECUTABLE_DIR, title);
+ 	}
+ 
+-	if (platformName === 'win32') {
+-		if (isDev) {
+-			return path.join(app.getAppPath(), 'data');
+-		} else {
+-			return path.join(app.getAppPath(), '../../data');
+-		}
+-	}
+-
+-	const oldDir = path.join(app.getPath('documents'), title);
+-	if (fs.existsSync(oldDir)) {
+-		return oldDir;
+-	}
+ 	const xdgStateHome = process.env.XDG_STATE_HOME || path.join(process.env.HOME, '.local/state');
+ 	return path.join(xdgStateHome, title);
+ }

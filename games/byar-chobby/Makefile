@@ -7,6 +7,7 @@ COMMENT =	launcher for Beyond All Reason
 V =		1.2988.0
 DISTNAME =	BYAR-Chobby-${V}
 PKGNAME=	${DISTNAME:L}
+REVISION=	0
 
 DIST_TUPLE =	github beyond-all-reason BYAR-Chobby v${V} .
 
