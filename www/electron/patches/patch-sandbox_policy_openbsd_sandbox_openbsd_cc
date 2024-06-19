@@ -1,3 +1,6 @@
+use electron specific files.
+strsep unveil lines by tabulation, allow space in path.
+
 Index: sandbox/policy/openbsd/sandbox_openbsd.cc
 --- sandbox/policy/openbsd/sandbox_openbsd.cc.orig
 +++ sandbox/policy/openbsd/sandbox_openbsd.cc
@@ -18,6 +21,15 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
  
  namespace sandbox {
  namespace policy {
+@@ -230,7 +230,7 @@ bool SandboxLinux::SetUnveil(const std::string process
+         continue;
+ 
+       for (ap = tokens; ap < &tokens[MAXTOKENS - 1] &&
+-          (*ap = strsep(&cp, " \t")) != NULL;) {
++          (*ap = strsep(&cp, "\t")) != NULL;) {
+         if (**ap != '\0')
+           ap++;
+       }
 @@ -316,7 +316,7 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
  
    switch(sandbox_type) {

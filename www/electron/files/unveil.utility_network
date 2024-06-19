@@ -1,16 +1,20 @@
 # needed for electron
-/etc/electron r
+/etc/electron		r
 
 # needed for dbus
-/etc/machine-id r
+/etc/machine-id		r
 
 # needed for IPC communication, X.Org, etc.
-/tmp rwc
+/tmp			rwc
 
 # misc. files and libraries
-/usr/local/lib r
+/usr/local/lib		r
 
-~/.pki rwc
+~/.pki			rwc
 
-~/.cache/chromium rwc
-~/.config/chromium rwc
+~/.cache/electron	rwc
+~/.config/electron	rwc
+
+# XXX notyet
+~/.cache/chromium	rwc
+~/.config/chromium	rwc
