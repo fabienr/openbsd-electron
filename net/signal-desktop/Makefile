@@ -119,6 +119,9 @@ MODULES=	devel/cargo \
 
 USE_GMAKE=	Yes
 
+# pledge signal-desktop, avoid sqlcipher_mlock()
+CFLAGS+=	-DOMIT_MEMLOCK
+
 # see custom modcargo-gen-crates
 MODCARGO_CARGOS_TOML=	${FTS5_TOML} ${LIBSIGNAL_TOML} ${RINGRTC_TOML}
 # libsignal/linkme is broken with https://github.com/dtolnay/linkme/commit
