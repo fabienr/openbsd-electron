@@ -66,7 +66,7 @@ DPB_PROPERTIES+=	lonesome
 # see electron.port.mk for V
 COMMENT=		cross-platform desktop applications
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
-REVISION=		0
+REVISION=		1
 
 CATEGORIES=		www
 

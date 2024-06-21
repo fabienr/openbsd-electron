@@ -55,14 +55,12 @@
 ~/.sndio		rwc
 ~/.terminfo		r
 
-~/.cache/electron	rwc
 ~/.cache/at-spi		rw
 ~/.cache/dconf		rwc
 ~/.cache/fontconfig	rwc
 ~/.cache/gvfsd		rwc
 ~/.cache/thumbnails	rwc
 
-~/.config/electron		rwc
 ~/.config/dconf			r
 ~/.config/fcitx			r
 ~/.config/fontconfig		r
@@ -94,10 +92,6 @@
 ~/.config/Beyond-All-Reason		rwc
 ~/.local/state/Beyond All Reason	rwc
 
-# XXX notyet
-~/.cache/chromium	rwc
-~/.config/chromium	rwc
-
 # needed for path.resolve("/usr/local/electron/...")
 # looks like it implement its own recursive resolver, walking through each dir
 # XXX patch path.resolve() to use realpath(3), ok with pledge() ?
@@ -106,4 +100,4 @@
 # XXX debug
 # ktrace -Bdi 'command'
 # kdump | awk '/NAMI/{$1="";$2="";$3="";print}' | sort | uniq > ktrace.NAMI 
-#/ rwcx
+#/		rwcx
