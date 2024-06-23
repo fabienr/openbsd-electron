@@ -25,9 +25,17 @@
 # GN_BOOTSTRAP_FLAGS+=--debug
 
 # XXX annoying
-# [13923:0221/203036.963735:ERROR:bus.cc(407)] Failed to connect to the bus:
+#[ERROR:bus.cc(407)] Failed to connect to the bus:
 # Could not parse server address: Unknown address type (examples of valid types
 # are "tcp" and on UNIX "unix")
+
+# XXX another one
+#[ERROR:simple_backend_impl.cc(79)] Failed to create directory:
+# /home/fabien/.config/Code - OSS/Shared Dictionary/cache
+#[ERROR:simple_backend_impl.cc(751)] Simple Cache Backend:
+# wrong file structure on disk: 1 path:
+# /home/fabien/.config/.../Shared Dictionary/cache
+#[ERROR:disk_cache.cc(208)] Unable to create cache
 
 # XXX portcheck
 # 8 line(s) longer than 80 columns in Makefile
@@ -57,8 +65,7 @@ DPB_PROPERTIES=		parallel parallel2
 DPB_PROPERTIES+=	lonesome
 .endif
 
-# XXX use www/electron only to share version ? Makefile.version instead ?
-# see electron.port.mk for ELECTRON_V
+.include "Makefile.version"
 COMMENT=		cross-platform desktop applications
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
 REVISION=		2
@@ -132,8 +139,6 @@ PATCH_CASES+=	${PATCHDIR}/node/patch-*) \
 		    -d ${WRKSRC}/third_party/electron_node/ \
 		    <$$patchfile ;;
 PATCH_LIST=	patch-* chromium.local/patch-*
-# XXX OpenBSD clang version 16.0.6 need extra patches ? (see freebsd port)
-#PATCH_LIST+=	extra-*
 .else
 # pre-patch only, see targets chromium-patches & node-patches
 ALL_PATCHFILES=
@@ -142,14 +147,10 @@ PATCH_LIST=
 
 COMPILER=	ports-clang
 
-# XXX use www/electron only to share version ? Makefile.version instead ?
-MODULES=	devel/yarn lang/clang lang/python www/electron
+MODULES=	devel/yarn lang/clang lang/python
 
 MODCLANG_VERSION=	17
 MODPY_RUNDEP=		No
-MODELECTRON_BUILDDEP=	No
-MODELECTRON_RUNDEP=	No
-MODELECTRON_TESTDEP=	No
 MODYARN_TARGETS=	${WRKSRC}/electron ${WRKSRC}/electron/spec
 
 # XXX LIB_DEPENDS devel/libnotify, BUILD|LIB ?
