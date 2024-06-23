@@ -1,0 +1,142 @@
+with unveil(), walk down the path is not allowed.
+always call realpathSync.native() instead.
+
+Index: third_party/electron_node/lib/fs.js
+--- third_party/electron_node/lib/fs.js.orig
++++ third_party/electron_node/lib/fs.js
+@@ -2551,134 +2551,7 @@ if (isWindows) {
+  * @returns {string | Buffer}
+  */
+ function realpathSync(p, options) {
+-  options = getOptions(options);
+-  p = toPathIfFileURL(p);
+-  if (typeof p !== 'string') {
+-    p += '';
+-  }
+-  validatePath(p);
+-  p = pathModule.resolve(p);
+-
+-  const cache = options[realpathCacheKey];
+-  const maybeCachedResult = cache?.get(p);
+-  if (maybeCachedResult) {
+-    return maybeCachedResult;
+-  }
+-
+-  const seenLinks = new SafeMap();
+-  const knownHard = new SafeSet();
+-  const original = p;
+-
+-  // Current character position in p
+-  let pos;
+-  // The partial path so far, including a trailing slash if any
+-  let current;
+-  // The partial path without a trailing slash (except when pointing at a root)
+-  let base;
+-  // The partial path scanned in the previous round, with slash
+-  let previous;
+-
+-  // Skip over roots
+-  current = base = splitRoot(p);
+-  pos = current.length;
+-
+-  // On windows, check that the root exists. On unix there is no need.
+-  if (isWindows) {
+-    const ctx = { path: base };
+-    binding.lstat(pathModule.toNamespacedPath(base), false, undefined, ctx);
+-    handleErrorFromBinding(ctx);
+-    knownHard.add(base);
+-  }
+-
+-  // Walk down the path, swapping out linked path parts for their real
+-  // values
+-  // NB: p.length changes.
+-  while (pos < p.length) {
+-    // find the next part
+-    const result = nextPart(p, pos);
+-    previous = current;
+-    if (result === -1) {
+-      const last = StringPrototypeSlice(p, pos);
+-      current += last;
+-      base = previous + last;
+-      pos = p.length;
+-    } else {
+-      current += StringPrototypeSlice(p, pos, result + 1);
+-      base = previous + StringPrototypeSlice(p, pos, result);
+-      pos = result + 1;
+-    }
+-
+-    // Continue if not a symlink, break if a pipe/socket
+-    if (knownHard.has(base) || cache?.get(base) === base) {
+-      if (isFileType(statValues, S_IFIFO) ||
+-          isFileType(statValues, S_IFSOCK)) {
+-        break;
+-      }
+-      continue;
+-    }
+-
+-    let resolvedLink;
+-    const maybeCachedResolved = cache?.get(base);
+-    if (maybeCachedResolved) {
+-      resolvedLink = maybeCachedResolved;
+-    } else {
+-      // Use stats array directly to avoid creating an fs.Stats instance just
+-      // for our internal use.
+-
+-      const baseLong = pathModule.toNamespacedPath(base);
+-      const ctx = { path: base };
+-      const stats = binding.lstat(baseLong, true, undefined, ctx);
+-      handleErrorFromBinding(ctx);
+-
+-      if (!isFileType(stats, S_IFLNK)) {
+-        knownHard.add(base);
+-        cache?.set(base, base);
+-        continue;
+-      }
+-
+-      // Read the link if it wasn't read before
+-      // dev/ino always return 0 on windows, so skip the check.
+-      let linkTarget = null;
+-      let id;
+-      if (!isWindows) {
+-        const dev = BigIntPrototypeToString(stats[0], 32);
+-        const ino = BigIntPrototypeToString(stats[7], 32);
+-        id = `${dev}:${ino}`;
+-        if (seenLinks.has(id)) {
+-          linkTarget = seenLinks.get(id);
+-        }
+-      }
+-      if (linkTarget === null) {
+-        const ctx = { path: base };
+-        binding.stat(baseLong, false, undefined, ctx);
+-        handleErrorFromBinding(ctx);
+-        linkTarget = binding.readlink(baseLong, undefined, undefined, ctx);
+-        handleErrorFromBinding(ctx);
+-      }
+-      resolvedLink = pathModule.resolve(previous, linkTarget);
+-
+-      cache?.set(base, resolvedLink);
+-      if (!isWindows) seenLinks.set(id, linkTarget);
+-    }
+-
+-    // Resolve the link, then start over
+-    p = pathModule.resolve(resolvedLink, StringPrototypeSlice(p, pos));
+-
+-    // Skip over roots
+-    current = base = splitRoot(p);
+-    pos = current.length;
+-
+-    // On windows, check that the root exists. On unix there is no need.
+-    if (isWindows && !knownHard.has(base)) {
+-      const ctx = { path: base };
+-      binding.lstat(pathModule.toNamespacedPath(base), false, undefined, ctx);
+-      handleErrorFromBinding(ctx);
+-      knownHard.add(base);
+-    }
+-  }
+-
+-  cache?.set(original, p);
+-  return encodeRealpathResult(p, options);
++  return realpathSync.native(p, options);
+ }
+ 
+ /**

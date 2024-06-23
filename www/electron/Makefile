@@ -1,9 +1,6 @@
-# XXX ??? error: defaulted definition of equality comparison operator cannot be
-# declared constexpr because it invokes a non-constexpr comparison function
-# base/types/strong_alias.h
-
 # XXX no member named 'ToV8' in 'gin::Converter<unsigned long>' ?
 # electron/shell/browser/api/electron_api_content_tracing.cc
+# cast unsigned long to int isn't a good choice
 
 # XXX FilePath(NULL) segfault, strcmp 'electron' (was 'chrome')
 # XXX handle error or crash early (which leed to this) ?
@@ -33,17 +30,15 @@
 # are "tcp" and on UNIX "unix")
 
 # XXX portcheck
-#14 line(s) longer than 80 chars in Makefile
-#extra directory: patches/chromium
-#C++ libraries in WANTLIB with default COMPILER (most ports need
-#'COMPILER=base-clang ports-gcc' or 'COMPILER=base-clang ports-gcc base-gcc')
-
-# XXX multi-versionning or one main version which all ports need to support ?
-# need more app to learn from ecosystem
+# 8 line(s) longer than 80 columns in Makefile
+# extra directory: patches/chromium
+# extra directory: patches/chromium.local
+# extra directory: patches/node
+# www/electron
 
 # XXX looks like we don't care about distfiles release to install apps
-# wrong assumption : for ex, cypress needs it or a big hammer patch perhaps
-# install all app into electron/resources/ (avoid duplicate electron bins)
+# no duplicate electron, installer have to overcome missing distfiles somehow
+# wrong assumption : for ex, cypress needs it or a big hammer patch perhaps.
 
 # XXX start apps with --app= instead of a bundle electron copy
 # runing command line without args bring a different config, diff ?
@@ -63,10 +58,10 @@ DPB_PROPERTIES+=	lonesome
 .endif
 
 # XXX use www/electron only to share version ? Makefile.version instead ?
-# see electron.port.mk for V
+# see electron.port.mk for ELECTRON_V
 COMMENT=		cross-platform desktop applications
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
-REVISION=		1
+REVISION=		2
 
 CATEGORIES=		www
 
