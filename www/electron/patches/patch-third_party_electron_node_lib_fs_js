@@ -1,5 +1,5 @@
 with unveil(), walk down the path is not allowed.
-always call realpathSync.native() instead.
+always call realpath*.native() instead.
 
 Index: third_party/electron_node/lib/fs.js
 --- third_party/electron_node/lib/fs.js.orig
@@ -137,6 +137,138 @@ Index: third_party/electron_node/lib/fs.js
 -  cache?.set(original, p);
 -  return encodeRealpathResult(p, options);
 +  return realpathSync.native(p, options);
+ }
+ 
+ /**
+@@ -2708,130 +2581,7 @@ realpathSync.native = (path, options) => {
+  * @returns {void}
+  */
+ function realpath(p, options, callback) {
+-  callback = typeof options === 'function' ? options : maybeCallback(callback);
+-  options = getOptions(options);
+-  p = toPathIfFileURL(p);
+-
+-  if (typeof p !== 'string') {
+-    p += '';
+-  }
+-  validatePath(p);
+-  p = pathModule.resolve(p);
+-
+-  const seenLinks = new SafeMap();
+-  const knownHard = new SafeSet();
+-
+-  // Current character position in p
+-  let pos;
+-  // The partial path so far, including a trailing slash if any
+-  let current;
+-  // The partial path without a trailing slash (except when pointing at a root)
+-  let base;
+-  // The partial path scanned in the previous round, with slash
+-  let previous;
+-
+-  current = base = splitRoot(p);
+-  pos = current.length;
+-
+-  // On windows, check that the root exists. On unix there is no need.
+-  if (isWindows && !knownHard.has(base)) {
+-    fs.lstat(base, (err, stats) => {
+-      if (err) return callback(err);
+-      knownHard.add(base);
+-      LOOP();
+-    });
+-  } else {
+-    process.nextTick(LOOP);
+-  }
+-
+-  // Walk down the path, swapping out linked path parts for their real
+-  // values
+-  function LOOP() {
+-    // Stop if scanned past end of path
+-    if (pos >= p.length) {
+-      return callback(null, encodeRealpathResult(p, options));
+-    }
+-
+-    // find the next part
+-    const result = nextPart(p, pos);
+-    previous = current;
+-    if (result === -1) {
+-      const last = StringPrototypeSlice(p, pos);
+-      current += last;
+-      base = previous + last;
+-      pos = p.length;
+-    } else {
+-      current += StringPrototypeSlice(p, pos, result + 1);
+-      base = previous + StringPrototypeSlice(p, pos, result);
+-      pos = result + 1;
+-    }
+-
+-    // Continue if not a symlink, break if a pipe/socket
+-    if (knownHard.has(base)) {
+-      if (isFileType(statValues, S_IFIFO) ||
+-          isFileType(statValues, S_IFSOCK)) {
+-        return callback(null, encodeRealpathResult(p, options));
+-      }
+-      return process.nextTick(LOOP);
+-    }
+-
+-    return fs.lstat(base, { bigint: true }, gotStat);
+-  }
+-
+-  function gotStat(err, stats) {
+-    if (err) return callback(err);
+-
+-    // If not a symlink, skip to the next path part
+-    if (!stats.isSymbolicLink()) {
+-      knownHard.add(base);
+-      return process.nextTick(LOOP);
+-    }
+-
+-    // Stat & read the link if not read before.
+-    // Call `gotTarget()` as soon as the link target is known.
+-    // `dev`/`ino` always return 0 on windows, so skip the check.
+-    let id;
+-    if (!isWindows) {
+-      const dev = BigIntPrototypeToString(stats.dev, 32);
+-      const ino = BigIntPrototypeToString(stats.ino, 32);
+-      id = `${dev}:${ino}`;
+-      if (seenLinks.has(id)) {
+-        return gotTarget(null, seenLinks.get(id));
+-      }
+-    }
+-    fs.stat(base, (err) => {
+-      if (err) return callback(err);
+-
+-      fs.readlink(base, (err, target) => {
+-        if (!isWindows) seenLinks.set(id, target);
+-        gotTarget(err, target);
+-      });
+-    });
+-  }
+-
+-  function gotTarget(err, target) {
+-    if (err) return callback(err);
+-
+-    gotResolvedLink(pathModule.resolve(previous, target));
+-  }
+-
+-  function gotResolvedLink(resolvedLink) {
+-    // Resolve the link, then start over
+-    p = pathModule.resolve(resolvedLink, StringPrototypeSlice(p, pos));
+-    current = base = splitRoot(p);
+-    pos = current.length;
+-
+-    // On windows, check that the root exists. On unix there is no need.
+-    if (isWindows && !knownHard.has(base)) {
+-      fs.lstat(base, (err) => {
+-        if (err) return callback(err);
+-        knownHard.add(base);
+-        LOOP();
+-      });
+-    } else {
+-      process.nextTick(LOOP);
+-    }
+-  }
++  return realpath.native(p, options, callback);
  }
  
  /**
