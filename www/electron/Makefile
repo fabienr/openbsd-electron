@@ -110,11 +110,11 @@ CHROMIUM_TEST_FONTS_HASH=	336e775eec536b2d785cc80eff6ac39051931286
 
 # XXX fallback to freebsd distfiles
 #DISTFILES.chromium=	chromium-${CHROMIUM_V}${EXTRACT_SUFX}
-#SITES.chromium=	https://commondatastorage.googleapis.com/chromium-browser-official/
+#SITES.chromium=https://commondatastorage.googleapis.com/chromium-browser-official/
 DISTFILES.chromium=	chromium-${CHROMIUM_V}.tar.xz
-SITES.chromium=		https://github.com/tagattie/FreeBSD-Electron/releases/download/v29.2.0/
+SITES.chromium=https://github.com/tagattie/FreeBSD-Electron/releases/download/v29.2.0/
 DISTFILES.nodemodule=	${CHROMIUM_NODE_MODULES_HASH}
-SITES.nodemodule=	https://commondatastorage.googleapis.com/chromium-nodejs/
+SITES.nodemodule=https://commondatastorage.googleapis.com/chromium-nodejs/
 DISTFILES.fonts=	${CHROMIUM_TEST_FONTS_HASH}
 SITES.fonts=		https://commondatastorage.googleapis.com/chromium-fonts/
 
@@ -260,6 +260,7 @@ GN_ARGS+=	use_system_lcms2=true \
 		use_system_libtiff=true \
 		use_system_zlib=true
 
+_EXTRA_CPPFLAGS=-idirafter ${LOCALBASE}/include -idirafter ${X11BASE}/include
 GN_ARGS+=	clang_use_chrome_plugins=false \
 		disable_fieldtrial_testing_config=true \
 		enable_backup_ref_ptr_support=false \
@@ -267,7 +268,7 @@ GN_ARGS+=	clang_use_chrome_plugins=false \
 		enable_log_error_not_reached=true \
 		enable_remoting=false \
 		enable_rust=false \
-		extra_cppflags=\"-idirafter ${LOCALBASE}/include -idirafter ${X11BASE}/include\" \
+		extra_cppflags=\"${_EXTRA_CPPFLAGS}\" \
 		fatal_linker_warnings=false \
 		icu_use_data_file=false \
 		treat_warnings_as_errors=false \
@@ -295,27 +296,28 @@ GN_ARGS+=	clang_use_chrome_plugins=false \
 # using x86/x64.
 GN_ARGS+=	use_vaapi=false
 
+_EXTRA_LDFLAGS=-L${LOCALBASE}/lib -L${X11BASE}/lib
 .if ${MACHINE_ARCH} == "aarch64"
-GN_ARGS+=	extra_ldflags=\"-L${LOCALBASE}/lib -L${X11BASE}/lib\"
+GN_ARGS+=	extra_ldflags=\"${_EXTRA_LDFLAGS}\"
 PKG_ARGS+=	-Dswiftshader=0
 FFMPEG_TARGET=	arm64
 .elif ${MACHINE_ARCH} == "amd64"
 BUILD_DEPENDS+=	devel/nasm
-GN_ARGS+=	extra_ldflags=\"-L${LOCALBASE}/lib -L${X11BASE}/lib\"
+GN_ARGS+=	extra_ldflags=\"${_EXTRA_LDFLAGS}\"
 PKG_ARGS+=	-Dswiftshader=1
 FFMPEG_TARGET=	x64
 .elif ${MACHINE_ARCH} == "i386"
 BUILD_DEPENDS+=	devel/nasm
-GN_ARGS+=	extra_ldflags=\"-L${LOCALBASE}/lib -L${X11BASE}/lib -Wl,--no-keep-memory\"
+GN_ARGS+=	extra_ldflags=\"${_EXTRA_LDFLAGS} -Wl,--no-keep-memory\"
 PKG_ARGS+=	-Dswiftshader=1
 FFMPEG_TARGET=	ia32
 .else
 PKG_ARGS+=	-Dswiftshader=0
 .endif
 
-FFMPEG_BRAND=	Chrome
-FFMPEG_BDIR=	${WRKSRC}/build.${FFMPEG_TARGET}.openbsd/${FFMPEG_BRAND}
-FFMPEG_CDIR=	${WRKSRC}/third_party/ffmpeg/chromium/config/${FFMPEG_BRAND}/openbsd/${FFMPEG_TARGET}
+FFMPEG_BRAND=Chrome
+FFMPEG_BDIR=${WRKSRC}/build.${FFMPEG_TARGET}.openbsd/${FFMPEG_BRAND}
+FFMPEG_CDIR=${WRKSRC}/third_party/ffmpeg/chromium/config/${FFMPEG_BRAND}/openbsd/${FFMPEG_TARGET}
 
 GN_ARGS+=	ffmpeg_branding=\"${FFMPEG_BRAND}\" \
 		proprietary_codecs=true
@@ -386,18 +388,21 @@ pre-configure:
 		--branding=${FFMPEG_BRAND}
 	cd ${FFMPEG_BDIR} && ${GMAKE} ffversion.h
 	${INSTALL_DATA_DIR} ${FFMPEG_CDIR}
-.for _e in config.h config.asm config_components.h libavcodec libavformat libavutil
+.for _e in config.h config.asm config_components.h \
+    libavcodec libavformat libavutil
 	-cp -pR ${FFMPEG_BDIR}/${_e} ${FFMPEG_CDIR}
 .endfor
 	@mkdir -p ${WRKSRC}/third_party/node/openbsd/node-openbsd/bin
 	@ln -sf ${LOCALBASE}/bin/node \
 		${WRKSRC}/third_party/node/openbsd/node-openbsd/bin/node
-	${SUBST_CMD} \
-		${WRKSRC}/build/gn_run_binary.py \
-		${WRKSRC}/v8/tools/run.py \
-		${WRKSRC}/tools/protoc_wrapper/protoc_wrapper.py \
-		${WRKSRC}/third_party/blink/renderer/build/scripts/run_with_pythonpath.py \
-		${WRKSRC}/third_party/electron_node/src/env.cc
+.for _f in \
+    build/gn_run_binary.py \
+    v8/tools/run.py \
+    tools/protoc_wrapper/protoc_wrapper.py \
+    third_party/blink/renderer/build/scripts/run_with_pythonpath.py \
+    third_party/electron_node/src/env.cc
+	${SUBST_CMD} ${WRKSRC}/${_f}
+.endfor
 
 # Configuration consists of three steps:
 # 1. replace the specified bundled libraries with hooks to use the system libs

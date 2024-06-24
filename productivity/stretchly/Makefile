@@ -26,6 +26,8 @@ MODELECTRON_BUILDER=	Yes
 MODELECTRON_SRC=	${WRKSRC}
 MODELECTRON_TARGET=	stretchly
 
+ICONS_TARGET=		${PREFIX}/share/icons/hicolor
+
 pre-build:
 	# generate icon files
 	cd ${WRKSRC} && env -i ${MAKE_ENV} app-builder icon \
@@ -47,9 +49,9 @@ post-install:
 	${INSTALL_DATA} ${WRKSRC}/net.hovancik.Stretchly.metainfo.xml \
 		${PREFIX}/share/metainfo/${MODELECTRON_TARGET}.metainfo.xml
 .for size in 16 32 48 64 128 256 512 1024
-	${INSTALL_DATA_DIR} ${PREFIX}/share/icons/hicolor/${size}x${size}/apps
+	${INSTALL_DATA_DIR} ${ICONS_TARGET}/${size}x${size}/apps
 	${INSTALL_DATA} ${WRKSRC}/icons/icon_${size}.png \
-		${PREFIX}/share/icons/hicolor/${size}x${size}/apps/${MODELECTRON_TARGET}.png
+		${ICONS_TARGET}/${size}x${size}/apps/${MODELECTRON_TARGET}.png
 .endfor
 
 .include "modules.inc"

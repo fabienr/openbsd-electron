@@ -178,24 +178,26 @@ GN_ARGS+=	symbol_level=1 \
 		is_component_build=false
 GN_ARGS+=	use_thin_lto=false \
 		thin_lto_enable_optimizations=true
+_EXTRA_LDFLAGS=-L${LOCALBASE}/lib -L${X11BASE}/lib
 .if ${MACHINE_ARCH} == "aarch64"
-GN_ARGS+=	extra_ldflags=\"-L${LOCALBASE}/lib -L${X11BASE}/lib\"
+GN_ARGS+=	extra_ldflags=\"${_EXTRA_LDFLAGS}\"
 PKG_ARGS+=	-Dswiftshader=0
 .elif ${MACHINE_ARCH} == "amd64"
 BUILD_DEPENDS+=	devel/nasm
-GN_ARGS+=	extra_ldflags=\"-L${LOCALBASE}/lib -L${X11BASE}/lib\"
+GN_ARGS+=	extra_ldflags=\"${_EXTRA_LDFLAGS}\"
 PKG_ARGS+=	-Dswiftshader=1
 .elif ${MACHINE_ARCH} == "i386"
 BUILD_DEPENDS+=	devel/nasm
-GN_ARGS+=	extra_ldflags=\"-L${LOCALBASE}/lib -L${X11BASE}/lib -Wl,--no-keep-memory\"
+GN_ARGS+=	extra_ldflags=\"${_EXTRA_LDFLAGS} -Wl,--no-keep-memory\"
 PKG_ARGS+=	-Dswiftshader=1
 .else
 PKG_ARGS+=	-Dswiftshader=0
 .endif
 # electron/Makefile common options
+_EXTRA_CPPFLAGS=-idirafter ${LOCALBASE}/include -idirafter ${X11BASE}/include
 GN_ARGS+=	clang_use_chrome_plugins=false \
 		enable_rust=false \
-		extra_cppflags=\"-idirafter ${LOCALBASE}/include -idirafter ${X11BASE}/include\" \
+		extra_cppflags=\"${_EXTRA_CPPFLAGS}\" \
 		fatal_linker_warnings=false \
 		treat_warnings_as_errors=false \
 		use_custom_libcxx=false \
@@ -490,7 +492,7 @@ modcargo-gen-crates:
 	@cat ${MODCARGO_CARGOS_TOML:toml=lock} | awk '\
 		/^name = / { n=$$3; gsub("\"", "", n); } \
 		/^version = / { v=$$3; gsub("\"", "", v); } \
-		/^source = "registry\+https:\/\/github.com\/rust-lang\/crates\.io-index"/ \
+		/^source = "registry\+.*github.com.*crates\.io-index"/ \
 			{ print "MODCARGO_CRATES +=	" n "	" v; }' | \
 		sort | uniq
 	# libsignal/Cargo.lock git+ depends

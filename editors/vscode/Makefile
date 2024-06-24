@@ -25,7 +25,7 @@ PERMIT_PACKAGE=	Yes
 VSCODE_EXTENSIONS =	js-debug-companion 1.1.2 \
 			js-debug 1.90.0 \
 			vscode-js-profile-table 1.0.9
-SITES.extensions=	https://open-vsx.org/vscode/gallery/publishers/ms-vscode/vsextensions/
+SITES.extensions=https://open-vsx.org/vscode/gallery/publishers/ms-vscode/vsextensions/
 .for _ext _v in ${VSCODE_EXTENSIONS}
 DISTFILES.extensions+=	ms-vscode.${_ext}-${_v}.vsix{${_ext}/${_v}/vspackage}
 .endfor
@@ -119,7 +119,8 @@ do-configure:
 pre-build:
 	# rebuild native node modules for electron
 # XXX do not rebuild if .build_done (for testing only ?)
-	for subdir in `find ${WRKSRC}/node_modules -type f -name binding.gyp -exec dirname {} ';'`; do \
+	for subdir in `find ${WRKSRC}/node_modules -type f \
+	    -name binding.gyp -exec dirname {} ';'`; do \
 		name=`basename $${subdir}`; \
 		[ -f $${subdir}/.build_done ] && \
 			echo "skip $${subdir}" && \
