@@ -1,4 +1,4 @@
 #!/bin/sh
 
-NODE_ENV=production exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} --no-sandbox \
+NODE_ENV=production exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
 	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/signal-desktop.asar" $@

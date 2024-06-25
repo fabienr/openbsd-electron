@@ -3,6 +3,7 @@ COMMENT=	Signal Desktop links with Signal
 V=		7.11.0
 DISTNAME=	Signal-Desktop-${V}
 PKGNAME=	${DISTNAME:L}
+REVISION=	0
 
 DIST_TUPLE=	github signalapp Signal-Desktop v${V} .
 
