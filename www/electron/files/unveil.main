@@ -89,8 +89,12 @@
 
 # byar_chobby_launcher
 /usr/local/bin/pr-downloader		rx
+/usr/local/bin/spring			rx
 ~/.config/Beyond-All-Reason		rwc
 ~/.local/state/Beyond All Reason	rwc
+
+# signal-desktop
+~/.config/Signal			rwc
 
 # XXX debug
 # ktrace -Bdi 'command'
