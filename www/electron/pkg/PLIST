@@ -7,7 +7,7 @@ electron/${ELECTRON_V}/chrome_100_percent.pak
 electron/${ELECTRON_V}/chrome_200_percent.pak
 @bin electron/${ELECTRON_V}/chromedriver
 @bin electron/${ELECTRON_V}/electron
-${ELECTRON_WRAPPER}
+electron/${ELECTRON_V}/electron.sh
 electron/${ELECTRON_V}/electron_nosandbox.sh
 electron/${ELECTRON_V}/gen/
 electron/${ELECTRON_V}/gen/electron/
@@ -265,9 +265,9 @@ electron/${ELECTRON_V}/node_headers/include/node/zlib.h
 electron/${ELECTRON_V}/protoc
 electron/${ELECTRON_V}/releases/
 electron/${ELECTRON_V}/releases/SHASUMS256.txt
-electron/${ELECTRON_V}/releases/chromedriver-v${ELECTRON_V}-openbsd-x64.zip
-electron/${ELECTRON_V}/releases/electron-v${ELECTRON_V}-openbsd-x64.zip
-electron/${ELECTRON_V}/releases/mksnapshot-v${ELECTRON_V}-openbsd-x64.zip
+electron/${ELECTRON_V}/releases/chromedriver-v${ELECTRON_V}-openbsd-${ELECTRON_ARCH}.zip
+electron/${ELECTRON_V}/releases/electron-v${ELECTRON_V}-openbsd-${ELECTRON_ARCH}.zip
+electron/${ELECTRON_V}/releases/mksnapshot-v${ELECTRON_V}-openbsd-${ELECTRON_ARCH}.zip
 electron/${ELECTRON_V}/resources/
 electron/${ELECTRON_V}/resources.pak
 electron/${ELECTRON_V}/resources/default_app.asar

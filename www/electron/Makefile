@@ -65,8 +65,13 @@ DPB_PROPERTIES=		parallel parallel2
 DPB_PROPERTIES+=	lonesome
 .endif
 
-.include "Makefile.version"
 COMMENT=		cross-platform desktop applications
+
+# sync with electron.port.mk
+ELECTRON_V=		29.4.1
+ELECTRON_ARCH=		${ARCH:S/aarch64/arm64/:S/amd64/x64/:S/i386/ia32/}
+ELECTRON_PATCH=		${WRKSRC}/electron/patches/config.json
+
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
 REVISION=		2
 
@@ -210,7 +215,8 @@ DEBUG_PACKAGES=	${BUILD_PACKAGES}
 
 .include <bsd.own.mk>
 
-SUBST_VARS+=	WRKSRC WRKDIR
+# XXX ELECTRON_ARCH only for distfiles release
+SUBST_VARS+=	WRKSRC WRKDIR ELECTRON_V ELECTRON_ARCH
 
 # Collect all DISTS under 'src'
 WRKDIST=		${WRKDIR}/src
@@ -344,7 +350,6 @@ BUILDTYPE=		Release
 BUILDDIR=		${WRKSRC}/out/${BUILDTYPE}
 GN_FILE=		release.gn
 GN_BOOTSTRAP_FLAGS=	--skip-generate-buildfiles
-ELECTRON_PATCH=		${WRKSRC}/electron/patches/config.json
 
 post-extract:
 	# setup distfiles into src

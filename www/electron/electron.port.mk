@@ -1,4 +1,5 @@
-.include "Makefile.version"
+# sync with Makefile
+ELECTRON_V=		29.4.1
 ELECTRON_DIST_APPS=	electron/resources
 ELECTRON_WRAPPER=	electron/${ELECTRON_V}/electron.sh
 
