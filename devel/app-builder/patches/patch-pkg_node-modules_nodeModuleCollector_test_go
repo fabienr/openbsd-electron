@@ -1,9 +1,9 @@
 Index: pkg/node-modules/nodeModuleCollector_test.go
 --- pkg/node-modules/nodeModuleCollector_test.go.orig
 +++ pkg/node-modules/nodeModuleCollector_test.go
-@@ -57,3 +57,28 @@ func TestReadDependencyTreeByPnpm(t *testing.T) {
- 		"js-tokens", "react", "loose-envify",
- 	}))
+@@ -69,3 +69,32 @@ func TestReadDependencyTreeByPnpm(t *testing.T) {
+ 	reactModule := collector.DependencyMap["react"]
+ 	g.Expect(reactModule.dir).To(Equal(filepath.Join(dir, "node_modules/.pnpm/react@18.2.0/node_modules/react")))
  }
 +
 +func TestReadDependencyTreeByYarn(t *testing.T) {
@@ -27,7 +27,10 @@ Index: pkg/node-modules/nodeModuleCollector_test.go
 +		return lo.Keys(*it)
 +	})
 +	g.Expect(r).To(ConsistOf([]string{
-+		"js-tokens", "react", "loose-envify",
++		"js-tokens", "react", "remote", "loose-envify",
 +	}))
++
++	remoteModule := collector.DependencyMap["@electron/remote"]
++	g.Expect(remoteModule.Name).To(Equal("@electron/remote"))
++	g.Expect(remoteModule.alias).To(Equal("remote"))
 +}
-\ No newline at end of file

@@ -1,9 +1,10 @@
 COMMENT =	generic helper tool to build app in a distributable format
 
 MODGO_MODNAME =	github.com/develar/app-builder
-MODGO_VERSION =	v0.0.0-20240501180311-d0aa23a1b5f2
+MODGO_VERSION =	v0.0.0-20240625173044-ea95e30dbc1a
 
 DISTNAME =	app-builder-v5.0.0
+REVISION = 0
 
 CATEGORIES =	devel
 
@@ -25,17 +26,19 @@ pre-test:
 	# setup npm, pnpm, yarn node_modules
 	cd ${WRKSRC}/pkg/node-modules/npm-demo && \
 		env -i ${MAKE_ENV} HOME=${WRKDIR} \
-		npm ci
+		npm ci --ignore-scripts
 	cd ${WRKSRC}/pkg/node-modules/pnpm-demo && \
 		env -i ${MAKE_ENV} HOME=${WRKDIR} \
-		pnpm install --frozen-lockfile
+		pnpm install --ignore-scripts --frozen-lockfile
 	cd ${WRKSRC}/pkg/node-modules/yarn-demo && \
 		env -i ${MAKE_ENV} HOME=${WRKDIR} \
-		yarn install --frozen-lockfile
+		yarn install --ignore-scripts --frozen-lockfile
 
 do-test:
-	cd ${WRKSRC} && ${MODGO_CMD} test ./pkg/...
-	chmod -R u+w ${MODGO_WORKSPACE}/pkg/mod
+	cd ${WRKSRC} && \
+		env -i ${MAKE_ENV} HOME=${WRKDIR} DEBUG=* \
+		${MODGO_CMD} test ./pkg/... ; \
+		chmod -R u+w ${MODGO_WORKSPACE}/pkg/mod
 
 .include "modules.inc"
 
