@@ -1,0 +1,16 @@
+Avoid confusion with Chromium in key wallet.
+
+Index: components/os_crypt/sync/key_storage_kwallet_unittest.cc
+--- components/os_crypt/sync/key_storage_kwallet_unittest.cc.orig
++++ components/os_crypt/sync/key_storage_kwallet_unittest.cc
+@@ -36,8 +36,8 @@ constexpr KWalletDBus::Error CANNOT_CONTACT =
+ const char kExpectedFolderName[] = "Chrome Keys";
+ const char kExpectedEntryName[] = "Chrome Safe Storage";
+ #else
+-const char kExpectedFolderName[] = "Chromium Keys";
+-const char kExpectedEntryName[] = "Chromium Safe Storage";
++const char kExpectedFolderName[] = "Electron Keys";
++const char kExpectedEntryName[] = "Electron Safe Storage";
+ #endif
+ 
+ const char kAppName[] = "test-app";
