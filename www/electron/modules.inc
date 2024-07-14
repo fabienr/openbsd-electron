@@ -935,7 +935,7 @@ yarn @electron fiddle-core 1.0.4 . \
 yarn @electron get 2.0.2 . \
 yarn @electron github-app-auth 2.0.0 . \
 yarn @electron lint-roller 1.12.1 . \
-yarn @electron typescript-definitions 8.15.2 . \
+yarn @electron typescript-definitions 8.15.6 . \
 yarn @eslint eslintrc 2.0.3 . \
 yarn @eslint js 8.40.0 . \
 yarn @eslint js 8.41.0 . \

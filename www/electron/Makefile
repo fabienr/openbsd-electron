@@ -68,16 +68,16 @@ DPB_PROPERTIES+=	lonesome
 COMMENT=		cross-platform desktop applications
 
 # sync with electron.port.mk
-ELECTRON_V=		29.4.1
+ELECTRON_V=		29.4.4
 ELECTRON_ARCH=		${ARCH:S/aarch64/arm64/:S/amd64/x64/:S/i386/ia32/}
 ELECTRON_PATCH=		${WRKSRC}/electron/patches/config.json
 
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
-REVISION=		2
 
 CATEGORIES=		www
 
 HOMEPAGE=		https://www.electronjs.org/
+
 MAINTAINER=		fabien@openbsd.org
 
 # MIT
@@ -370,12 +370,21 @@ post-extract:
 		${WRKSRC}/third_party/engflow-reclient-configs
 
 pre-patch:
+	# tweek some patches to apply cleanly
+	@if cd ${PATCHDIR} 2>/dev/null; then \
+		for i in ${PATCHDIR}/pre-patches/patch-*; do \
+			${ECHO_MSG} "===>   Applying pre-patch $$i"; \
+			${PATCH} ${PATCH_DIST_ARGS} \
+				-z .orig.pre-patch \
+				-d ${WRKSRC}/ < $$i ; \
+		done; \
+	fi
 	# apply electron patches
 	@for _pair in $$(grep ':' ${ELECTRON_PATCH} | cut -f 4,8 -d '"' ); do \
 		_from=${WRKDIR}/$$(echo $${_pair} | cut -f 1 -d '"') ; \
 		_to=${WRKDIR}/$$(echo $${_pair} | cut -f 2 -d '"') ; \
 		for _p in $$(cat $${_from}/.patches); do \
-			echo "Apply $${_from}/$${_p} into $${_to}"; \
+			echo "===>   Applying $${_from}/$${_p} into $${_to}"; \
 			${PATCH} -f -p1 -z .orig.electron \
 				-d $${_to} -i $${_from}/$${_p}; \
 			grep -R '^rename' $${_from}/$${_p} | \
@@ -639,8 +648,8 @@ gn_args-check:
 	done
 
 gn_args-diff:
-	#make configure
-	#${_PBUILD} make _gn_args-list
+	make configure
+	${_PBUILD} make _gn_args-list
 	# configure www/chromium in order to compare
 	cd ${PORTSDIR}/www/chromium && make configure ; cd -
 	${_PBUILD} make _gn_args-chromium-list

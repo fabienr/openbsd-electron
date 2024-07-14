@@ -5,7 +5,7 @@ SHA256 (ReactiveCocoa-ReactiveObjC-74ab5baccc6f7202c8ac69a8d1e152c29dc1ea76.tar.
 SHA256 (Squirrel-Squirrel.Mac-0e5d146ba13101a1302d59ea6e6e0b3cace4ae38.tar.gz) = 9Ou0Co2F27fvAqoFcbL44iGCxtc7aZJISlPJAEd3nQE=
 SHA256 (chromium-122.0.6261.156.tar.xz) = wp4NVGkgp4jWZPJBc5wbnub1I1z6uR+NTPMCb0K87q0=
 SHA256 (e0b8a95aed06c02287872a2d15c28509b9808446) = bJZLg4zItz5gFNb1euEyRV47B4dEmhDUzxKxQV8qvaI=
-SHA256 (electron-electron-v29.4.1.tar.gz) = jG9qOPM9nEAPUWj0abC6uOb6c0ONgQ5r5uzESA4KEh4=
+SHA256 (electron-electron-v29.4.4.tar.gz) = abVoqo5LE7qHprHbaq0KjPXuWD/FbXG8G/ohvfdCtcA=
 SHA256 (nodejs-nan-e14bdcd1f72d62bca1d541b66da43130384ec213.tar.gz) = Au341bP++a+U2KE1XaYFZKV+fyyZy0IrzgQkAGB+0us=
 SHA256 (nodejs-node-v20.9.0.tar.gz) = l/qSg+VHLUJSeUyTCtWScOSFHMUj/lRp839lo0T18uI=
 SHA256 (yarn_modules/.-abstract-socket-2.1.1.tgz) = 85GiqRtrxqxv4PfHFlpmib0nBvk+SMXtzmQQQYleLME=
@@ -943,7 +943,7 @@ SHA256 (yarn_modules/@electron-fiddle-core-1.0.4.tgz) = h0tErpguFGbbf1ei/UGZXzXy
 SHA256 (yarn_modules/@electron-get-2.0.2.tgz) = uXaI0umOIkcRqd/o1EMWJ/g+4RIy0AL7bXqcsZ3LS50=
 SHA256 (yarn_modules/@electron-github-app-auth-2.0.0.tgz) = Z51aXlpSoYdWHKVWtm3cUwJMFm8a07VNfzm41BzlKy4=
 SHA256 (yarn_modules/@electron-lint-roller-1.12.1.tgz) = KGfVE0U13NtSbEO9BuwarHZazDLwym731Diuheh8Ywg=
-SHA256 (yarn_modules/@electron-typescript-definitions-8.15.2.tgz) = jKzZSVlWUdPijkGvugOsjkQjGKOMUpIEpMbSu5ZbLQ8=
+SHA256 (yarn_modules/@electron-typescript-definitions-8.15.6.tgz) = xBBK2IKYMuYtdlg/nEeo6yhbj8kPB0UnXkcDWaUsWNE=
 SHA256 (yarn_modules/@eslint-community-eslint-utils-4.4.0.tgz) = VbepfaMMbP5ucrtuGcMPsZtWoYraUrhr3dk4DVLrejw=
 SHA256 (yarn_modules/@eslint-community-regexpp-4.5.1.tgz) = LfjmWKXIRiWe4FHc36MlE8EIWqBu/4EoBJQRNaeGMQw=
 SHA256 (yarn_modules/@eslint-eslintrc-2.0.3.tgz) = TaJ7NsiQNAFqQ7nvdanE2xVkfqKmTvFe0UKRs37oOns=
@@ -1121,7 +1121,7 @@ SIZE (ReactiveCocoa-ReactiveObjC-74ab5baccc6f7202c8ac69a8d1e152c29dc1ea76.tar.gz
 SIZE (Squirrel-Squirrel.Mac-0e5d146ba13101a1302d59ea6e6e0b3cace4ae38.tar.gz) = 2112918
 SIZE (chromium-122.0.6261.156.tar.xz) = 1660787092
 SIZE (e0b8a95aed06c02287872a2d15c28509b9808446) = 9601507
-SIZE (electron-electron-v29.4.1.tar.gz) = 13390986
+SIZE (electron-electron-v29.4.4.tar.gz) = 13458215
 SIZE (nodejs-nan-e14bdcd1f72d62bca1d541b66da43130384ec213.tar.gz) = 180646
 SIZE (nodejs-node-v20.9.0.tar.gz) = 114905754
 SIZE (yarn_modules/.-abstract-socket-2.1.1.tgz) = 6351
@@ -2059,7 +2059,7 @@ SIZE (yarn_modules/@electron-fiddle-core-1.0.4.tgz) = 15177
 SIZE (yarn_modules/@electron-get-2.0.2.tgz) = 17571
 SIZE (yarn_modules/@electron-github-app-auth-2.0.0.tgz) = 4596
 SIZE (yarn_modules/@electron-lint-roller-1.12.1.tgz) = 70702
-SIZE (yarn_modules/@electron-typescript-definitions-8.15.2.tgz) = 24511
+SIZE (yarn_modules/@electron-typescript-definitions-8.15.6.tgz) = 24902
 SIZE (yarn_modules/@eslint-community-eslint-utils-4.4.0.tgz) = 63694
 SIZE (yarn_modules/@eslint-community-regexpp-4.5.1.tgz) = 54223
 SIZE (yarn_modules/@eslint-eslintrc-2.0.3.tgz) = 125616
