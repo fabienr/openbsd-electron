@@ -9,8 +9,7 @@ ONLY_FOR_ARCHS=	amd64
 
 COMMENT=	Visual Studio Code - Open Source ("Code - OSS")
 
-V=		1.90.0
-REVISION=	0
+V=		1.90.1
 DIST_TUPLE=	github microsoft vscode ${V} .
 
 CATEGORIES=	editors

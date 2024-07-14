@@ -1,4 +1,4 @@
-SHA256 (microsoft-vscode-1.90.0.tar.gz) = uwk/IiNdziCDN0s/rVbNA2Io6WwpqW4akGPIqn7wQuQ=
+SHA256 (microsoft-vscode-1.90.1.tar.gz) = dYKDiFy2dGBpJjMh+jQpneC2ci6voZA02cRGJo14DJA=
 SHA256 (ms-vscode.js-debug-1.90.0.vsix) = ExfdfRrFBkHBU0o+lX7LyUNJ9PvYl6y5FtoR7qMgimY=
 SHA256 (ms-vscode.js-debug-companion-1.1.2.vsix) = 4DS4tBvrTpfgLHD3F1vYir5mBIN0wr1in1S7MzVLwqo=
 SHA256 (ms-vscode.vscode-js-profile-table-1.0.9.vsix) = O2LuQnaiu+o/4jD5Sx1e3ZFbBZZgkOpW+ILh4KtT4aY=
@@ -1953,7 +1953,7 @@ SHA256 (yarn_modules/@xterm-xterm-5.6.0-beta.17.tgz) = ZD2Y0Kw/u3Z13U2DecfFxezJe
 SHA256 (yarn_modules/@xtuc-ieee754-1.2.0.tgz) = QssaJnsZfajEPOFw353KDpNFD2KBcFVJ4g3UWIRD7ew=
 SHA256 (yarn_modules/@xtuc-long-4.2.2.tgz) = fIvSbLC5qoz364/bq49MFoYptX7H36vMfWMSt6dI9mA=
 SHA256 (yarn_modules/ramya-rao-a-css-parser%370c480ac103bd17c7bcfb34bf5d577dc40d3660.tar.gz) = YASuBa0Xkxpipysn6/HatU/KbnLAqfC3klqLMVu+d20=
-SIZE (microsoft-vscode-1.90.0.tar.gz) = 19641868
+SIZE (microsoft-vscode-1.90.1.tar.gz) = 19640283
 SIZE (ms-vscode.js-debug-1.90.0.vsix) = 1456460
 SIZE (ms-vscode.js-debug-companion-1.1.2.vsix) = 51006
 SIZE (ms-vscode.vscode-js-profile-table-1.0.9.vsix) = 349942
