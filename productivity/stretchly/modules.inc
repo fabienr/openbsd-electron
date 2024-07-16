@@ -2,6 +2,7 @@
 # MODNPM_OMITDEV=No 
 # MODNPM_OMITOPTIONAL=Yes
 # MODNPM_INCLUDES=
+# MODNPM_EXCLUDES=
 DIST_TUPLE += \
 npm . 7zip-bin 5.2.0 . \
 npm . acorn 8.11.3 . \
@@ -677,932 +678,770 @@ npm @wdio types 7.16.13 . \
 npm @wdio utils 7.16.13 . \
 npm @xmldom xmldom 0.8.10 . \
 
-MODNPM_MV += \
-.-7zip-bin-5.2.0 node_modules/7zip-bin \
-.-acorn-8.11.3 node_modules/acorn \
-.-acorn-jsx-5.3.2 node_modules/acorn-jsx \
-.-acorn-walk-8.3.2 node_modules/acorn-walk \
-.-agent-base-6.0.2 node_modules/agent-base \
-.-ajv-6.12.6 .npm/.-ajv-6.12.6 \
-.-ajv-8.12.0 .npm/.-ajv-8.12.0 \
-.-ajv-formats-2.1.1 node_modules/ajv-formats \
-.-ajv-keywords-3.5.2 node_modules/ajv-keywords \
-.-ansi-regex-5.0.1 .npm/.-ansi-regex-5.0.1 \
-.-ansi-regex-6.0.1 .npm/.-ansi-regex-6.0.1 \
-.-ansi-styles-3.2.1 .npm/.-ansi-styles-3.2.1 \
-.-ansi-styles-4.3.0 .npm/.-ansi-styles-4.3.0 \
-.-ansi-styles-5.2.0 .npm/.-ansi-styles-5.2.0 \
-.-ansi-styles-6.2.1 .npm/.-ansi-styles-6.2.1 \
-.-app-builder-bin-4.0.0 node_modules/app-builder-bin \
-.-app-builder-lib-24.13.3 node_modules/app-builder-lib \
-.-archiver-5.3.2 node_modules/archiver \
-.-archiver-utils-2.1.0 .npm/.-archiver-utils-2.1.0 \
-.-archiver-utils-3.0.4 .npm/.-archiver-utils-3.0.4 \
-.-argparse-2.0.1 node_modules/argparse \
-.-aria-query-5.3.0 node_modules/aria-query \
-.-array-buffer-byte-length-1.0.0 node_modules/array-buffer-byte-length \
-.-array-includes-3.1.7 node_modules/array-includes \
-.-array.prototype.findlastindex-1.2.3 node_modules/array.prototype.findlastindex \
-.-array.prototype.flat-1.3.2 node_modules/array.prototype.flat \
-.-array.prototype.flatmap-1.3.2 node_modules/array.prototype.flatmap \
-.-array.prototype.tosorted-1.1.2 node_modules/array.prototype.tosorted \
-.-arraybuffer.prototype.slice-1.0.2 node_modules/arraybuffer.prototype.slice \
-.-assertion-error-1.1.0 node_modules/assertion-error \
-.-async-3.2.5 node_modules/async \
-.-async-exit-hook-2.0.1 node_modules/async-exit-hook \
-.-asynciterator.prototype-1.0.0 node_modules/asynciterator.prototype \
-.-asynckit-0.4.0 node_modules/asynckit \
-.-at-least-node-1.0.0 node_modules/at-least-node \
-.-atomically-1.7.0 node_modules/atomically \
-.-available-typed-arrays-1.0.5 node_modules/available-typed-arrays \
-.-balanced-match-1.0.2 node_modules/balanced-match \
-.-base64-js-1.5.1 node_modules/base64-js \
-.-bindings-1.5.0 node_modules/bindings \
-.-bl-4.1.0 node_modules/bl \
-.-bluebird-3.7.2 node_modules/bluebird \
-.-bluebird-lst-1.0.9 node_modules/bluebird-lst \
-.-brace-expansion-1.1.11 .npm/.-brace-expansion-1.1.11 \
-.-brace-expansion-2.0.1 .npm/.-brace-expansion-2.0.1 \
-.-browserslist-4.22.2 node_modules/browserslist \
-.-buffer-5.7.1 node_modules/buffer \
-.-buffer-crc32-0.2.13 node_modules/buffer-crc32 \
-.-buffer-equal-1.0.1 node_modules/buffer-equal \
-.-buffer-from-1.1.2 node_modules/buffer-from \
-.-builder-util-24.13.1 node_modules/builder-util \
-.-builder-util-runtime-9.2.4 node_modules/builder-util-runtime \
-.-builtins-5.0.1 node_modules/builtins \
-.-cac-6.7.14 node_modules/cac \
-.-cacheable-lookup-5.0.4 node_modules/cacheable-lookup \
-.-cacheable-request-6.1.0 .npm/.-cacheable-request-6.1.0 \
-.-cacheable-request-7.0.4 .npm/.-cacheable-request-7.0.4 \
-.-call-bind-1.0.5 node_modules/call-bind \
-.-callsites-3.1.0 node_modules/callsites \
-.-caniuse-lite-1.0.30001579 node_modules/caniuse-lite \
-.-chai-4.4.1 node_modules/chai \
-.-chalk-2.4.2 .npm/.-chalk-2.4.2 \
-.-chalk-4.1.2 .npm/.-chalk-4.1.2 \
-.-check-error-1.0.3 node_modules/check-error \
-.-chownr-1.1.4 .npm/.-chownr-1.1.4 \
-.-chownr-2.0.0 .npm/.-chownr-2.0.0 \
-.-chrome-launcher-0.15.2 node_modules/chrome-launcher \
-.-chromium-pickle-js-0.2.0 node_modules/chromium-pickle-js \
-.-ci-info-3.9.0 node_modules/ci-info \
-.-cliui-8.0.1 node_modules/cliui \
-.-clone-response-1.0.3 node_modules/clone-response \
-.-color-convert-1.9.3 .npm/.-color-convert-1.9.3 \
-.-color-convert-2.0.1 .npm/.-color-convert-2.0.1 \
-.-color-name-1.1.3 .npm/.-color-name-1.1.3 \
-.-color-name-1.1.4 .npm/.-color-name-1.1.4 \
-.-combined-stream-1.0.8 node_modules/combined-stream \
-.-commander-5.1.0 node_modules/commander \
-.-compare-version-0.1.2 node_modules/compare-version \
-.-compress-commons-4.1.2 node_modules/compress-commons \
-.-concat-map-0.0.1 node_modules/concat-map \
-.-conf-10.2.0 node_modules/conf \
-.-config-file-ts-0.2.6 node_modules/config-file-ts \
-.-convert-source-map-2.0.0 node_modules/convert-source-map \
-.-core-util-is-1.0.2 node_modules/core-util-is \
-.-crc-32-1.2.2 node_modules/crc-32 \
-.-crc32-stream-4.0.3 node_modules/crc32-stream \
-.-cross-env-7.0.3 node_modules/cross-env \
-.-cross-fetch-3.1.5 node_modules/cross-fetch \
-.-cross-spawn-7.0.3 node_modules/cross-spawn \
-.-css-shorthand-properties-1.1.1 node_modules/css-shorthand-properties \
-.-css-value-0.0.1 node_modules/css-value \
-.-debounce-fn-4.0.0 node_modules/debounce-fn \
-.-debug-2.6.9 .npm/.-debug-2.6.9 \
-.-debug-3.2.7 .npm/.-debug-3.2.7 \
-.-debug-4.3.4 .npm/.-debug-4.3.4 \
-.-decompress-response-3.3.0 .npm/.-decompress-response-3.3.0 \
-.-decompress-response-6.0.0 .npm/.-decompress-response-6.0.0 \
-.-deep-eql-4.1.3 node_modules/deep-eql \
-.-deep-is-0.1.4 node_modules/deep-is \
-.-deepmerge-4.3.1 node_modules/deepmerge \
-.-defer-to-connect-1.1.3 .npm/.-defer-to-connect-1.1.3 \
-.-defer-to-connect-2.0.1 .npm/.-defer-to-connect-2.0.1 \
-.-define-data-property-1.1.1 node_modules/define-data-property \
-.-define-properties-1.2.1 node_modules/define-properties \
-.-delayed-stream-1.0.0 node_modules/delayed-stream \
-.-dequal-2.0.3 node_modules/dequal \
-.-dev-null-0.1.1 node_modules/dev-null \
-.-devtools-7.16.13 node_modules/devtools \
-.-devtools-protocol-0.0.953906 .npm/.-devtools-protocol-0.0.953906 \
-.-devtools-protocol-0.0.981744 .npm/.-devtools-protocol-0.0.981744 \
-.-diff-sequences-29.6.3 node_modules/diff-sequences \
-.-dir-compare-3.3.0 node_modules/dir-compare \
-.-dmg-builder-24.13.3 node_modules/dmg-builder \
-.-doctrine-2.1.0 .npm/.-doctrine-2.1.0 \
-.-doctrine-3.0.0 .npm/.-doctrine-3.0.0 \
-.-dot-prop-6.0.1 node_modules/dot-prop \
-.-dotenv-9.0.2 node_modules/dotenv \
-.-dotenv-expand-5.1.0 node_modules/dotenv-expand \
-.-duplexer-0.1.2 node_modules/duplexer \
-.-duplexer3-0.1.5 node_modules/duplexer3 \
-.-eastasianwidth-0.2.0 node_modules/eastasianwidth \
-.-edge-paths-2.2.1 node_modules/edge-paths \
-.-ejs-3.1.9 node_modules/ejs \
-.-electron-28.1.4 node_modules/electron \
-.-electron-builder-24.13.3 node_modules/electron-builder \
-.-electron-builder-squirrel-windows-24.13.3 node_modules/electron-builder-squirrel-windows \
-.-electron-chromedriver-17.0.0 node_modules/electron-chromedriver \
-.-electron-log-5.0.3 node_modules/electron-log \
-.-electron-publish-24.13.1 node_modules/electron-publish \
-.-electron-store-8.1.0 node_modules/electron-store \
-.-electron-to-chromium-1.4.640 node_modules/electron-to-chromium \
-.-emoji-regex-8.0.0 .npm/.-emoji-regex-8.0.0 \
-.-emoji-regex-9.2.2 .npm/.-emoji-regex-9.2.2 \
-.-end-of-stream-1.4.4 node_modules/end-of-stream \
-.-env-paths-2.2.1 node_modules/env-paths \
-.-err-code-2.0.3 node_modules/err-code \
-.-error-ex-1.3.2 node_modules/error-ex \
-.-es-abstract-1.22.3 node_modules/es-abstract \
-.-es-iterator-helpers-1.0.15 node_modules/es-iterator-helpers \
-.-es-set-tostringtag-2.0.2 node_modules/es-set-tostringtag \
-.-es-shim-unscopables-1.0.2 node_modules/es-shim-unscopables \
-.-es-to-primitive-1.2.1 node_modules/es-to-primitive \
-.-esbuild-0.19.11 node_modules/esbuild \
-.-escalade-3.1.1 node_modules/escalade \
-.-escape-string-regexp-1.0.5 .npm/.-escape-string-regexp-1.0.5 \
-.-escape-string-regexp-4.0.0 .npm/.-escape-string-regexp-4.0.0 \
-.-eslint-8.56.0 node_modules/eslint \
-.-eslint-config-standard-17.1.0 node_modules/eslint-config-standard \
-.-eslint-config-standard-jsx-11.0.0 node_modules/eslint-config-standard-jsx \
-.-eslint-import-resolver-node-0.3.9 node_modules/eslint-import-resolver-node \
-.-eslint-module-utils-2.8.0 node_modules/eslint-module-utils \
-.-eslint-plugin-es-4.1.0 node_modules/eslint-plugin-es \
-.-eslint-plugin-import-2.29.1 node_modules/eslint-plugin-import \
-.-eslint-plugin-n-15.7.0 node_modules/eslint-plugin-n \
-.-eslint-plugin-promise-6.1.1 node_modules/eslint-plugin-promise \
-.-eslint-plugin-react-7.33.2 node_modules/eslint-plugin-react \
-.-eslint-scope-7.2.2 node_modules/eslint-scope \
-.-eslint-utils-2.1.0 .npm/.-eslint-utils-2.1.0 \
-.-eslint-utils-3.0.0 .npm/.-eslint-utils-3.0.0 \
-.-eslint-visitor-keys-1.3.0 .npm/.-eslint-visitor-keys-1.3.0 \
-.-eslint-visitor-keys-2.1.0 .npm/.-eslint-visitor-keys-2.1.0 \
-.-eslint-visitor-keys-3.4.3 .npm/.-eslint-visitor-keys-3.4.3 \
-.-espree-9.6.1 node_modules/espree \
-.-esquery-1.5.0 node_modules/esquery \
-.-esrecurse-4.3.0 node_modules/esrecurse \
-.-estraverse-5.3.0 node_modules/estraverse \
-.-estree-walker-3.0.3 node_modules/estree-walker \
-.-esutils-2.0.3 node_modules/esutils \
-.-event-stream-4.0.1 node_modules/event-stream \
-.-execa-8.0.1 node_modules/execa \
-.-extract-zip-2.0.1 node_modules/extract-zip \
-.-fast-deep-equal-2.0.1 .npm/.-fast-deep-equal-2.0.1 \
-.-fast-deep-equal-3.1.3 .npm/.-fast-deep-equal-3.1.3 \
-.-fast-json-stable-stringify-2.1.0 node_modules/fast-json-stable-stringify \
-.-fast-levenshtein-2.0.6 node_modules/fast-levenshtein \
-.-fastq-1.16.0 node_modules/fastq \
-.-fd-slicer-1.1.0 node_modules/fd-slicer \
-.-file-entry-cache-6.0.1 node_modules/file-entry-cache \
-.-file-uri-to-path-1.0.0 node_modules/file-uri-to-path \
-.-filelist-1.0.4 node_modules/filelist \
-.-find-up-3.0.0 .npm/.-find-up-3.0.0 \
-.-find-up-4.1.0 .npm/.-find-up-4.1.0 \
-.-find-up-5.0.0 .npm/.-find-up-5.0.0 \
-.-flat-cache-3.2.0 node_modules/flat-cache \
-.-flatted-3.2.9 node_modules/flatted \
-.-for-each-0.3.3 node_modules/for-each \
-.-foreground-child-3.1.1 node_modules/foreground-child \
-.-form-data-4.0.0 node_modules/form-data \
-.-from-0.1.7 node_modules/from \
-.-fs-constants-1.0.0 node_modules/fs-constants \
-.-fs-extra-10.1.0 .npm/.-fs-extra-10.1.0 \
-.-fs-extra-8.1.0 .npm/.-fs-extra-8.1.0 \
-.-fs-extra-9.1.0 .npm/.-fs-extra-9.1.0 \
-.-fs-minipass-2.1.0 node_modules/fs-minipass \
-.-fs.realpath-1.0.0 node_modules/fs.realpath \
-.-function-bind-1.1.2 node_modules/function-bind \
-.-function.prototype.name-1.1.6 node_modules/function.prototype.name \
-.-functions-have-names-1.2.3 node_modules/functions-have-names \
-.-gensync-1.0.0-beta.2 node_modules/gensync \
-.-get-caller-file-2.0.5 node_modules/get-caller-file \
-.-get-func-name-2.0.2 node_modules/get-func-name \
-.-get-intrinsic-1.2.2 node_modules/get-intrinsic \
-.-get-port-5.1.1 node_modules/get-port \
-.-get-stdin-8.0.0 node_modules/get-stdin \
-.-get-stream-4.1.0 .npm/.-get-stream-4.1.0 \
-.-get-stream-5.2.0 .npm/.-get-stream-5.2.0 \
-.-get-stream-8.0.1 .npm/.-get-stream-8.0.1 \
-.-get-symbol-description-1.0.0 node_modules/get-symbol-description \
-.-glob-10.3.10 .npm/.-glob-10.3.10 \
-.-glob-7.2.3 .npm/.-glob-7.2.3 \
-.-glob-parent-6.0.2 node_modules/glob-parent \
-.-globals-11.12.0 .npm/.-globals-11.12.0 \
-.-globals-13.24.0 .npm/.-globals-13.24.0 \
-.-globalthis-1.0.3 node_modules/globalthis \
-.-gopd-1.0.1 node_modules/gopd \
-.-got-11.8.6 .npm/.-got-11.8.6 \
-.-got-9.6.0 .npm/.-got-9.6.0 \
-.-graceful-fs-4.2.11 node_modules/graceful-fs \
-.-grapheme-splitter-1.0.4 node_modules/grapheme-splitter \
-.-graphemer-1.4.0 node_modules/graphemer \
-.-has-bigints-1.0.2 node_modules/has-bigints \
-.-has-flag-3.0.0 .npm/.-has-flag-3.0.0 \
-.-has-flag-4.0.0 .npm/.-has-flag-4.0.0 \
-.-has-property-descriptors-1.0.1 node_modules/has-property-descriptors \
-.-has-proto-1.0.1 node_modules/has-proto \
-.-has-symbols-1.0.3 node_modules/has-symbols \
-.-has-tostringtag-1.0.0 node_modules/has-tostringtag \
-.-hasown-2.0.0 node_modules/hasown \
-.-hosted-git-info-4.1.0 node_modules/hosted-git-info \
-.-html-escaper-2.0.2 node_modules/html-escaper \
-.-http-cache-semantics-4.1.1 node_modules/http-cache-semantics \
-.-http-proxy-agent-5.0.0 node_modules/http-proxy-agent \
-.-http2-wrapper-1.0.3 node_modules/http2-wrapper \
-.-https-proxy-agent-5.0.1 node_modules/https-proxy-agent \
-.-human-signals-5.0.0 node_modules/human-signals \
-.-humanize-duration-3.31.0 node_modules/humanize-duration \
-.-husky-8.0.3 node_modules/husky \
-.-i18next-23.7.18 node_modules/i18next \
-.-i18next-fs-backend-2.3.1 node_modules/i18next-fs-backend \
-.-iconv-lite-0.6.3 node_modules/iconv-lite \
-.-ieee754-1.2.1 node_modules/ieee754 \
-.-ignore-5.3.0 node_modules/ignore \
-.-import-fresh-3.3.0 node_modules/import-fresh \
-.-imurmurhash-0.1.4 node_modules/imurmurhash \
-.-inflight-1.0.6 node_modules/inflight \
-.-inherits-2.0.4 node_modules/inherits \
-.-internal-slot-1.0.6 node_modules/internal-slot \
-.-is-array-buffer-3.0.2 node_modules/is-array-buffer \
-.-is-arrayish-0.2.1 node_modules/is-arrayish \
-.-is-async-function-2.0.0 node_modules/is-async-function \
-.-is-bigint-1.0.4 node_modules/is-bigint \
-.-is-boolean-object-1.1.2 node_modules/is-boolean-object \
-.-is-callable-1.2.7 node_modules/is-callable \
-.-is-ci-3.0.1 node_modules/is-ci \
-.-is-core-module-2.13.1 node_modules/is-core-module \
-.-is-date-object-1.0.5 node_modules/is-date-object \
-.-is-docker-2.2.1 node_modules/is-docker \
-.-is-extglob-2.1.1 node_modules/is-extglob \
-.-is-finalizationregistry-1.0.2 node_modules/is-finalizationregistry \
-.-is-fullwidth-code-point-3.0.0 node_modules/is-fullwidth-code-point \
-.-is-generator-function-1.0.10 node_modules/is-generator-function \
-.-is-glob-4.0.3 node_modules/is-glob \
-.-is-map-2.0.2 node_modules/is-map \
-.-is-negative-zero-2.0.2 node_modules/is-negative-zero \
-.-is-number-object-1.0.7 node_modules/is-number-object \
-.-is-obj-2.0.0 node_modules/is-obj \
-.-is-path-inside-3.0.3 node_modules/is-path-inside \
-.-is-regex-1.1.4 node_modules/is-regex \
-.-is-set-2.0.2 node_modules/is-set \
-.-is-shared-array-buffer-1.0.2 node_modules/is-shared-array-buffer \
-.-is-stream-3.0.0 node_modules/is-stream \
-.-is-string-1.0.7 node_modules/is-string \
-.-is-symbol-1.0.4 node_modules/is-symbol \
-.-is-typed-array-1.1.12 node_modules/is-typed-array \
-.-is-weakmap-2.0.1 node_modules/is-weakmap \
-.-is-weakref-1.0.2 node_modules/is-weakref \
-.-is-weakset-2.0.2 node_modules/is-weakset \
-.-is-wsl-2.2.0 node_modules/is-wsl \
-.-isarray-1.0.0 .npm/.-isarray-1.0.0 \
-.-isarray-2.0.5 .npm/.-isarray-2.0.5 \
-.-isbinaryfile-4.0.10 .npm/.-isbinaryfile-4.0.10 \
-.-isbinaryfile-5.0.2 .npm/.-isbinaryfile-5.0.2 \
-.-isexe-2.0.0 node_modules/isexe \
-.-istanbul-lib-coverage-3.2.2 node_modules/istanbul-lib-coverage \
-.-istanbul-lib-instrument-6.0.1 node_modules/istanbul-lib-instrument \
-.-istanbul-lib-report-3.0.1 node_modules/istanbul-lib-report \
-.-istanbul-lib-source-maps-4.0.1 node_modules/istanbul-lib-source-maps \
-.-istanbul-reports-3.1.6 node_modules/istanbul-reports \
-.-iterator.prototype-1.1.2 node_modules/iterator.prototype \
-.-jackspeak-2.3.6 node_modules/jackspeak \
-.-jake-10.8.7 node_modules/jake \
-.-js-tokens-4.0.0 node_modules/js-tokens \
-.-js-yaml-4.1.0 node_modules/js-yaml \
-.-jsesc-2.5.2 node_modules/jsesc \
-.-json-buffer-3.0.0 .npm/.-json-buffer-3.0.0 \
-.-json-buffer-3.0.1 .npm/.-json-buffer-3.0.1 \
-.-json-parse-better-errors-1.0.2 node_modules/json-parse-better-errors \
-.-json-schema-traverse-0.4.1 .npm/.-json-schema-traverse-0.4.1 \
-.-json-schema-traverse-1.0.0 .npm/.-json-schema-traverse-1.0.0 \
-.-json-schema-typed-7.0.3 node_modules/json-schema-typed \
-.-json-stable-stringify-without-jsonify-1.0.1 node_modules/json-stable-stringify-without-jsonify \
-.-json5-1.0.2 .npm/.-json5-1.0.2 \
-.-json5-2.2.3 .npm/.-json5-2.2.3 \
-.-jsonc-parser-3.2.0 node_modules/jsonc-parser \
-.-jsonfile-4.0.0 .npm/.-jsonfile-4.0.0 \
-.-jsonfile-6.1.0 .npm/.-jsonfile-6.1.0 \
-.-jsx-ast-utils-3.3.5 node_modules/jsx-ast-utils \
-.-keyv-3.1.0 .npm/.-keyv-3.1.0 \
-.-keyv-4.5.4 .npm/.-keyv-4.5.4 \
-.-ky-0.28.7 node_modules/ky \
-.-lazy-val-1.0.5 node_modules/lazy-val \
-.-lazystream-1.0.1 node_modules/lazystream \
-.-levn-0.4.1 node_modules/levn \
-.-lighthouse-logger-1.4.2 node_modules/lighthouse-logger \
-.-load-json-file-5.3.0 node_modules/load-json-file \
-.-local-pkg-0.5.0 node_modules/local-pkg \
-.-locate-path-3.0.0 .npm/.-locate-path-3.0.0 \
-.-locate-path-5.0.0 .npm/.-locate-path-5.0.0 \
-.-locate-path-6.0.0 .npm/.-locate-path-6.0.0 \
-.-lodash-4.17.21 node_modules/lodash \
-.-lodash.clonedeep-4.5.0 node_modules/lodash.clonedeep \
-.-lodash.defaults-4.2.0 node_modules/lodash.defaults \
-.-lodash.difference-4.5.0 node_modules/lodash.difference \
-.-lodash.flatten-4.4.0 node_modules/lodash.flatten \
-.-lodash.isobject-3.0.2 node_modules/lodash.isobject \
-.-lodash.isplainobject-4.0.6 node_modules/lodash.isplainobject \
-.-lodash.merge-4.6.2 node_modules/lodash.merge \
-.-lodash.union-4.6.0 node_modules/lodash.union \
-.-lodash.zip-4.2.0 node_modules/lodash.zip \
-.-loglevel-1.8.1 node_modules/loglevel \
-.-loglevel-plugin-prefix-0.8.4 node_modules/loglevel-plugin-prefix \
-.-long-5.2.1 node_modules/long \
-.-loose-envify-1.4.0 node_modules/loose-envify \
-.-loupe-2.3.7 node_modules/loupe \
-.-lowercase-keys-1.0.1 .npm/.-lowercase-keys-1.0.1 \
-.-lowercase-keys-2.0.0 .npm/.-lowercase-keys-2.0.0 \
-.-lru-cache-10.1.0 .npm/.-lru-cache-10.1.0 \
-.-lru-cache-5.1.1 .npm/.-lru-cache-5.1.1 \
-.-lru-cache-6.0.0 .npm/.-lru-cache-6.0.0 \
-.-luxon-1.28.1 .npm/.-luxon-1.28.1 \
-.-luxon-3.4.4 .npm/.-luxon-3.4.4 \
-.-macos-notification-state-3.0.0 node_modules/macos-notification-state \
-.-magic-string-0.30.5 node_modules/magic-string \
-.-magicast-0.3.3 node_modules/magicast \
-.-make-dir-4.0.0 node_modules/make-dir \
-.-map-stream-0.0.7 node_modules/map-stream \
-.-marky-1.2.5 node_modules/marky \
-.-meeussunmoon-3.0.3 node_modules/meeussunmoon \
-.-merge-stream-2.0.0 node_modules/merge-stream \
-.-mime-2.6.0 node_modules/mime \
-.-mime-db-1.52.0 node_modules/mime-db \
-.-mime-types-2.1.35 node_modules/mime-types \
-.-mimic-fn-2.1.0 .npm/.-mimic-fn-2.1.0 \
-.-mimic-fn-3.1.0 .npm/.-mimic-fn-3.1.0 \
-.-mimic-fn-4.0.0 .npm/.-mimic-fn-4.0.0 \
-.-mimic-response-1.0.1 .npm/.-mimic-response-1.0.1 \
-.-mimic-response-3.1.0 .npm/.-mimic-response-3.1.0 \
-.-minimatch-3.1.2 .npm/.-minimatch-3.1.2 \
-.-minimatch-5.1.6 .npm/.-minimatch-5.1.6 \
-.-minimatch-9.0.3 .npm/.-minimatch-9.0.3 \
-.-minimist-1.2.8 node_modules/minimist \
-.-minipass-3.3.6 .npm/.-minipass-3.3.6 \
-.-minipass-5.0.0 .npm/.-minipass-5.0.0 \
-.-minizlib-2.1.2 node_modules/minizlib \
-.-mkdirp-1.0.4 node_modules/mkdirp \
-.-mkdirp-classic-0.5.3 node_modules/mkdirp-classic \
-.-mlly-1.5.0 node_modules/mlly \
-.-ms-2.0.0 .npm/.-ms-2.0.0 \
-.-ms-2.1.2 .npm/.-ms-2.1.2 \
-.-nanoid-3.3.7 node_modules/nanoid \
-.-natural-compare-1.4.0 node_modules/natural-compare \
-.-node-addon-api-1.7.2 .npm/.-node-addon-api-1.7.2 \
-.-node-addon-api-3.0.0 .npm/.-node-addon-api-3.0.0 \
-.-node-fetch-2.6.7 node_modules/node-fetch \
-.-node-releases-2.0.14 node_modules/node-releases \
-.-normalize-path-3.0.0 node_modules/normalize-path \
-.-normalize-url-4.5.1 .npm/.-normalize-url-4.5.1 \
-.-normalize-url-6.1.0 .npm/.-normalize-url-6.1.0 \
-.-npm-run-path-5.2.0 node_modules/npm-run-path \
-.-object-assign-4.1.1 node_modules/object-assign \
-.-object-inspect-1.13.1 node_modules/object-inspect \
-.-object-keys-1.1.1 node_modules/object-keys \
-.-object.assign-4.1.5 node_modules/object.assign \
-.-object.entries-1.1.7 node_modules/object.entries \
-.-object.fromentries-2.0.7 node_modules/object.fromentries \
-.-object.groupby-1.0.1 node_modules/object.groupby \
-.-object.hasown-1.1.3 node_modules/object.hasown \
-.-object.values-1.1.7 node_modules/object.values \
-.-once-1.4.0 node_modules/once \
-.-onetime-5.1.2 .npm/.-onetime-5.1.2 \
-.-onetime-6.0.0 .npm/.-onetime-6.0.0 \
-.-optionator-0.9.3 node_modules/optionator \
-.-p-cancelable-1.1.0 .npm/.-p-cancelable-1.1.0 \
-.-p-cancelable-2.1.1 .npm/.-p-cancelable-2.1.1 \
-.-p-iteration-1.1.8 node_modules/p-iteration \
-.-p-limit-2.3.0 .npm/.-p-limit-2.3.0 \
-.-p-limit-3.1.0 .npm/.-p-limit-3.1.0 \
-.-p-limit-5.0.0 .npm/.-p-limit-5.0.0 \
-.-p-locate-3.0.0 .npm/.-p-locate-3.0.0 \
-.-p-locate-4.1.0 .npm/.-p-locate-4.1.0 \
-.-p-locate-5.0.0 .npm/.-p-locate-5.0.0 \
-.-p-try-2.2.0 node_modules/p-try \
-.-parent-module-1.0.1 node_modules/parent-module \
-.-parse-json-4.0.0 node_modules/parse-json \
-.-path-exists-3.0.0 .npm/.-path-exists-3.0.0 \
-.-path-exists-4.0.0 .npm/.-path-exists-4.0.0 \
-.-path-is-absolute-1.0.1 node_modules/path-is-absolute \
-.-path-key-3.1.1 .npm/.-path-key-3.1.1 \
-.-path-key-4.0.0 .npm/.-path-key-4.0.0 \
-.-path-parse-1.0.7 node_modules/path-parse \
-.-path-scurry-1.10.1 node_modules/path-scurry \
-.-pathe-1.1.2 node_modules/pathe \
-.-pathval-1.1.1 node_modules/pathval \
-.-pause-stream-0.0.11 node_modules/pause-stream \
-.-pend-1.2.0 node_modules/pend \
-.-picocolors-1.0.0 node_modules/picocolors \
-.-pify-4.0.1 node_modules/pify \
-.-pkg-conf-3.1.0 node_modules/pkg-conf \
-.-pkg-dir-4.2.0 node_modules/pkg-dir \
-.-pkg-types-1.0.3 node_modules/pkg-types \
-.-pkg-up-3.1.0 node_modules/pkg-up \
-.-plist-3.1.0 node_modules/plist \
-.-postcss-8.4.33 node_modules/postcss \
-.-prelude-ls-1.2.1 node_modules/prelude-ls \
-.-prepend-http-2.0.0 node_modules/prepend-http \
-.-pretty-format-29.7.0 node_modules/pretty-format \
-.-process-nextick-args-2.0.1 node_modules/process-nextick-args \
-.-progress-2.0.3 node_modules/progress \
-.-promise-retry-2.0.1 node_modules/promise-retry \
-.-prop-types-15.8.1 node_modules/prop-types \
-.-proxy-from-env-1.1.0 node_modules/proxy-from-env \
-.-ps-list-7.2.0 node_modules/ps-list \
-.-pump-3.0.0 node_modules/pump \
-.-punycode-2.3.1 node_modules/punycode \
-.-puppeteer-core-13.7.0 node_modules/puppeteer-core \
-.-query-selector-shadow-dom-1.0.1 node_modules/query-selector-shadow-dom \
-.-queue-microtask-1.2.3 node_modules/queue-microtask \
-.-quick-lru-5.1.1 node_modules/quick-lru \
-.-react-is-16.13.1 .npm/.-react-is-16.13.1 \
-.-react-is-18.2.0 .npm/.-react-is-18.2.0 \
-.-read-config-file-6.3.2 node_modules/read-config-file \
-.-readable-stream-2.3.8 .npm/.-readable-stream-2.3.8 \
-.-readable-stream-3.6.2 .npm/.-readable-stream-3.6.2 \
-.-readdir-glob-1.1.3 node_modules/readdir-glob \
-.-reflect.getprototypeof-1.0.4 node_modules/reflect.getprototypeof \
-.-regenerator-runtime-0.14.1 node_modules/regenerator-runtime \
-.-regexp.prototype.flags-1.5.1 node_modules/regexp.prototype.flags \
-.-regexpp-3.2.0 node_modules/regexpp \
-.-require-directory-2.1.1 node_modules/require-directory \
-.-require-from-string-2.0.2 node_modules/require-from-string \
-.-resolve-1.22.8 .npm/.-resolve-1.22.8 \
-.-resolve-2.0.0-next.5 .npm/.-resolve-2.0.0-next.5 \
-.-resolve-alpn-1.2.1 node_modules/resolve-alpn \
-.-resolve-from-4.0.0 node_modules/resolve-from \
-.-responselike-1.0.2 .npm/.-responselike-1.0.2 \
-.-responselike-2.0.1 .npm/.-responselike-2.0.1 \
-.-resq-1.11.0 node_modules/resq \
-.-retry-0.12.0 node_modules/retry \
-.-reusify-1.0.4 node_modules/reusify \
-.-rgb2hex-0.2.5 node_modules/rgb2hex \
-.-rimraf-3.0.2 .npm/.-rimraf-3.0.2 \
-.-rimraf-5.0.5 .npm/.-rimraf-5.0.5 \
-.-rollup-4.9.6 node_modules/rollup \
-.-rtl-detect-1.1.2 node_modules/rtl-detect \
-.-run-parallel-1.2.0 node_modules/run-parallel \
-.-safe-array-concat-1.1.0 node_modules/safe-array-concat \
-.-safe-buffer-5.1.2 .npm/.-safe-buffer-5.1.2 \
-.-safe-buffer-5.2.1 .npm/.-safe-buffer-5.2.1 \
-.-safe-regex-test-1.0.2 node_modules/safe-regex-test \
-.-safer-buffer-2.1.2 node_modules/safer-buffer \
-.-sanitize-filename-1.6.3 node_modules/sanitize-filename \
-.-sax-1.3.0 node_modules/sax \
-.-semver-6.3.1 .npm/.-semver-6.3.1 \
-.-semver-7.5.4 .npm/.-semver-7.5.4 \
-.-serialize-error-8.1.0 node_modules/serialize-error \
-.-set-function-length-1.2.0 node_modules/set-function-length \
-.-set-function-name-2.0.1 node_modules/set-function-name \
-.-shebang-command-2.0.0 node_modules/shebang-command \
-.-shebang-regex-3.0.0 node_modules/shebang-regex \
-.-side-channel-1.0.4 node_modules/side-channel \
-.-siginfo-2.0.0 node_modules/siginfo \
-.-signal-exit-4.1.0 node_modules/signal-exit \
-.-simple-update-notifier-2.0.0 node_modules/simple-update-notifier \
-.-source-map-0.6.1 node_modules/source-map \
-.-source-map-js-1.0.2 node_modules/source-map-js \
-.-source-map-support-0.5.21 node_modules/source-map-support \
-.-spectron-19.0.0 node_modules/spectron \
-.-split-1.0.1 node_modules/split \
-.-stackback-0.0.2 node_modules/stackback \
-.-standard-17.1.0 node_modules/standard \
-.-standard-engine-15.1.0 node_modules/standard-engine \
-.-stat-mode-1.0.0 node_modules/stat-mode \
-.-std-env-3.7.0 node_modules/std-env \
-.-stream-combiner-0.2.2 node_modules/stream-combiner \
-.-string-width-4.2.3 .npm/.-string-width-4.2.3 \
-.-string-width-5.1.2 .npm/.-string-width-5.1.2 \
-.-string.prototype.matchall-4.0.10 node_modules/string.prototype.matchall \
-.-string.prototype.trim-1.2.8 node_modules/string.prototype.trim \
-.-string.prototype.trimend-1.0.7 node_modules/string.prototype.trimend \
-.-string.prototype.trimstart-1.0.7 node_modules/string.prototype.trimstart \
-.-string_decoder-1.1.1 .npm/.-string_decoder-1.1.1 \
-.-string_decoder-1.3.0 .npm/.-string_decoder-1.3.0 \
-.-strip-ansi-6.0.1 .npm/.-strip-ansi-6.0.1 \
-.-strip-ansi-7.1.0 .npm/.-strip-ansi-7.1.0 \
-.-strip-bom-3.0.0 node_modules/strip-bom \
-.-strip-final-newline-3.0.0 node_modules/strip-final-newline \
-.-strip-json-comments-3.1.1 node_modules/strip-json-comments \
-.-strip-literal-1.3.0 node_modules/strip-literal \
-.-sumchecker-3.0.1 node_modules/sumchecker \
-.-supports-color-5.5.0 .npm/.-supports-color-5.5.0 \
-.-supports-color-7.2.0 .npm/.-supports-color-7.2.0 \
-.-supports-preserve-symlinks-flag-1.0.0 node_modules/supports-preserve-symlinks-flag \
-.-tar-6.2.0 node_modules/tar \
-.-tar-fs-2.1.1 node_modules/tar-fs \
-.-tar-stream-2.2.0 node_modules/tar-stream \
-.-temp-file-3.4.0 node_modules/temp-file \
-.-test-exclude-6.0.0 node_modules/test-exclude \
-.-text-table-0.2.0 node_modules/text-table \
-.-through-2.3.8 node_modules/through \
-.-tinybench-2.6.0 node_modules/tinybench \
-.-tinypool-0.8.2 node_modules/tinypool \
-.-tinyspy-2.2.0 node_modules/tinyspy \
-.-tmp-0.2.3 node_modules/tmp \
-.-tmp-promise-3.0.3 node_modules/tmp-promise \
-.-to-fast-properties-2.0.0 node_modules/to-fast-properties \
-.-to-readable-stream-1.0.0 node_modules/to-readable-stream \
-.-tr46-0.0.3 node_modules/tr46 \
-.-truncate-utf8-bytes-1.0.2 node_modules/truncate-utf8-bytes \
-.-tsconfig-paths-3.15.0 node_modules/tsconfig-paths \
-.-type-check-0.4.0 node_modules/type-check \
-.-type-detect-4.0.8 node_modules/type-detect \
-.-type-fest-0.20.2 .npm/.-type-fest-0.20.2 \
-.-type-fest-0.3.1 .npm/.-type-fest-0.3.1 \
-.-type-fest-2.19.0 .npm/.-type-fest-2.19.0 \
-.-typed-array-buffer-1.0.0 node_modules/typed-array-buffer \
-.-typed-array-byte-length-1.0.0 node_modules/typed-array-byte-length \
-.-typed-array-byte-offset-1.0.0 node_modules/typed-array-byte-offset \
-.-typed-array-length-1.0.4 node_modules/typed-array-length \
-.-typescript-5.3.3 node_modules/typescript \
-.-ua-parser-js-1.0.37 node_modules/ua-parser-js \
-.-ufo-1.3.2 node_modules/ufo \
-.-unbox-primitive-1.0.2 node_modules/unbox-primitive \
-.-unbzip2-stream-1.4.3 node_modules/unbzip2-stream \
-.-undici-types-5.26.5 node_modules/undici-types \
-.-universalify-0.1.2 .npm/.-universalify-0.1.2 \
-.-universalify-2.0.1 .npm/.-universalify-2.0.1 \
-.-update-browserslist-db-1.0.13 node_modules/update-browserslist-db \
-.-uri-js-4.4.1 node_modules/uri-js \
-.-url-parse-lax-3.0.0 node_modules/url-parse-lax \
-.-utf8-byte-length-1.0.4 node_modules/utf8-byte-length \
-.-util-deprecate-1.0.2 node_modules/util-deprecate \
-.-uuid-8.3.2 node_modules/uuid \
-.-version-guard-1.1.1 node_modules/version-guard \
-.-vite-5.0.12 node_modules/vite \
-.-vite-node-1.2.1 node_modules/vite-node \
-.-vitest-1.2.1 node_modules/vitest \
-.-webdriver-7.16.13 node_modules/webdriver \
-.-webdriverio-7.16.13 node_modules/webdriverio \
-.-webidl-conversions-3.0.1 node_modules/webidl-conversions \
-.-whatwg-url-5.0.0 node_modules/whatwg-url \
-.-which-2.0.2 node_modules/which \
-.-which-boxed-primitive-1.0.2 node_modules/which-boxed-primitive \
-.-which-builtin-type-1.1.3 node_modules/which-builtin-type \
-.-which-collection-1.0.1 node_modules/which-collection \
-.-which-typed-array-1.1.13 node_modules/which-typed-array \
-.-why-is-node-running-2.2.2 node_modules/why-is-node-running \
-.-windows-focus-assist-1.3.0 node_modules/windows-focus-assist \
-.-windows-quiet-hours-2.0.0 node_modules/windows-quiet-hours \
-.-wrap-ansi-7.0.0 .npm/.-wrap-ansi-7.0.0 \
-.-wrap-ansi-8.1.0 .npm/.-wrap-ansi-8.1.0 \
-.-wrappy-1.0.2 node_modules/wrappy \
-.-ws-8.5.0 node_modules/ws \
-.-xdg-basedir-4.0.0 node_modules/xdg-basedir \
-.-xml2js-0.5.0 node_modules/xml2js \
-.-xmlbuilder-11.0.1 .npm/.-xmlbuilder-11.0.1 \
-.-xmlbuilder-15.1.1 .npm/.-xmlbuilder-15.1.1 \
-.-y18n-5.0.8 node_modules/y18n \
-.-yallist-3.1.1 .npm/.-yallist-3.1.1 \
-.-yallist-4.0.0 .npm/.-yallist-4.0.0 \
-.-yargs-17.7.2 node_modules/yargs \
-.-yargs-parser-21.1.1 node_modules/yargs-parser \
-.-yauzl-2.10.0 node_modules/yauzl \
-.-yocto-queue-0.1.0 .npm/.-yocto-queue-0.1.0 \
-.-yocto-queue-1.0.0 .npm/.-yocto-queue-1.0.0 \
-.-zip-stream-4.1.1 node_modules/zip-stream \
-@aashutoshrathi-word-wrap-1.2.6 node_modules/@aashutoshrathi/word-wrap \
-@ampproject-remapping-2.2.1 node_modules/@ampproject/remapping \
-@babel-code-frame-7.23.5 node_modules/@babel/code-frame \
-@babel-compat-data-7.23.5 node_modules/@babel/compat-data \
-@babel-core-7.23.7 node_modules/@babel/core \
-@babel-generator-7.23.6 node_modules/@babel/generator \
-@babel-helper-compilation-targets-7.23.6 node_modules/@babel/helper-compilation-targets \
-@babel-helper-environment-visitor-7.22.20 node_modules/@babel/helper-environment-visitor \
-@babel-helper-function-name-7.23.0 node_modules/@babel/helper-function-name \
-@babel-helper-hoist-variables-7.22.5 node_modules/@babel/helper-hoist-variables \
-@babel-helper-module-imports-7.22.15 node_modules/@babel/helper-module-imports \
-@babel-helper-module-transforms-7.23.3 node_modules/@babel/helper-module-transforms \
-@babel-helper-simple-access-7.22.5 node_modules/@babel/helper-simple-access \
-@babel-helper-split-export-declaration-7.22.6 node_modules/@babel/helper-split-export-declaration \
-@babel-helper-string-parser-7.23.4 node_modules/@babel/helper-string-parser \
-@babel-helper-validator-identifier-7.22.20 node_modules/@babel/helper-validator-identifier \
-@babel-helper-validator-option-7.23.5 node_modules/@babel/helper-validator-option \
-@babel-helpers-7.23.8 node_modules/@babel/helpers \
-@babel-highlight-7.23.4 node_modules/@babel/highlight \
-@babel-parser-7.23.6 node_modules/@babel/parser \
-@babel-runtime-7.23.8 node_modules/@babel/runtime \
-@babel-template-7.22.15 node_modules/@babel/template \
-@babel-traverse-7.23.7 node_modules/@babel/traverse \
-@babel-types-7.23.6 node_modules/@babel/types \
-@develar-schema-utils-2.6.5 node_modules/@develar/schema-utils \
-@electron-asar-3.2.8 node_modules/@electron/asar \
-@electron-get-1.14.1 .npm/@electron-get-1.14.1 \
-@electron-get-2.0.3 .npm/@electron-get-2.0.3 \
-@electron-notarize-2.2.1 node_modules/@electron/notarize \
-@electron-osx-sign-1.0.5 node_modules/@electron/osx-sign \
-@electron-remote-2.0.4 .npm/@electron-remote-2.0.4 \
-@electron-remote-2.1.1 .npm/@electron-remote-2.1.1 \
-@electron-universal-1.5.1 node_modules/@electron/universal \
-@eslint-community-eslint-utils-4.4.0 node_modules/@eslint-community/eslint-utils \
-@eslint-community-regexpp-4.10.0 node_modules/@eslint-community/regexpp \
-@eslint-eslintrc-2.1.4 node_modules/@eslint/eslintrc \
-@eslint-js-8.56.0 node_modules/@eslint/js \
-@humanwhocodes-config-array-0.11.14 node_modules/@humanwhocodes/config-array \
-@humanwhocodes-module-importer-1.0.1 node_modules/@humanwhocodes/module-importer \
-@humanwhocodes-object-schema-2.0.2 node_modules/@humanwhocodes/object-schema \
-@isaacs-cliui-8.0.2 node_modules/@isaacs/cliui \
-@istanbuljs-schema-0.1.3 node_modules/@istanbuljs/schema \
-@jest-schemas-29.6.3 node_modules/@jest/schemas \
-@jridgewell-gen-mapping-0.3.3 node_modules/@jridgewell/gen-mapping \
-@jridgewell-resolve-uri-3.1.1 node_modules/@jridgewell/resolve-uri \
-@jridgewell-set-array-1.1.2 node_modules/@jridgewell/set-array \
-@jridgewell-sourcemap-codec-1.4.15 node_modules/@jridgewell/sourcemap-codec \
-@jridgewell-trace-mapping-0.3.22 node_modules/@jridgewell/trace-mapping \
-@malept-cross-spawn-promise-1.1.1 node_modules/@malept/cross-spawn-promise \
-@malept-flatpak-bundler-0.4.0 node_modules/@malept/flatpak-bundler \
-@nodelib-fs.scandir-2.1.5 node_modules/@nodelib/fs.scandir \
-@nodelib-fs.stat-2.0.5 node_modules/@nodelib/fs.stat \
-@nodelib-fs.walk-1.2.8 node_modules/@nodelib/fs.walk \
-@nornagon-put-0.0.8 node_modules/@nornagon/put \
-@sinclair-typebox-0.27.8 node_modules/@sinclair/typebox \
-@sindresorhus-is-0.14.0 .npm/@sindresorhus-is-0.14.0 \
-@sindresorhus-is-4.6.0 .npm/@sindresorhus-is-4.6.0 \
-@szmarczak-http-timer-1.1.2 .npm/@szmarczak-http-timer-1.1.2 \
-@szmarczak-http-timer-4.0.6 .npm/@szmarczak-http-timer-4.0.6 \
-@tootallnate-once-2.0.0 node_modules/@tootallnate/once \
-@types-aria-query-5.0.4 node_modules/@types/aria-query \
-@types-cacheable-request-6.0.3 node_modules/@types/cacheable-request \
-@types-debug-4.1.12 node_modules/@types/debug \
-@types-estree-1.0.5 node_modules/@types/estree \
-@types-fs-extra-9.0.13 node_modules/@types/fs-extra \
-@types-http-cache-semantics-4.0.4 node_modules/@types/http-cache-semantics \
-@types-json5-0.0.29 node_modules/@types/json5 \
-@types-keyv-3.1.4 node_modules/@types/keyv \
-@types-ms-0.7.34 node_modules/@types/ms \
-@types-node-17.0.45 .npm/@types-node-17.0.45 \
-@types-node-18.19.8 .npm/@types-node-18.19.8 \
-@types-responselike-1.0.3 node_modules/@types/responselike \
-@types-ua-parser-js-0.7.39 node_modules/@types/ua-parser-js \
-@types-which-1.3.2 node_modules/@types/which \
-@ungap-structured-clone-1.2.0 node_modules/@ungap/structured-clone \
-@vitest-coverage-istanbul-1.2.1 node_modules/@vitest/coverage-istanbul \
-@vitest-expect-1.2.1 node_modules/@vitest/expect \
-@vitest-runner-1.2.1 node_modules/@vitest/runner \
-@vitest-snapshot-1.2.1 node_modules/@vitest/snapshot \
-@vitest-spy-1.2.1 node_modules/@vitest/spy \
-@vitest-utils-1.2.1 node_modules/@vitest/utils \
-@wdio-config-7.16.13 node_modules/@wdio/config \
-@wdio-logger-7.16.0 node_modules/@wdio/logger \
-@wdio-protocols-7.16.7 node_modules/@wdio/protocols \
-@wdio-repl-7.16.13 node_modules/@wdio/repl \
-@wdio-types-7.16.13 node_modules/@wdio/types \
-@wdio-utils-7.16.13 node_modules/@wdio/utils \
-@xmldom-xmldom-0.8.10 node_modules/@xmldom/xmldom \
-
 MODNPM_CP += \
-@babel/code-frame/node_modules/ansi-styles .npm/.-ansi-styles-3.2.1 \
-@babel/code-frame/node_modules/chalk .npm/.-chalk-2.4.2 \
-@babel/code-frame/node_modules/color-convert .npm/.-color-convert-1.9.3 \
-@babel/code-frame/node_modules/color-name .npm/.-color-name-1.1.3 \
-@babel/code-frame/node_modules/escape-string-regexp .npm/.-escape-string-regexp-1.0.5 \
-@babel/code-frame/node_modules/has-flag .npm/.-has-flag-3.0.0 \
-@babel/code-frame/node_modules/supports-color .npm/.-supports-color-5.5.0 \
-@babel/core/node_modules/semver .npm/.-semver-6.3.1 \
-@babel/helper-compilation-targets/node_modules/lru-cache .npm/.-lru-cache-5.1.1 \
-@babel/helper-compilation-targets/node_modules/semver .npm/.-semver-6.3.1 \
-@babel/helper-compilation-targets/node_modules/yallist .npm/.-yallist-3.1.1 \
-@babel/highlight/node_modules/ansi-styles .npm/.-ansi-styles-3.2.1 \
-@babel/highlight/node_modules/chalk .npm/.-chalk-2.4.2 \
-@babel/highlight/node_modules/color-convert .npm/.-color-convert-1.9.3 \
-@babel/highlight/node_modules/color-name .npm/.-color-name-1.1.3 \
-@babel/highlight/node_modules/escape-string-regexp .npm/.-escape-string-regexp-1.0.5 \
-@babel/highlight/node_modules/has-flag .npm/.-has-flag-3.0.0 \
-@babel/highlight/node_modules/supports-color .npm/.-supports-color-5.5.0 \
-@electron/asar/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-@electron/asar/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-@electron/get .npm/@electron-get-2.0.3 \
-@electron/get/node_modules/semver .npm/.-semver-6.3.1 \
-@electron/notarize/node_modules/fs-extra .npm/.-fs-extra-9.1.0 \
-@electron/notarize/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-@electron/notarize/node_modules/universalify .npm/.-universalify-2.0.1 \
-@electron/osx-sign/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-@electron/osx-sign/node_modules/isbinaryfile .npm/.-isbinaryfile-4.0.10 \
-@electron/osx-sign/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-@electron/osx-sign/node_modules/universalify .npm/.-universalify-2.0.1 \
-@electron/remote .npm/@electron-remote-2.1.1 \
-@electron/universal/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-@electron/universal/node_modules/fs-extra .npm/.-fs-extra-9.1.0 \
-@electron/universal/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-@electron/universal/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-@electron/universal/node_modules/universalify .npm/.-universalify-2.0.1 \
-@eslint/eslintrc/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-@eslint/eslintrc/node_modules/globals .npm/.-globals-13.24.0 \
-@eslint/eslintrc/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-@eslint/eslintrc/node_modules/type-fest .npm/.-type-fest-0.20.2 \
-@humanwhocodes/config-array/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-@humanwhocodes/config-array/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-@isaacs/cliui/node_modules/ansi-regex .npm/.-ansi-regex-6.0.1 \
-@isaacs/cliui/node_modules/ansi-styles .npm/.-ansi-styles-6.2.1 \
-@isaacs/cliui/node_modules/emoji-regex .npm/.-emoji-regex-9.2.2 \
-@isaacs/cliui/node_modules/string-width .npm/.-string-width-5.1.2 \
-@isaacs/cliui/node_modules/strip-ansi .npm/.-strip-ansi-7.1.0 \
-@isaacs/cliui/node_modules/wrap-ansi .npm/.-wrap-ansi-8.1.0 \
-@malept/flatpak-bundler/node_modules/fs-extra .npm/.-fs-extra-9.1.0 \
-@malept/flatpak-bundler/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-@malept/flatpak-bundler/node_modules/universalify .npm/.-universalify-2.0.1 \
-@sindresorhus/is .npm/@sindresorhus-is-4.6.0 \
-@szmarczak/http-timer .npm/@szmarczak-http-timer-4.0.6 \
-@types/node .npm/@types-node-18.19.8 \
-@vitest/runner/node_modules/p-limit .npm/.-p-limit-5.0.0 \
-@wdio/types/node_modules/@types/node .npm/@types-node-17.0.45 \
-ajv .npm/.-ajv-6.12.6 \
-ajv-formats/node_modules/ajv .npm/.-ajv-8.12.0 \
-ajv-formats/node_modules/json-schema-traverse .npm/.-json-schema-traverse-1.0.0 \
-ansi-regex .npm/.-ansi-regex-5.0.1 \
-ansi-styles .npm/.-ansi-styles-4.3.0 \
-app-builder-lib/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-app-builder-lib/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-app-builder-lib/node_modules/universalify .npm/.-universalify-2.0.1 \
-archiver-utils .npm/.-archiver-utils-2.1.0 \
-archiver-utils/node_modules/isarray .npm/.-isarray-1.0.0 \
-archiver-utils/node_modules/readable-stream .npm/.-readable-stream-2.3.8 \
-archiver-utils/node_modules/safe-buffer .npm/.-safe-buffer-5.1.2 \
-archiver-utils/node_modules/string_decoder .npm/.-string_decoder-1.1.1 \
-brace-expansion .npm/.-brace-expansion-2.0.1 \
-builder-util/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-builder-util/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-builder-util/node_modules/universalify .npm/.-universalify-2.0.1 \
-cacheable-request .npm/.-cacheable-request-7.0.4 \
-chalk .npm/.-chalk-4.1.2 \
-chownr .npm/.-chownr-2.0.0 \
-color-convert .npm/.-color-convert-2.0.1 \
-color-name .npm/.-color-name-1.1.4 \
-conf/node_modules/ajv .npm/.-ajv-8.12.0 \
-conf/node_modules/json-schema-traverse .npm/.-json-schema-traverse-1.0.0 \
-config-file-ts/node_modules/glob .npm/.-glob-10.3.10 \
-config-file-ts/node_modules/minimatch .npm/.-minimatch-9.0.3 \
-debug .npm/.-debug-4.3.4 \
-decompress-response .npm/.-decompress-response-6.0.0 \
-decompress-response/node_modules/mimic-response .npm/.-mimic-response-3.1.0 \
-defer-to-connect .npm/.-defer-to-connect-2.0.1 \
-devtools-protocol .npm/.-devtools-protocol-0.0.953906 \
-devtools/node_modules/@types/node .npm/@types-node-17.0.45 \
-dir-compare/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-dir-compare/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-dmg-builder/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-dmg-builder/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-dmg-builder/node_modules/universalify .npm/.-universalify-2.0.1 \
-doctrine .npm/.-doctrine-3.0.0 \
-electron-builder-squirrel-windows/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-electron-builder-squirrel-windows/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-electron-builder-squirrel-windows/node_modules/universalify .npm/.-universalify-2.0.1 \
-electron-builder/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-electron-builder/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-electron-builder/node_modules/universalify .npm/.-universalify-2.0.1 \
-electron-chromedriver/node_modules/@electron/get .npm/@electron-get-1.14.1 \
-electron-chromedriver/node_modules/@sindresorhus/is .npm/@sindresorhus-is-0.14.0 \
-electron-chromedriver/node_modules/@szmarczak/http-timer .npm/@szmarczak-http-timer-1.1.2 \
-electron-chromedriver/node_modules/cacheable-request .npm/.-cacheable-request-6.1.0 \
-electron-chromedriver/node_modules/decompress-response .npm/.-decompress-response-3.3.0 \
-electron-chromedriver/node_modules/defer-to-connect .npm/.-defer-to-connect-1.1.3 \
-electron-chromedriver/node_modules/got .npm/.-got-9.6.0 \
-electron-chromedriver/node_modules/got/node_modules/get-stream .npm/.-get-stream-4.1.0 \
-electron-chromedriver/node_modules/got/node_modules/lowercase-keys .npm/.-lowercase-keys-1.0.1 \
-electron-chromedriver/node_modules/json-buffer .npm/.-json-buffer-3.0.0 \
-electron-chromedriver/node_modules/keyv .npm/.-keyv-3.1.0 \
-electron-chromedriver/node_modules/normalize-url .npm/.-normalize-url-4.5.1 \
-electron-chromedriver/node_modules/p-cancelable .npm/.-p-cancelable-1.1.0 \
-electron-chromedriver/node_modules/responselike .npm/.-responselike-1.0.2 \
-electron-chromedriver/node_modules/responselike/node_modules/lowercase-keys .npm/.-lowercase-keys-1.0.1 \
-electron-chromedriver/node_modules/semver .npm/.-semver-6.3.1 \
-electron-publish/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-electron-publish/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-electron-publish/node_modules/universalify .npm/.-universalify-2.0.1 \
-emoji-regex .npm/.-emoji-regex-8.0.0 \
-escape-string-regexp .npm/.-escape-string-regexp-4.0.0 \
-eslint-import-resolver-node/node_modules/debug .npm/.-debug-3.2.7 \
-eslint-module-utils/node_modules/debug .npm/.-debug-3.2.7 \
-eslint-plugin-es/node_modules/eslint-utils .npm/.-eslint-utils-2.1.0 \
-eslint-plugin-es/node_modules/eslint-visitor-keys .npm/.-eslint-visitor-keys-1.3.0 \
-eslint-plugin-import/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-eslint-plugin-import/node_modules/debug .npm/.-debug-3.2.7 \
-eslint-plugin-import/node_modules/doctrine .npm/.-doctrine-2.1.0 \
-eslint-plugin-import/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-eslint-plugin-import/node_modules/semver .npm/.-semver-6.3.1 \
-eslint-plugin-n/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-eslint-plugin-n/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-eslint-plugin-react/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-eslint-plugin-react/node_modules/doctrine .npm/.-doctrine-2.1.0 \
-eslint-plugin-react/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-eslint-plugin-react/node_modules/resolve .npm/.-resolve-2.0.0-next.5 \
-eslint-plugin-react/node_modules/semver .npm/.-semver-6.3.1 \
-eslint-utils .npm/.-eslint-utils-3.0.0 \
-eslint-utils/node_modules/eslint-visitor-keys .npm/.-eslint-visitor-keys-2.1.0 \
-eslint-visitor-keys .npm/.-eslint-visitor-keys-3.4.3 \
-eslint/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-eslint/node_modules/find-up .npm/.-find-up-5.0.0 \
-eslint/node_modules/globals .npm/.-globals-13.24.0 \
-eslint/node_modules/locate-path .npm/.-locate-path-6.0.0 \
-eslint/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-eslint/node_modules/p-limit .npm/.-p-limit-3.1.0 \
-eslint/node_modules/p-locate .npm/.-p-locate-5.0.0 \
-eslint/node_modules/path-exists .npm/.-path-exists-4.0.0 \
-eslint/node_modules/type-fest .npm/.-type-fest-0.20.2 \
-eslint/node_modules/yocto-queue .npm/.-yocto-queue-0.1.0 \
-execa/node_modules/get-stream .npm/.-get-stream-8.0.1 \
-execa/node_modules/mimic-fn .npm/.-mimic-fn-4.0.0 \
-execa/node_modules/onetime .npm/.-onetime-6.0.0 \
-fast-deep-equal .npm/.-fast-deep-equal-3.1.3 \
-find-up .npm/.-find-up-3.0.0 \
-flat-cache/node_modules/rimraf .npm/.-rimraf-3.0.2 \
-fs-extra .npm/.-fs-extra-8.1.0 \
-fs-minipass/node_modules/minipass .npm/.-minipass-3.3.6 \
-get-stream .npm/.-get-stream-5.2.0 \
-glob .npm/.-glob-7.2.3 \
-glob/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-glob/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-globals .npm/.-globals-11.12.0 \
-got .npm/.-got-11.8.6 \
-has-flag .npm/.-has-flag-4.0.0 \
-isarray .npm/.-isarray-2.0.5 \
-isbinaryfile .npm/.-isbinaryfile-5.0.2 \
-jake/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-jake/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-json-buffer .npm/.-json-buffer-3.0.1 \
-json-schema-traverse .npm/.-json-schema-traverse-0.4.1 \
-json5 .npm/.-json5-2.2.3 \
-jsonfile .npm/.-jsonfile-4.0.0 \
-keyv .npm/.-keyv-4.5.4 \
-lazystream/node_modules/isarray .npm/.-isarray-1.0.0 \
-lazystream/node_modules/readable-stream .npm/.-readable-stream-2.3.8 \
-lazystream/node_modules/safe-buffer .npm/.-safe-buffer-5.1.2 \
-lazystream/node_modules/string_decoder .npm/.-string_decoder-1.1.1 \
-lighthouse-logger/node_modules/debug .npm/.-debug-2.6.9 \
-lighthouse-logger/node_modules/ms .npm/.-ms-2.0.0 \
-load-json-file/node_modules/type-fest .npm/.-type-fest-0.3.1 \
-locate-path .npm/.-locate-path-3.0.0 \
-lowercase-keys .npm/.-lowercase-keys-2.0.0 \
-lru-cache .npm/.-lru-cache-6.0.0 \
-luxon .npm/.-luxon-3.4.4 \
-macos-notification-state/node_modules/node-addon-api .npm/.-node-addon-api-3.0.0 \
-meeussunmoon/node_modules/luxon .npm/.-luxon-1.28.1 \
-mimic-fn .npm/.-mimic-fn-3.1.0 \
-mimic-response .npm/.-mimic-response-1.0.1 \
-minimatch .npm/.-minimatch-5.1.6 \
-minipass .npm/.-minipass-5.0.0 \
-minizlib/node_modules/minipass .npm/.-minipass-3.3.6 \
-ms .npm/.-ms-2.1.2 \
-node-addon-api .npm/.-node-addon-api-1.7.2 \
-normalize-url .npm/.-normalize-url-6.1.0 \
-npm-run-path/node_modules/path-key .npm/.-path-key-4.0.0 \
-onetime .npm/.-onetime-5.1.2 \
-onetime/node_modules/mimic-fn .npm/.-mimic-fn-2.1.0 \
-p-cancelable .npm/.-p-cancelable-2.1.1 \
-p-limit .npm/.-p-limit-2.3.0 \
-p-locate .npm/.-p-locate-3.0.0 \
-path-exists .npm/.-path-exists-3.0.0 \
-path-key .npm/.-path-key-3.1.1 \
-path-scurry/node_modules/lru-cache .npm/.-lru-cache-10.1.0 \
-pkg-dir/node_modules/find-up .npm/.-find-up-4.1.0 \
-pkg-dir/node_modules/locate-path .npm/.-locate-path-5.0.0 \
-pkg-dir/node_modules/p-locate .npm/.-p-locate-4.1.0 \
-pkg-dir/node_modules/path-exists .npm/.-path-exists-4.0.0 \
-pretty-format/node_modules/ansi-styles .npm/.-ansi-styles-5.2.0 \
-pretty-format/node_modules/react-is .npm/.-react-is-18.2.0 \
-puppeteer-core/node_modules/devtools-protocol .npm/.-devtools-protocol-0.0.981744 \
-puppeteer-core/node_modules/rimraf .npm/.-rimraf-3.0.2 \
-react-is .npm/.-react-is-16.13.1 \
-readable-stream .npm/.-readable-stream-3.6.2 \
-resolve .npm/.-resolve-1.22.8 \
-responselike .npm/.-responselike-2.0.1 \
-resq/node_modules/fast-deep-equal .npm/.-fast-deep-equal-2.0.1 \
-rimraf .npm/.-rimraf-5.0.5 \
-rimraf/node_modules/glob .npm/.-glob-10.3.10 \
-rimraf/node_modules/minimatch .npm/.-minimatch-9.0.3 \
-safe-buffer .npm/.-safe-buffer-5.2.1 \
-semver .npm/.-semver-7.5.4 \
-spectron/node_modules/@electron/remote .npm/@electron-remote-2.0.4 \
-string-width .npm/.-string-width-4.2.3 \
-string-width-cjs .npm/.-string-width-4.2.3 \
-string_decoder .npm/.-string_decoder-1.3.0 \
-strip-ansi .npm/.-strip-ansi-6.0.1 \
-strip-ansi-cjs .npm/.-strip-ansi-6.0.1 \
-supports-color .npm/.-supports-color-7.2.0 \
-tar-fs/node_modules/chownr .npm/.-chownr-1.1.4 \
-temp-file/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-temp-file/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-temp-file/node_modules/universalify .npm/.-universalify-2.0.1 \
-test-exclude/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-test-exclude/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-tsconfig-paths/node_modules/json5 .npm/.-json5-1.0.2 \
-type-fest .npm/.-type-fest-2.19.0 \
-universalify .npm/.-universalify-0.1.2 \
-webdriver/node_modules/@types/node .npm/@types-node-17.0.45 \
-webdriverio/node_modules/@types/node .npm/@types-node-17.0.45 \
-webdriverio/node_modules/brace-expansion .npm/.-brace-expansion-1.1.11 \
-webdriverio/node_modules/fs-extra .npm/.-fs-extra-10.1.0 \
-webdriverio/node_modules/jsonfile .npm/.-jsonfile-6.1.0 \
-webdriverio/node_modules/minimatch .npm/.-minimatch-3.1.2 \
-webdriverio/node_modules/type-fest .npm/.-type-fest-0.20.2 \
-webdriverio/node_modules/universalify .npm/.-universalify-2.0.1 \
-wrap-ansi .npm/.-wrap-ansi-7.0.0 \
-wrap-ansi-cjs .npm/.-wrap-ansi-7.0.0 \
-xml2js/node_modules/xmlbuilder .npm/.-xmlbuilder-11.0.1 \
-xmlbuilder .npm/.-xmlbuilder-15.1.1 \
-yallist .npm/.-yallist-4.0.0 \
-yocto-queue .npm/.-yocto-queue-1.0.0 \
-zip-stream/node_modules/archiver-utils .npm/.-archiver-utils-3.0.4 \
+/node_modules/zip-stream;.-zip-stream-4.1.1 \
+/node_modules/zip-stream/node_modules/archiver-utils;.-archiver-utils-3.0.4 \
+/node_modules/yocto-queue;.-yocto-queue-1.0.0 \
+/node_modules/yauzl;.-yauzl-2.10.0 \
+/node_modules/yargs;.-yargs-17.7.2 \
+/node_modules/yargs-parser;.-yargs-parser-21.1.1 \
+/node_modules/yallist;.-yallist-4.0.0 \
+/node_modules/y18n;.-y18n-5.0.8 \
+/node_modules/xmlbuilder;.-xmlbuilder-15.1.1 \
+/node_modules/xml2js;.-xml2js-0.5.0 \
+/node_modules/xml2js/node_modules/xmlbuilder;.-xmlbuilder-11.0.1 \
+/node_modules/xdg-basedir;.-xdg-basedir-4.0.0 \
+/node_modules/ws;.-ws-8.5.0 \
+/node_modules/wrappy;.-wrappy-1.0.2 \
+/node_modules/wrap-ansi;.-wrap-ansi-7.0.0 \
+/node_modules/wrap-ansi-cjs;.-wrap-ansi-7.0.0 \
+/node_modules/windows-quiet-hours;.-windows-quiet-hours-2.0.0 \
+/node_modules/windows-focus-assist;.-windows-focus-assist-1.3.0 \
+/node_modules/why-is-node-running;.-why-is-node-running-2.2.2 \
+/node_modules/which;.-which-2.0.2 \
+/node_modules/which-typed-array;.-which-typed-array-1.1.13 \
+/node_modules/which-collection;.-which-collection-1.0.1 \
+/node_modules/which-builtin-type;.-which-builtin-type-1.1.3 \
+/node_modules/which-boxed-primitive;.-which-boxed-primitive-1.0.2 \
+/node_modules/whatwg-url;.-whatwg-url-5.0.0 \
+/node_modules/webidl-conversions;.-webidl-conversions-3.0.1 \
+/node_modules/webdriverio;.-webdriverio-7.16.13 \
+/node_modules/webdriverio/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/webdriverio/node_modules/type-fest;.-type-fest-0.20.2 \
+/node_modules/webdriverio/node_modules/serialize-error;.-serialize-error-8.1.0 \
+/node_modules/webdriverio/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/webdriverio/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/webdriverio/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/webdriverio/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/webdriverio/node_modules/@types/node;@types-node-17.0.45 \
+/node_modules/webdriver;.-webdriver-7.16.13 \
+/node_modules/webdriver/node_modules/@types/node;@types-node-17.0.45 \
+/node_modules/vitest;.-vitest-1.2.1 \
+/node_modules/vite;.-vite-5.0.12 \
+/node_modules/vite-node;.-vite-node-1.2.1 \
+/node_modules/version-guard;.-version-guard-1.1.1 \
+/node_modules/uuid;.-uuid-8.3.2 \
+/node_modules/util-deprecate;.-util-deprecate-1.0.2 \
+/node_modules/utf8-byte-length;.-utf8-byte-length-1.0.4 \
+/node_modules/url-parse-lax;.-url-parse-lax-3.0.0 \
+/node_modules/uri-js;.-uri-js-4.4.1 \
+/node_modules/update-browserslist-db;.-update-browserslist-db-1.0.13 \
+/node_modules/universalify;.-universalify-0.1.2 \
+/node_modules/undici-types;.-undici-types-5.26.5 \
+/node_modules/unbzip2-stream;.-unbzip2-stream-1.4.3 \
+/node_modules/unbox-primitive;.-unbox-primitive-1.0.2 \
+/node_modules/ufo;.-ufo-1.3.2 \
+/node_modules/ua-parser-js;.-ua-parser-js-1.0.37 \
+/node_modules/typescript;.-typescript-5.3.3 \
+/node_modules/typed-array-length;.-typed-array-length-1.0.4 \
+/node_modules/typed-array-byte-offset;.-typed-array-byte-offset-1.0.0 \
+/node_modules/typed-array-byte-length;.-typed-array-byte-length-1.0.0 \
+/node_modules/typed-array-buffer;.-typed-array-buffer-1.0.0 \
+/node_modules/type-fest;.-type-fest-2.19.0 \
+/node_modules/type-detect;.-type-detect-4.0.8 \
+/node_modules/type-check;.-type-check-0.4.0 \
+/node_modules/tsconfig-paths;.-tsconfig-paths-3.15.0 \
+/node_modules/tsconfig-paths/node_modules/json5;.-json5-1.0.2 \
+/node_modules/truncate-utf8-bytes;.-truncate-utf8-bytes-1.0.2 \
+/node_modules/tr46;.-tr46-0.0.3 \
+/node_modules/to-readable-stream;.-to-readable-stream-1.0.0 \
+/node_modules/to-fast-properties;.-to-fast-properties-2.0.0 \
+/node_modules/tmp;.-tmp-0.2.3 \
+/node_modules/tmp-promise;.-tmp-promise-3.0.3 \
+/node_modules/tinyspy;.-tinyspy-2.2.0 \
+/node_modules/tinypool;.-tinypool-0.8.2 \
+/node_modules/tinybench;.-tinybench-2.6.0 \
+/node_modules/through;.-through-2.3.8 \
+/node_modules/text-table;.-text-table-0.2.0 \
+/node_modules/test-exclude;.-test-exclude-6.0.0 \
+/node_modules/test-exclude/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/test-exclude/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/temp-file;.-temp-file-3.4.0 \
+/node_modules/temp-file/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/temp-file/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/temp-file/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/tar;.-tar-6.2.0 \
+/node_modules/tar-stream;.-tar-stream-2.2.0 \
+/node_modules/tar-fs;.-tar-fs-2.1.1 \
+/node_modules/tar-fs/node_modules/chownr;.-chownr-1.1.4 \
+/node_modules/supports-preserve-symlinks-flag;.-supports-preserve-symlinks-flag-1.0.0 \
+/node_modules/supports-color;.-supports-color-7.2.0 \
+/node_modules/sumchecker;.-sumchecker-3.0.1 \
+/node_modules/strip-literal;.-strip-literal-1.3.0 \
+/node_modules/strip-json-comments;.-strip-json-comments-3.1.1 \
+/node_modules/strip-final-newline;.-strip-final-newline-3.0.0 \
+/node_modules/strip-bom;.-strip-bom-3.0.0 \
+/node_modules/strip-ansi;.-strip-ansi-6.0.1 \
+/node_modules/strip-ansi-cjs;.-strip-ansi-6.0.1 \
+/node_modules/string_decoder;.-string_decoder-1.3.0 \
+/node_modules/string.prototype.trimstart;.-string.prototype.trimstart-1.0.7 \
+/node_modules/string.prototype.trimend;.-string.prototype.trimend-1.0.7 \
+/node_modules/string.prototype.trim;.-string.prototype.trim-1.2.8 \
+/node_modules/string.prototype.matchall;.-string.prototype.matchall-4.0.10 \
+/node_modules/string-width;.-string-width-4.2.3 \
+/node_modules/string-width-cjs;.-string-width-4.2.3 \
+/node_modules/stream-combiner;.-stream-combiner-0.2.2 \
+/node_modules/std-env;.-std-env-3.7.0 \
+/node_modules/stat-mode;.-stat-mode-1.0.0 \
+/node_modules/standard;.-standard-17.1.0 \
+/node_modules/standard-engine;.-standard-engine-15.1.0 \
+/node_modules/stackback;.-stackback-0.0.2 \
+/node_modules/split;.-split-1.0.1 \
+/node_modules/spectron;.-spectron-19.0.0 \
+/node_modules/spectron/node_modules/@electron/remote;@electron-remote-2.0.4 \
+/node_modules/source-map;.-source-map-0.6.1 \
+/node_modules/source-map-support;.-source-map-support-0.5.21 \
+/node_modules/source-map-js;.-source-map-js-1.0.2 \
+/node_modules/simple-update-notifier;.-simple-update-notifier-2.0.0 \
+/node_modules/signal-exit;.-signal-exit-4.1.0 \
+/node_modules/siginfo;.-siginfo-2.0.0 \
+/node_modules/side-channel;.-side-channel-1.0.4 \
+/node_modules/shebang-regex;.-shebang-regex-3.0.0 \
+/node_modules/shebang-command;.-shebang-command-2.0.0 \
+/node_modules/set-function-name;.-set-function-name-2.0.1 \
+/node_modules/set-function-length;.-set-function-length-1.2.0 \
+/node_modules/semver;.-semver-7.5.4 \
+/node_modules/sax;.-sax-1.3.0 \
+/node_modules/sanitize-filename;.-sanitize-filename-1.6.3 \
+/node_modules/safer-buffer;.-safer-buffer-2.1.2 \
+/node_modules/safe-regex-test;.-safe-regex-test-1.0.2 \
+/node_modules/safe-buffer;.-safe-buffer-5.2.1 \
+/node_modules/safe-array-concat;.-safe-array-concat-1.1.0 \
+/node_modules/run-parallel;.-run-parallel-1.2.0 \
+/node_modules/rtl-detect;.-rtl-detect-1.1.2 \
+/node_modules/rollup;.-rollup-4.9.6 \
+/node_modules/rimraf;.-rimraf-5.0.5 \
+/node_modules/rimraf/node_modules/minimatch;.-minimatch-9.0.3 \
+/node_modules/rimraf/node_modules/glob;.-glob-10.3.10 \
+/node_modules/rgb2hex;.-rgb2hex-0.2.5 \
+/node_modules/reusify;.-reusify-1.0.4 \
+/node_modules/retry;.-retry-0.12.0 \
+/node_modules/resq;.-resq-1.11.0 \
+/node_modules/resq/node_modules/fast-deep-equal;.-fast-deep-equal-2.0.1 \
+/node_modules/responselike;.-responselike-2.0.1 \
+/node_modules/resolve;.-resolve-1.22.8 \
+/node_modules/resolve-from;.-resolve-from-4.0.0 \
+/node_modules/resolve-alpn;.-resolve-alpn-1.2.1 \
+/node_modules/require-from-string;.-require-from-string-2.0.2 \
+/node_modules/require-directory;.-require-directory-2.1.1 \
+/node_modules/regexpp;.-regexpp-3.2.0 \
+/node_modules/regexp.prototype.flags;.-regexp.prototype.flags-1.5.1 \
+/node_modules/regenerator-runtime;.-regenerator-runtime-0.14.1 \
+/node_modules/reflect.getprototypeof;.-reflect.getprototypeof-1.0.4 \
+/node_modules/readdir-glob;.-readdir-glob-1.1.3 \
+/node_modules/readable-stream;.-readable-stream-3.6.2 \
+/node_modules/read-config-file;.-read-config-file-6.3.2 \
+/node_modules/react-is;.-react-is-16.13.1 \
+/node_modules/quick-lru;.-quick-lru-5.1.1 \
+/node_modules/queue-microtask;.-queue-microtask-1.2.3 \
+/node_modules/query-selector-shadow-dom;.-query-selector-shadow-dom-1.0.1 \
+/node_modules/puppeteer-core;.-puppeteer-core-13.7.0 \
+/node_modules/puppeteer-core/node_modules/rimraf;.-rimraf-3.0.2 \
+/node_modules/puppeteer-core/node_modules/devtools-protocol;.-devtools-protocol-0.0.981744 \
+/node_modules/punycode;.-punycode-2.3.1 \
+/node_modules/pump;.-pump-3.0.0 \
+/node_modules/ps-list;.-ps-list-7.2.0 \
+/node_modules/proxy-from-env;.-proxy-from-env-1.1.0 \
+/node_modules/prop-types;.-prop-types-15.8.1 \
+/node_modules/promise-retry;.-promise-retry-2.0.1 \
+/node_modules/progress;.-progress-2.0.3 \
+/node_modules/process-nextick-args;.-process-nextick-args-2.0.1 \
+/node_modules/pretty-format;.-pretty-format-29.7.0 \
+/node_modules/pretty-format/node_modules/react-is;.-react-is-18.2.0 \
+/node_modules/pretty-format/node_modules/ansi-styles;.-ansi-styles-5.2.0 \
+/node_modules/prepend-http;.-prepend-http-2.0.0 \
+/node_modules/prelude-ls;.-prelude-ls-1.2.1 \
+/node_modules/postcss;.-postcss-8.4.33 \
+/node_modules/plist;.-plist-3.1.0 \
+/node_modules/pkg-up;.-pkg-up-3.1.0 \
+/node_modules/pkg-types;.-pkg-types-1.0.3 \
+/node_modules/pkg-dir;.-pkg-dir-4.2.0 \
+/node_modules/pkg-dir/node_modules/path-exists;.-path-exists-4.0.0 \
+/node_modules/pkg-dir/node_modules/p-locate;.-p-locate-4.1.0 \
+/node_modules/pkg-dir/node_modules/locate-path;.-locate-path-5.0.0 \
+/node_modules/pkg-dir/node_modules/find-up;.-find-up-4.1.0 \
+/node_modules/pkg-conf;.-pkg-conf-3.1.0 \
+/node_modules/pify;.-pify-4.0.1 \
+/node_modules/picocolors;.-picocolors-1.0.0 \
+/node_modules/pend;.-pend-1.2.0 \
+/node_modules/pause-stream;.-pause-stream-0.0.11 \
+/node_modules/pathval;.-pathval-1.1.1 \
+/node_modules/pathe;.-pathe-1.1.2 \
+/node_modules/path-scurry;.-path-scurry-1.10.1 \
+/node_modules/path-scurry/node_modules/lru-cache;.-lru-cache-10.1.0 \
+/node_modules/path-parse;.-path-parse-1.0.7 \
+/node_modules/path-key;.-path-key-3.1.1 \
+/node_modules/path-is-absolute;.-path-is-absolute-1.0.1 \
+/node_modules/path-exists;.-path-exists-3.0.0 \
+/node_modules/parse-json;.-parse-json-4.0.0 \
+/node_modules/parent-module;.-parent-module-1.0.1 \
+/node_modules/p-try;.-p-try-2.2.0 \
+/node_modules/p-locate;.-p-locate-3.0.0 \
+/node_modules/p-limit;.-p-limit-2.3.0 \
+/node_modules/p-iteration;.-p-iteration-1.1.8 \
+/node_modules/p-cancelable;.-p-cancelable-2.1.1 \
+/node_modules/optionator;.-optionator-0.9.3 \
+/node_modules/onetime;.-onetime-5.1.2 \
+/node_modules/onetime/node_modules/mimic-fn;.-mimic-fn-2.1.0 \
+/node_modules/once;.-once-1.4.0 \
+/node_modules/object.values;.-object.values-1.1.7 \
+/node_modules/object.hasown;.-object.hasown-1.1.3 \
+/node_modules/object.groupby;.-object.groupby-1.0.1 \
+/node_modules/object.fromentries;.-object.fromentries-2.0.7 \
+/node_modules/object.entries;.-object.entries-1.1.7 \
+/node_modules/object.assign;.-object.assign-4.1.5 \
+/node_modules/object-keys;.-object-keys-1.1.1 \
+/node_modules/object-inspect;.-object-inspect-1.13.1 \
+/node_modules/object-assign;.-object-assign-4.1.1 \
+/node_modules/npm-run-path;.-npm-run-path-5.2.0 \
+/node_modules/npm-run-path/node_modules/path-key;.-path-key-4.0.0 \
+/node_modules/normalize-url;.-normalize-url-6.1.0 \
+/node_modules/normalize-path;.-normalize-path-3.0.0 \
+/node_modules/node-releases;.-node-releases-2.0.14 \
+/node_modules/node-fetch;.-node-fetch-2.6.7 \
+/node_modules/node-addon-api;.-node-addon-api-1.7.2 \
+/node_modules/natural-compare;.-natural-compare-1.4.0 \
+/node_modules/nanoid;.-nanoid-3.3.7 \
+/node_modules/ms;.-ms-2.1.2 \
+/node_modules/mlly;.-mlly-1.5.0 \
+/node_modules/mkdirp;.-mkdirp-1.0.4 \
+/node_modules/mkdirp-classic;.-mkdirp-classic-0.5.3 \
+/node_modules/minizlib;.-minizlib-2.1.2 \
+/node_modules/minizlib/node_modules/minipass;.-minipass-3.3.6 \
+/node_modules/minipass;.-minipass-5.0.0 \
+/node_modules/minimist;.-minimist-1.2.8 \
+/node_modules/minimatch;.-minimatch-5.1.6 \
+/node_modules/mimic-response;.-mimic-response-1.0.1 \
+/node_modules/mimic-fn;.-mimic-fn-3.1.0 \
+/node_modules/mime;.-mime-2.6.0 \
+/node_modules/mime-types;.-mime-types-2.1.35 \
+/node_modules/mime-db;.-mime-db-1.52.0 \
+/node_modules/merge-stream;.-merge-stream-2.0.0 \
+/node_modules/meeussunmoon;.-meeussunmoon-3.0.3 \
+/node_modules/meeussunmoon/node_modules/luxon;.-luxon-1.28.1 \
+/node_modules/marky;.-marky-1.2.5 \
+/node_modules/map-stream;.-map-stream-0.0.7 \
+/node_modules/make-dir;.-make-dir-4.0.0 \
+/node_modules/magicast;.-magicast-0.3.3 \
+/node_modules/magic-string;.-magic-string-0.30.5 \
+/node_modules/macos-notification-state;.-macos-notification-state-3.0.0 \
+/node_modules/macos-notification-state/node_modules/node-addon-api;.-node-addon-api-3.0.0 \
+/node_modules/luxon;.-luxon-3.4.4 \
+/node_modules/lru-cache;.-lru-cache-6.0.0 \
+/node_modules/lowercase-keys;.-lowercase-keys-2.0.0 \
+/node_modules/loupe;.-loupe-2.3.7 \
+/node_modules/loose-envify;.-loose-envify-1.4.0 \
+/node_modules/long;.-long-5.2.1 \
+/node_modules/loglevel;.-loglevel-1.8.1 \
+/node_modules/loglevel-plugin-prefix;.-loglevel-plugin-prefix-0.8.4 \
+/node_modules/lodash;.-lodash-4.17.21 \
+/node_modules/lodash.zip;.-lodash.zip-4.2.0 \
+/node_modules/lodash.union;.-lodash.union-4.6.0 \
+/node_modules/lodash.merge;.-lodash.merge-4.6.2 \
+/node_modules/lodash.isplainobject;.-lodash.isplainobject-4.0.6 \
+/node_modules/lodash.isobject;.-lodash.isobject-3.0.2 \
+/node_modules/lodash.flatten;.-lodash.flatten-4.4.0 \
+/node_modules/lodash.difference;.-lodash.difference-4.5.0 \
+/node_modules/lodash.defaults;.-lodash.defaults-4.2.0 \
+/node_modules/lodash.clonedeep;.-lodash.clonedeep-4.5.0 \
+/node_modules/locate-path;.-locate-path-3.0.0 \
+/node_modules/local-pkg;.-local-pkg-0.5.0 \
+/node_modules/load-json-file;.-load-json-file-5.3.0 \
+/node_modules/load-json-file/node_modules/type-fest;.-type-fest-0.3.1 \
+/node_modules/lighthouse-logger;.-lighthouse-logger-1.4.2 \
+/node_modules/lighthouse-logger/node_modules/ms;.-ms-2.0.0 \
+/node_modules/lighthouse-logger/node_modules/debug;.-debug-2.6.9 \
+/node_modules/levn;.-levn-0.4.1 \
+/node_modules/lazystream;.-lazystream-1.0.1 \
+/node_modules/lazystream/node_modules/string_decoder;.-string_decoder-1.1.1 \
+/node_modules/lazystream/node_modules/safe-buffer;.-safe-buffer-5.1.2 \
+/node_modules/lazystream/node_modules/readable-stream;.-readable-stream-2.3.8 \
+/node_modules/lazystream/node_modules/isarray;.-isarray-1.0.0 \
+/node_modules/lazy-val;.-lazy-val-1.0.5 \
+/node_modules/ky;.-ky-0.28.7 \
+/node_modules/keyv;.-keyv-4.5.4 \
+/node_modules/jsx-ast-utils;.-jsx-ast-utils-3.3.5 \
+/node_modules/jsonfile;.-jsonfile-4.0.0 \
+/node_modules/jsonc-parser;.-jsonc-parser-3.2.0 \
+/node_modules/json5;.-json5-2.2.3 \
+/node_modules/json-stable-stringify-without-jsonify;.-json-stable-stringify-without-jsonify-1.0.1 \
+/node_modules/json-schema-typed;.-json-schema-typed-7.0.3 \
+/node_modules/json-schema-traverse;.-json-schema-traverse-0.4.1 \
+/node_modules/json-parse-better-errors;.-json-parse-better-errors-1.0.2 \
+/node_modules/json-buffer;.-json-buffer-3.0.1 \
+/node_modules/jsesc;.-jsesc-2.5.2 \
+/node_modules/js-yaml;.-js-yaml-4.1.0 \
+/node_modules/js-tokens;.-js-tokens-4.0.0 \
+/node_modules/jake;.-jake-10.8.7 \
+/node_modules/jake/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/jake/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/jackspeak;.-jackspeak-2.3.6 \
+/node_modules/iterator.prototype;.-iterator.prototype-1.1.2 \
+/node_modules/istanbul-reports;.-istanbul-reports-3.1.6 \
+/node_modules/istanbul-lib-source-maps;.-istanbul-lib-source-maps-4.0.1 \
+/node_modules/istanbul-lib-report;.-istanbul-lib-report-3.0.1 \
+/node_modules/istanbul-lib-instrument;.-istanbul-lib-instrument-6.0.1 \
+/node_modules/istanbul-lib-coverage;.-istanbul-lib-coverage-3.2.2 \
+/node_modules/isexe;.-isexe-2.0.0 \
+/node_modules/isbinaryfile;.-isbinaryfile-5.0.2 \
+/node_modules/isarray;.-isarray-2.0.5 \
+/node_modules/is-wsl;.-is-wsl-2.2.0 \
+/node_modules/is-weakset;.-is-weakset-2.0.2 \
+/node_modules/is-weakref;.-is-weakref-1.0.2 \
+/node_modules/is-weakmap;.-is-weakmap-2.0.1 \
+/node_modules/is-typed-array;.-is-typed-array-1.1.12 \
+/node_modules/is-symbol;.-is-symbol-1.0.4 \
+/node_modules/is-string;.-is-string-1.0.7 \
+/node_modules/is-stream;.-is-stream-3.0.0 \
+/node_modules/is-shared-array-buffer;.-is-shared-array-buffer-1.0.2 \
+/node_modules/is-set;.-is-set-2.0.2 \
+/node_modules/is-regex;.-is-regex-1.1.4 \
+/node_modules/is-path-inside;.-is-path-inside-3.0.3 \
+/node_modules/is-obj;.-is-obj-2.0.0 \
+/node_modules/is-number-object;.-is-number-object-1.0.7 \
+/node_modules/is-negative-zero;.-is-negative-zero-2.0.2 \
+/node_modules/is-map;.-is-map-2.0.2 \
+/node_modules/is-glob;.-is-glob-4.0.3 \
+/node_modules/is-generator-function;.-is-generator-function-1.0.10 \
+/node_modules/is-fullwidth-code-point;.-is-fullwidth-code-point-3.0.0 \
+/node_modules/is-finalizationregistry;.-is-finalizationregistry-1.0.2 \
+/node_modules/is-extglob;.-is-extglob-2.1.1 \
+/node_modules/is-docker;.-is-docker-2.2.1 \
+/node_modules/is-date-object;.-is-date-object-1.0.5 \
+/node_modules/is-core-module;.-is-core-module-2.13.1 \
+/node_modules/is-ci;.-is-ci-3.0.1 \
+/node_modules/is-callable;.-is-callable-1.2.7 \
+/node_modules/is-boolean-object;.-is-boolean-object-1.1.2 \
+/node_modules/is-bigint;.-is-bigint-1.0.4 \
+/node_modules/is-async-function;.-is-async-function-2.0.0 \
+/node_modules/is-arrayish;.-is-arrayish-0.2.1 \
+/node_modules/is-array-buffer;.-is-array-buffer-3.0.2 \
+/node_modules/internal-slot;.-internal-slot-1.0.6 \
+/node_modules/inherits;.-inherits-2.0.4 \
+/node_modules/inflight;.-inflight-1.0.6 \
+/node_modules/imurmurhash;.-imurmurhash-0.1.4 \
+/node_modules/import-fresh;.-import-fresh-3.3.0 \
+/node_modules/ignore;.-ignore-5.3.0 \
+/node_modules/ieee754;.-ieee754-1.2.1 \
+/node_modules/iconv-lite;.-iconv-lite-0.6.3 \
+/node_modules/i18next;.-i18next-23.7.18 \
+/node_modules/i18next-fs-backend;.-i18next-fs-backend-2.3.1 \
+/node_modules/husky;.-husky-8.0.3 \
+/node_modules/humanize-duration;.-humanize-duration-3.31.0 \
+/node_modules/human-signals;.-human-signals-5.0.0 \
+/node_modules/https-proxy-agent;.-https-proxy-agent-5.0.1 \
+/node_modules/http2-wrapper;.-http2-wrapper-1.0.3 \
+/node_modules/http-proxy-agent;.-http-proxy-agent-5.0.0 \
+/node_modules/http-cache-semantics;.-http-cache-semantics-4.1.1 \
+/node_modules/html-escaper;.-html-escaper-2.0.2 \
+/node_modules/hosted-git-info;.-hosted-git-info-4.1.0 \
+/node_modules/hasown;.-hasown-2.0.0 \
+/node_modules/has-tostringtag;.-has-tostringtag-1.0.0 \
+/node_modules/has-symbols;.-has-symbols-1.0.3 \
+/node_modules/has-proto;.-has-proto-1.0.1 \
+/node_modules/has-property-descriptors;.-has-property-descriptors-1.0.1 \
+/node_modules/has-flag;.-has-flag-4.0.0 \
+/node_modules/has-bigints;.-has-bigints-1.0.2 \
+/node_modules/graphemer;.-graphemer-1.4.0 \
+/node_modules/grapheme-splitter;.-grapheme-splitter-1.0.4 \
+/node_modules/graceful-fs;.-graceful-fs-4.2.11 \
+/node_modules/got;.-got-11.8.6 \
+/node_modules/gopd;.-gopd-1.0.1 \
+/node_modules/globalthis;.-globalthis-1.0.3 \
+/node_modules/globals;.-globals-11.12.0 \
+/node_modules/glob;.-glob-7.2.3 \
+/node_modules/glob/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/glob/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/glob-parent;.-glob-parent-6.0.2 \
+/node_modules/get-symbol-description;.-get-symbol-description-1.0.0 \
+/node_modules/get-stream;.-get-stream-5.2.0 \
+/node_modules/get-stdin;.-get-stdin-8.0.0 \
+/node_modules/get-port;.-get-port-5.1.1 \
+/node_modules/get-intrinsic;.-get-intrinsic-1.2.2 \
+/node_modules/get-func-name;.-get-func-name-2.0.2 \
+/node_modules/get-caller-file;.-get-caller-file-2.0.5 \
+/node_modules/gensync;.-gensync-1.0.0-beta.2 \
+/node_modules/functions-have-names;.-functions-have-names-1.2.3 \
+/node_modules/function.prototype.name;.-function.prototype.name-1.1.6 \
+/node_modules/function-bind;.-function-bind-1.1.2 \
+/node_modules/fs.realpath;.-fs.realpath-1.0.0 \
+/node_modules/fs-minipass;.-fs-minipass-2.1.0 \
+/node_modules/fs-minipass/node_modules/minipass;.-minipass-3.3.6 \
+/node_modules/fs-extra;.-fs-extra-8.1.0 \
+/node_modules/fs-constants;.-fs-constants-1.0.0 \
+/node_modules/from;.-from-0.1.7 \
+/node_modules/form-data;.-form-data-4.0.0 \
+/node_modules/foreground-child;.-foreground-child-3.1.1 \
+/node_modules/for-each;.-for-each-0.3.3 \
+/node_modules/flatted;.-flatted-3.2.9 \
+/node_modules/flat-cache;.-flat-cache-3.2.0 \
+/node_modules/flat-cache/node_modules/rimraf;.-rimraf-3.0.2 \
+/node_modules/find-up;.-find-up-3.0.0 \
+/node_modules/filelist;.-filelist-1.0.4 \
+/node_modules/file-uri-to-path;.-file-uri-to-path-1.0.0 \
+/node_modules/file-entry-cache;.-file-entry-cache-6.0.1 \
+/node_modules/fd-slicer;.-fd-slicer-1.1.0 \
+/node_modules/fastq;.-fastq-1.16.0 \
+/node_modules/fast-levenshtein;.-fast-levenshtein-2.0.6 \
+/node_modules/fast-json-stable-stringify;.-fast-json-stable-stringify-2.1.0 \
+/node_modules/fast-deep-equal;.-fast-deep-equal-3.1.3 \
+/node_modules/extract-zip;.-extract-zip-2.0.1 \
+/node_modules/execa;.-execa-8.0.1 \
+/node_modules/execa/node_modules/onetime;.-onetime-6.0.0 \
+/node_modules/execa/node_modules/mimic-fn;.-mimic-fn-4.0.0 \
+/node_modules/execa/node_modules/get-stream;.-get-stream-8.0.1 \
+/node_modules/event-stream;.-event-stream-4.0.1 \
+/node_modules/esutils;.-esutils-2.0.3 \
+/node_modules/estree-walker;.-estree-walker-3.0.3 \
+/node_modules/estraverse;.-estraverse-5.3.0 \
+/node_modules/esrecurse;.-esrecurse-4.3.0 \
+/node_modules/esquery;.-esquery-1.5.0 \
+/node_modules/espree;.-espree-9.6.1 \
+/node_modules/eslint;.-eslint-8.56.0 \
+/node_modules/eslint/node_modules/yocto-queue;.-yocto-queue-0.1.0 \
+/node_modules/eslint/node_modules/type-fest;.-type-fest-0.20.2 \
+/node_modules/eslint/node_modules/path-exists;.-path-exists-4.0.0 \
+/node_modules/eslint/node_modules/p-locate;.-p-locate-5.0.0 \
+/node_modules/eslint/node_modules/p-limit;.-p-limit-3.1.0 \
+/node_modules/eslint/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/eslint/node_modules/locate-path;.-locate-path-6.0.0 \
+/node_modules/eslint/node_modules/globals;.-globals-13.24.0 \
+/node_modules/eslint/node_modules/find-up;.-find-up-5.0.0 \
+/node_modules/eslint/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/eslint-visitor-keys;.-eslint-visitor-keys-3.4.3 \
+/node_modules/eslint-utils;.-eslint-utils-3.0.0 \
+/node_modules/eslint-utils/node_modules/eslint-visitor-keys;.-eslint-visitor-keys-2.1.0 \
+/node_modules/eslint-scope;.-eslint-scope-7.2.2 \
+/node_modules/eslint-plugin-react;.-eslint-plugin-react-7.33.2 \
+/node_modules/eslint-plugin-react/node_modules/semver;.-semver-6.3.1 \
+/node_modules/eslint-plugin-react/node_modules/resolve;.-resolve-2.0.0-next.5 \
+/node_modules/eslint-plugin-react/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/eslint-plugin-react/node_modules/doctrine;.-doctrine-2.1.0 \
+/node_modules/eslint-plugin-react/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/eslint-plugin-promise;.-eslint-plugin-promise-6.1.1 \
+/node_modules/eslint-plugin-n;.-eslint-plugin-n-15.7.0 \
+/node_modules/eslint-plugin-n/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/eslint-plugin-n/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/eslint-plugin-import;.-eslint-plugin-import-2.29.1 \
+/node_modules/eslint-plugin-import/node_modules/semver;.-semver-6.3.1 \
+/node_modules/eslint-plugin-import/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/eslint-plugin-import/node_modules/doctrine;.-doctrine-2.1.0 \
+/node_modules/eslint-plugin-import/node_modules/debug;.-debug-3.2.7 \
+/node_modules/eslint-plugin-import/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/eslint-plugin-es;.-eslint-plugin-es-4.1.0 \
+/node_modules/eslint-plugin-es/node_modules/eslint-visitor-keys;.-eslint-visitor-keys-1.3.0 \
+/node_modules/eslint-plugin-es/node_modules/eslint-utils;.-eslint-utils-2.1.0 \
+/node_modules/eslint-module-utils;.-eslint-module-utils-2.8.0 \
+/node_modules/eslint-module-utils/node_modules/debug;.-debug-3.2.7 \
+/node_modules/eslint-import-resolver-node;.-eslint-import-resolver-node-0.3.9 \
+/node_modules/eslint-import-resolver-node/node_modules/debug;.-debug-3.2.7 \
+/node_modules/eslint-config-standard;.-eslint-config-standard-17.1.0 \
+/node_modules/eslint-config-standard-jsx;.-eslint-config-standard-jsx-11.0.0 \
+/node_modules/escape-string-regexp;.-escape-string-regexp-4.0.0 \
+/node_modules/escalade;.-escalade-3.1.1 \
+/node_modules/esbuild;.-esbuild-0.19.11 \
+/node_modules/es-to-primitive;.-es-to-primitive-1.2.1 \
+/node_modules/es-shim-unscopables;.-es-shim-unscopables-1.0.2 \
+/node_modules/es-set-tostringtag;.-es-set-tostringtag-2.0.2 \
+/node_modules/es-iterator-helpers;.-es-iterator-helpers-1.0.15 \
+/node_modules/es-abstract;.-es-abstract-1.22.3 \
+/node_modules/error-ex;.-error-ex-1.3.2 \
+/node_modules/err-code;.-err-code-2.0.3 \
+/node_modules/env-paths;.-env-paths-2.2.1 \
+/node_modules/end-of-stream;.-end-of-stream-1.4.4 \
+/node_modules/emoji-regex;.-emoji-regex-8.0.0 \
+/node_modules/electron;.-electron-28.1.4 \
+/node_modules/electron-to-chromium;.-electron-to-chromium-1.4.640 \
+/node_modules/electron-store;.-electron-store-8.1.0 \
+/node_modules/electron-publish;.-electron-publish-24.13.1 \
+/node_modules/electron-publish/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/electron-publish/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/electron-publish/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/electron-log;.-electron-log-5.0.3 \
+/node_modules/electron-chromedriver;.-electron-chromedriver-17.0.0 \
+/node_modules/electron-chromedriver/node_modules/semver;.-semver-6.3.1 \
+/node_modules/electron-chromedriver/node_modules/responselike;.-responselike-1.0.2 \
+/node_modules/electron-chromedriver/node_modules/responselike/node_modules/lowercase-keys;.-lowercase-keys-1.0.1 \
+/node_modules/electron-chromedriver/node_modules/p-cancelable;.-p-cancelable-1.1.0 \
+/node_modules/electron-chromedriver/node_modules/normalize-url;.-normalize-url-4.5.1 \
+/node_modules/electron-chromedriver/node_modules/keyv;.-keyv-3.1.0 \
+/node_modules/electron-chromedriver/node_modules/json-buffer;.-json-buffer-3.0.0 \
+/node_modules/electron-chromedriver/node_modules/got;.-got-9.6.0 \
+/node_modules/electron-chromedriver/node_modules/got/node_modules/lowercase-keys;.-lowercase-keys-1.0.1 \
+/node_modules/electron-chromedriver/node_modules/got/node_modules/get-stream;.-get-stream-4.1.0 \
+/node_modules/electron-chromedriver/node_modules/defer-to-connect;.-defer-to-connect-1.1.3 \
+/node_modules/electron-chromedriver/node_modules/decompress-response;.-decompress-response-3.3.0 \
+/node_modules/electron-chromedriver/node_modules/cacheable-request;.-cacheable-request-6.1.0 \
+/node_modules/electron-chromedriver/node_modules/@szmarczak/http-timer;@szmarczak-http-timer-1.1.2 \
+/node_modules/electron-chromedriver/node_modules/@sindresorhus/is;@sindresorhus-is-0.14.0 \
+/node_modules/electron-chromedriver/node_modules/@electron/get;@electron-get-1.14.1 \
+/node_modules/electron-builder;.-electron-builder-24.13.3 \
+/node_modules/electron-builder/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/electron-builder/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/electron-builder/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/electron-builder-squirrel-windows;.-electron-builder-squirrel-windows-24.13.3 \
+/node_modules/electron-builder-squirrel-windows/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/electron-builder-squirrel-windows/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/electron-builder-squirrel-windows/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/ejs;.-ejs-3.1.9 \
+/node_modules/edge-paths;.-edge-paths-2.2.1 \
+/node_modules/eastasianwidth;.-eastasianwidth-0.2.0 \
+/node_modules/duplexer;.-duplexer-0.1.2 \
+/node_modules/duplexer3;.-duplexer3-0.1.5 \
+/node_modules/dotenv;.-dotenv-9.0.2 \
+/node_modules/dotenv-expand;.-dotenv-expand-5.1.0 \
+/node_modules/dot-prop;.-dot-prop-6.0.1 \
+/node_modules/doctrine;.-doctrine-3.0.0 \
+/node_modules/dmg-builder;.-dmg-builder-24.13.3 \
+/node_modules/dmg-builder/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/dmg-builder/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/dmg-builder/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/dir-compare;.-dir-compare-3.3.0 \
+/node_modules/dir-compare/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/dir-compare/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/diff-sequences;.-diff-sequences-29.6.3 \
+/node_modules/devtools;.-devtools-7.16.13 \
+/node_modules/devtools/node_modules/@types/node;@types-node-17.0.45 \
+/node_modules/devtools-protocol;.-devtools-protocol-0.0.953906 \
+/node_modules/dev-null;.-dev-null-0.1.1 \
+/node_modules/dequal;.-dequal-2.0.3 \
+/node_modules/delayed-stream;.-delayed-stream-1.0.0 \
+/node_modules/define-properties;.-define-properties-1.2.1 \
+/node_modules/define-data-property;.-define-data-property-1.1.1 \
+/node_modules/defer-to-connect;.-defer-to-connect-2.0.1 \
+/node_modules/deepmerge;.-deepmerge-4.3.1 \
+/node_modules/deep-is;.-deep-is-0.1.4 \
+/node_modules/deep-eql;.-deep-eql-4.1.3 \
+/node_modules/decompress-response;.-decompress-response-6.0.0 \
+/node_modules/decompress-response/node_modules/mimic-response;.-mimic-response-3.1.0 \
+/node_modules/debug;.-debug-4.3.4 \
+/node_modules/debounce-fn;.-debounce-fn-4.0.0 \
+/node_modules/css-value;.-css-value-0.0.1 \
+/node_modules/css-shorthand-properties;.-css-shorthand-properties-1.1.1 \
+/node_modules/cross-spawn;.-cross-spawn-7.0.3 \
+/node_modules/cross-fetch;.-cross-fetch-3.1.5 \
+/node_modules/cross-env;.-cross-env-7.0.3 \
+/node_modules/crc32-stream;.-crc32-stream-4.0.3 \
+/node_modules/crc-32;.-crc-32-1.2.2 \
+/node_modules/core-util-is;.-core-util-is-1.0.2 \
+/node_modules/convert-source-map;.-convert-source-map-2.0.0 \
+/node_modules/config-file-ts;.-config-file-ts-0.2.6 \
+/node_modules/config-file-ts/node_modules/minimatch;.-minimatch-9.0.3 \
+/node_modules/config-file-ts/node_modules/glob;.-glob-10.3.10 \
+/node_modules/conf;.-conf-10.2.0 \
+/node_modules/conf/node_modules/json-schema-traverse;.-json-schema-traverse-1.0.0 \
+/node_modules/conf/node_modules/ajv;.-ajv-8.12.0 \
+/node_modules/concat-map;.-concat-map-0.0.1 \
+/node_modules/compress-commons;.-compress-commons-4.1.2 \
+/node_modules/compare-version;.-compare-version-0.1.2 \
+/node_modules/commander;.-commander-5.1.0 \
+/node_modules/combined-stream;.-combined-stream-1.0.8 \
+/node_modules/color-name;.-color-name-1.1.4 \
+/node_modules/color-convert;.-color-convert-2.0.1 \
+/node_modules/clone-response;.-clone-response-1.0.3 \
+/node_modules/cliui;.-cliui-8.0.1 \
+/node_modules/ci-info;.-ci-info-3.9.0 \
+/node_modules/chromium-pickle-js;.-chromium-pickle-js-0.2.0 \
+/node_modules/chrome-launcher;.-chrome-launcher-0.15.2 \
+/node_modules/chownr;.-chownr-2.0.0 \
+/node_modules/check-error;.-check-error-1.0.3 \
+/node_modules/chalk;.-chalk-4.1.2 \
+/node_modules/chai;.-chai-4.4.1 \
+/node_modules/caniuse-lite;.-caniuse-lite-1.0.30001579 \
+/node_modules/callsites;.-callsites-3.1.0 \
+/node_modules/call-bind;.-call-bind-1.0.5 \
+/node_modules/cacheable-request;.-cacheable-request-7.0.4 \
+/node_modules/cacheable-lookup;.-cacheable-lookup-5.0.4 \
+/node_modules/cac;.-cac-6.7.14 \
+/node_modules/builtins;.-builtins-5.0.1 \
+/node_modules/builder-util;.-builder-util-24.13.1 \
+/node_modules/builder-util/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/builder-util/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/builder-util/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/builder-util-runtime;.-builder-util-runtime-9.2.4 \
+/node_modules/buffer;.-buffer-5.7.1 \
+/node_modules/buffer-from;.-buffer-from-1.1.2 \
+/node_modules/buffer-equal;.-buffer-equal-1.0.1 \
+/node_modules/buffer-crc32;.-buffer-crc32-0.2.13 \
+/node_modules/browserslist;.-browserslist-4.22.2 \
+/node_modules/brace-expansion;.-brace-expansion-2.0.1 \
+/node_modules/bluebird;.-bluebird-3.7.2 \
+/node_modules/bluebird-lst;.-bluebird-lst-1.0.9 \
+/node_modules/bl;.-bl-4.1.0 \
+/node_modules/bindings;.-bindings-1.5.0 \
+/node_modules/base64-js;.-base64-js-1.5.1 \
+/node_modules/balanced-match;.-balanced-match-1.0.2 \
+/node_modules/available-typed-arrays;.-available-typed-arrays-1.0.5 \
+/node_modules/atomically;.-atomically-1.7.0 \
+/node_modules/at-least-node;.-at-least-node-1.0.0 \
+/node_modules/asynckit;.-asynckit-0.4.0 \
+/node_modules/asynciterator.prototype;.-asynciterator.prototype-1.0.0 \
+/node_modules/async;.-async-3.2.5 \
+/node_modules/async-exit-hook;.-async-exit-hook-2.0.1 \
+/node_modules/assertion-error;.-assertion-error-1.1.0 \
+/node_modules/arraybuffer.prototype.slice;.-arraybuffer.prototype.slice-1.0.2 \
+/node_modules/array.prototype.tosorted;.-array.prototype.tosorted-1.1.2 \
+/node_modules/array.prototype.flatmap;.-array.prototype.flatmap-1.3.2 \
+/node_modules/array.prototype.flat;.-array.prototype.flat-1.3.2 \
+/node_modules/array.prototype.findlastindex;.-array.prototype.findlastindex-1.2.3 \
+/node_modules/array-includes;.-array-includes-3.1.7 \
+/node_modules/array-buffer-byte-length;.-array-buffer-byte-length-1.0.0 \
+/node_modules/aria-query;.-aria-query-5.3.0 \
+/node_modules/argparse;.-argparse-2.0.1 \
+/node_modules/archiver;.-archiver-5.3.2 \
+/node_modules/archiver-utils;.-archiver-utils-2.1.0 \
+/node_modules/archiver-utils/node_modules/string_decoder;.-string_decoder-1.1.1 \
+/node_modules/archiver-utils/node_modules/safe-buffer;.-safe-buffer-5.1.2 \
+/node_modules/archiver-utils/node_modules/readable-stream;.-readable-stream-2.3.8 \
+/node_modules/archiver-utils/node_modules/isarray;.-isarray-1.0.0 \
+/node_modules/app-builder-lib;.-app-builder-lib-24.13.3 \
+/node_modules/app-builder-lib/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/app-builder-lib/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/app-builder-lib/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/app-builder-bin;.-app-builder-bin-4.0.0 \
+/node_modules/ansi-styles;.-ansi-styles-4.3.0 \
+/node_modules/ansi-regex;.-ansi-regex-5.0.1 \
+/node_modules/ajv;.-ajv-6.12.6 \
+/node_modules/ajv-keywords;.-ajv-keywords-3.5.2 \
+/node_modules/ajv-formats;.-ajv-formats-2.1.1 \
+/node_modules/ajv-formats/node_modules/json-schema-traverse;.-json-schema-traverse-1.0.0 \
+/node_modules/ajv-formats/node_modules/ajv;.-ajv-8.12.0 \
+/node_modules/agent-base;.-agent-base-6.0.2 \
+/node_modules/acorn;.-acorn-8.11.3 \
+/node_modules/acorn-walk;.-acorn-walk-8.3.2 \
+/node_modules/acorn-jsx;.-acorn-jsx-5.3.2 \
+/node_modules/@xmldom/xmldom;@xmldom-xmldom-0.8.10 \
+/node_modules/@wdio/utils;@wdio-utils-7.16.13 \
+/node_modules/@wdio/types;@wdio-types-7.16.13 \
+/node_modules/@wdio/types/node_modules/@types/node;@types-node-17.0.45 \
+/node_modules/@wdio/repl;@wdio-repl-7.16.13 \
+/node_modules/@wdio/protocols;@wdio-protocols-7.16.7 \
+/node_modules/@wdio/logger;@wdio-logger-7.16.0 \
+/node_modules/@wdio/config;@wdio-config-7.16.13 \
+/node_modules/@vitest/utils;@vitest-utils-1.2.1 \
+/node_modules/@vitest/spy;@vitest-spy-1.2.1 \
+/node_modules/@vitest/snapshot;@vitest-snapshot-1.2.1 \
+/node_modules/@vitest/runner;@vitest-runner-1.2.1 \
+/node_modules/@vitest/runner/node_modules/p-limit;.-p-limit-5.0.0 \
+/node_modules/@vitest/expect;@vitest-expect-1.2.1 \
+/node_modules/@vitest/coverage-istanbul;@vitest-coverage-istanbul-1.2.1 \
+/node_modules/@ungap/structured-clone;@ungap-structured-clone-1.2.0 \
+/node_modules/@types/which;@types-which-1.3.2 \
+/node_modules/@types/ua-parser-js;@types-ua-parser-js-0.7.39 \
+/node_modules/@types/responselike;@types-responselike-1.0.3 \
+/node_modules/@types/node;@types-node-18.19.8 \
+/node_modules/@types/ms;@types-ms-0.7.34 \
+/node_modules/@types/keyv;@types-keyv-3.1.4 \
+/node_modules/@types/json5;@types-json5-0.0.29 \
+/node_modules/@types/http-cache-semantics;@types-http-cache-semantics-4.0.4 \
+/node_modules/@types/fs-extra;@types-fs-extra-9.0.13 \
+/node_modules/@types/estree;@types-estree-1.0.5 \
+/node_modules/@types/debug;@types-debug-4.1.12 \
+/node_modules/@types/cacheable-request;@types-cacheable-request-6.0.3 \
+/node_modules/@types/aria-query;@types-aria-query-5.0.4 \
+/node_modules/@tootallnate/once;@tootallnate-once-2.0.0 \
+/node_modules/@szmarczak/http-timer;@szmarczak-http-timer-4.0.6 \
+/node_modules/@sindresorhus/is;@sindresorhus-is-4.6.0 \
+/node_modules/@sinclair/typebox;@sinclair-typebox-0.27.8 \
+/node_modules/@nornagon/put;@nornagon-put-0.0.8 \
+/node_modules/@nodelib/fs.walk;@nodelib-fs.walk-1.2.8 \
+/node_modules/@nodelib/fs.stat;@nodelib-fs.stat-2.0.5 \
+/node_modules/@nodelib/fs.scandir;@nodelib-fs.scandir-2.1.5 \
+/node_modules/@malept/flatpak-bundler;@malept-flatpak-bundler-0.4.0 \
+/node_modules/@malept/flatpak-bundler/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/@malept/flatpak-bundler/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/@malept/flatpak-bundler/node_modules/fs-extra;.-fs-extra-9.1.0 \
+/node_modules/@malept/cross-spawn-promise;@malept-cross-spawn-promise-1.1.1 \
+/node_modules/@jridgewell/trace-mapping;@jridgewell-trace-mapping-0.3.22 \
+/node_modules/@jridgewell/sourcemap-codec;@jridgewell-sourcemap-codec-1.4.15 \
+/node_modules/@jridgewell/set-array;@jridgewell-set-array-1.1.2 \
+/node_modules/@jridgewell/resolve-uri;@jridgewell-resolve-uri-3.1.1 \
+/node_modules/@jridgewell/gen-mapping;@jridgewell-gen-mapping-0.3.3 \
+/node_modules/@jest/schemas;@jest-schemas-29.6.3 \
+/node_modules/@istanbuljs/schema;@istanbuljs-schema-0.1.3 \
+/node_modules/@isaacs/cliui;@isaacs-cliui-8.0.2 \
+/node_modules/@isaacs/cliui/node_modules/wrap-ansi;.-wrap-ansi-8.1.0 \
+/node_modules/@isaacs/cliui/node_modules/strip-ansi;.-strip-ansi-7.1.0 \
+/node_modules/@isaacs/cliui/node_modules/string-width;.-string-width-5.1.2 \
+/node_modules/@isaacs/cliui/node_modules/emoji-regex;.-emoji-regex-9.2.2 \
+/node_modules/@isaacs/cliui/node_modules/ansi-styles;.-ansi-styles-6.2.1 \
+/node_modules/@isaacs/cliui/node_modules/ansi-regex;.-ansi-regex-6.0.1 \
+/node_modules/@humanwhocodes/object-schema;@humanwhocodes-object-schema-2.0.2 \
+/node_modules/@humanwhocodes/module-importer;@humanwhocodes-module-importer-1.0.1 \
+/node_modules/@humanwhocodes/config-array;@humanwhocodes-config-array-0.11.14 \
+/node_modules/@humanwhocodes/config-array/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/@humanwhocodes/config-array/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/@eslint/js;@eslint-js-8.56.0 \
+/node_modules/@eslint/eslintrc;@eslint-eslintrc-2.1.4 \
+/node_modules/@eslint/eslintrc/node_modules/type-fest;.-type-fest-0.20.2 \
+/node_modules/@eslint/eslintrc/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/@eslint/eslintrc/node_modules/globals;.-globals-13.24.0 \
+/node_modules/@eslint/eslintrc/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/@eslint-community/regexpp;@eslint-community-regexpp-4.10.0 \
+/node_modules/@eslint-community/eslint-utils;@eslint-community-eslint-utils-4.4.0 \
+/node_modules/@electron/universal;@electron-universal-1.5.1 \
+/node_modules/@electron/universal/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/@electron/universal/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/@electron/universal/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/@electron/universal/node_modules/fs-extra;.-fs-extra-9.1.0 \
+/node_modules/@electron/universal/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/@electron/remote;@electron-remote-2.1.1 \
+/node_modules/@electron/osx-sign;@electron-osx-sign-1.0.5 \
+/node_modules/@electron/osx-sign/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/@electron/osx-sign/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/@electron/osx-sign/node_modules/isbinaryfile;.-isbinaryfile-4.0.10 \
+/node_modules/@electron/osx-sign/node_modules/fs-extra;.-fs-extra-10.1.0 \
+/node_modules/@electron/notarize;@electron-notarize-2.2.1 \
+/node_modules/@electron/notarize/node_modules/universalify;.-universalify-2.0.1 \
+/node_modules/@electron/notarize/node_modules/jsonfile;.-jsonfile-6.1.0 \
+/node_modules/@electron/notarize/node_modules/fs-extra;.-fs-extra-9.1.0 \
+/node_modules/@electron/get;@electron-get-2.0.3 \
+/node_modules/@electron/get/node_modules/semver;.-semver-6.3.1 \
+/node_modules/@electron/asar;@electron-asar-3.2.8 \
+/node_modules/@electron/asar/node_modules/minimatch;.-minimatch-3.1.2 \
+/node_modules/@electron/asar/node_modules/brace-expansion;.-brace-expansion-1.1.11 \
+/node_modules/@develar/schema-utils;@develar-schema-utils-2.6.5 \
+/node_modules/@babel/types;@babel-types-7.23.6 \
+/node_modules/@babel/traverse;@babel-traverse-7.23.7 \
+/node_modules/@babel/template;@babel-template-7.22.15 \
+/node_modules/@babel/runtime;@babel-runtime-7.23.8 \
+/node_modules/@babel/parser;@babel-parser-7.23.6 \
+/node_modules/@babel/highlight;@babel-highlight-7.23.4 \
+/node_modules/@babel/highlight/node_modules/supports-color;.-supports-color-5.5.0 \
+/node_modules/@babel/highlight/node_modules/has-flag;.-has-flag-3.0.0 \
+/node_modules/@babel/highlight/node_modules/escape-string-regexp;.-escape-string-regexp-1.0.5 \
+/node_modules/@babel/highlight/node_modules/color-name;.-color-name-1.1.3 \
+/node_modules/@babel/highlight/node_modules/color-convert;.-color-convert-1.9.3 \
+/node_modules/@babel/highlight/node_modules/chalk;.-chalk-2.4.2 \
+/node_modules/@babel/highlight/node_modules/ansi-styles;.-ansi-styles-3.2.1 \
+/node_modules/@babel/helpers;@babel-helpers-7.23.8 \
+/node_modules/@babel/helper-validator-option;@babel-helper-validator-option-7.23.5 \
+/node_modules/@babel/helper-validator-identifier;@babel-helper-validator-identifier-7.22.20 \
+/node_modules/@babel/helper-string-parser;@babel-helper-string-parser-7.23.4 \
+/node_modules/@babel/helper-split-export-declaration;@babel-helper-split-export-declaration-7.22.6 \
+/node_modules/@babel/helper-simple-access;@babel-helper-simple-access-7.22.5 \
+/node_modules/@babel/helper-module-transforms;@babel-helper-module-transforms-7.23.3 \
+/node_modules/@babel/helper-module-imports;@babel-helper-module-imports-7.22.15 \
+/node_modules/@babel/helper-hoist-variables;@babel-helper-hoist-variables-7.22.5 \
+/node_modules/@babel/helper-function-name;@babel-helper-function-name-7.23.0 \
+/node_modules/@babel/helper-environment-visitor;@babel-helper-environment-visitor-7.22.20 \
+/node_modules/@babel/helper-compilation-targets;@babel-helper-compilation-targets-7.23.6 \
+/node_modules/@babel/helper-compilation-targets/node_modules/yallist;.-yallist-3.1.1 \
+/node_modules/@babel/helper-compilation-targets/node_modules/semver;.-semver-6.3.1 \
+/node_modules/@babel/helper-compilation-targets/node_modules/lru-cache;.-lru-cache-5.1.1 \
+/node_modules/@babel/generator;@babel-generator-7.23.6 \
+/node_modules/@babel/core;@babel-core-7.23.7 \
+/node_modules/@babel/core/node_modules/semver;.-semver-6.3.1 \
+/node_modules/@babel/compat-data;@babel-compat-data-7.23.5 \
+/node_modules/@babel/code-frame;@babel-code-frame-7.23.5 \
+/node_modules/@babel/code-frame/node_modules/supports-color;.-supports-color-5.5.0 \
+/node_modules/@babel/code-frame/node_modules/has-flag;.-has-flag-3.0.0 \
+/node_modules/@babel/code-frame/node_modules/escape-string-regexp;.-escape-string-regexp-1.0.5 \
+/node_modules/@babel/code-frame/node_modules/color-name;.-color-name-1.1.3 \
+/node_modules/@babel/code-frame/node_modules/color-convert;.-color-convert-1.9.3 \
+/node_modules/@babel/code-frame/node_modules/chalk;.-chalk-2.4.2 \
+/node_modules/@babel/code-frame/node_modules/ansi-styles;.-ansi-styles-3.2.1 \
+/node_modules/@ampproject/remapping;@ampproject-remapping-2.2.1 \
+/node_modules/@aashutoshrathi/word-wrap;@aashutoshrathi-word-wrap-1.2.6 \
+/node_modules/7zip-bin;.-7zip-bin-5.2.0 \
 

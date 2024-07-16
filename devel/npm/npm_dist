@@ -20,6 +20,7 @@ use 5.012;
 use strict;
 use warnings;
 use JSON::PP;
+use File::Basename;
 
 use OpenBSD::Getopt;
 
@@ -42,8 +43,9 @@ getopts('doi:x:', {
 	}
 });
 
-die if @ARGV != 1;
-my $file = shift;
+die if @ARGV < 2;
+
+my $wrksrc = shift;
 my %modules;
 
 # from Port.pm
@@ -59,7 +61,6 @@ sub get_json_file
 sub _modules_add
 {
 	my ( $path, $node ) = @_;
-	$path =~ s|node_modules/||;
 	my $version = $node->{version};
 	if (index($version, "npm:") == 0) {
 		$version =~ s/.*@//;
@@ -95,23 +96,26 @@ sub _dependencies
 	my ($path, $nodes) = @_;
 	if (not exists $nodes->{dependencies}) {return;}
 	foreach my $node (sort keys %{$nodes->{dependencies}}) {
-		_modules_add($path."/".$node, $nodes->{dependencies}{$node});
-		_dependencies($path."/".$node."/node_modules",
-			$nodes->{dependencies}{$node});
+		_modules_add($path.$node, $nodes->{dependencies}{$node});
+		_dependencies($path.$node."/node_modules/",
+		    $nodes->{dependencies}{$node});
 	}
 }
 
-my $nodes = get_json_file($file);
-# flat package-lock.json format
-foreach my $node (sort keys %{$nodes->{packages}}) {
-	if ($node eq "") {next;}
-	_modules_add($node, $nodes->{packages}{$node})
+while (my $file = shift) {
+	my $dirname  = dirname($file);
+	$dirname =~ s/$wrksrc//;
+	my $nodes = get_json_file($file);
+	# flat package-lock.json format
+	foreach my $node (sort keys %{$nodes->{packages}}) {
+		if ($node eq "") {next;}
+		_modules_add($dirname."/".$node, $nodes->{packages}{$node})
+	}
+	# tree package-lock.json format
+	_dependencies($dirname."/node_modules/", $nodes);
 }
-# tree package-lock.json format
-_dependencies("node_modules", $nodes);
 
 my $dists = ();
-my $mv = ();
 my $cp = ();
 foreach my $id (keys %modules) {
 	my $project = ".";
@@ -123,25 +127,12 @@ foreach my $id (keys %modules) {
 		($project, $pkg) = split '/', $id;
 	}
 	my $dist = "npm ".$project." ".$pkg;
-	if (scalar keys %{$modules{$id}} == 1) {
-		$version = (keys %{$modules{$id}})[0];
-		$location = $project."-".$pkg."-".$version;
-		push @{$dists}, $dist." ".$version." .";
-		push @{$mv}, $location." node_modules/".$id;
-		if (scalar @{$modules{$id}{$version}} == 1) {next;}
-		foreach my $path (@{$modules{$id}{$version}}) {
-			if ($path eq $id) {next;}
-			if (scalar $path =~ /node_modules\//g) {next;}
-			push @{$cp}, $path." ".$id;
-		}
-		next;
-	}
 	foreach my $version (keys %{$modules{$id}}) {
 		$location = $project."-".$pkg."-".$version;
 		push @{$dists}, $dist." ".$version." .";
-		push @{$mv}, $location." .npm/".$location;
 		foreach my $path (@{$modules{$id}{$version}}) {
-			push @{$cp}, $path." .npm/".$location;
+			# cp dst;src, sort to create shorter path first
+			push @{$cp}, $path.";".$location;
 		}
 	}
 }
@@ -151,17 +142,12 @@ foreach my $l (sort @{$dists}) {
 	say $l." \\";
 }
 say "";
-say "MODNPM_MV += \\";
-foreach my $l (sort @{$mv}) {
-	say $l." \\";
-}
-say "";
 # XXX note it should be possible to avoid cp in each dir
 #    and use links instead but then there is issue to resolve them
 # XXX take a look at pnpm
 # XXX take a look at npm experimental shape
 say "MODNPM_CP += \\";
-foreach my $l (sort @{$cp}) {
+foreach my $l (reverse sort @{$cp}) {
 	say $l." \\";
 }
 say "";

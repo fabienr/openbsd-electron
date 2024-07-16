@@ -12,7 +12,7 @@ REVISION=	0
 DIST_TUPLE =	github beyond-all-reason BYAR-Chobby v${V} .
 
 COMMIT =	2c0a6e17b50ab04ea592c53963c571e5ccb071ba
-DIST_TUPLE +=	github beyond-all-reason spring-launcher ${COMMIT} launcher
+DIST_TUPLE +=	github beyond-all-reason spring-launcher ${COMMIT} .
 
 CATEGORIES =	games
 
@@ -31,14 +31,14 @@ RUN_DEPENDS+=	archivers/p7zip \
 MODULES =	devel/npm www/electron
 
 MODNPM_OMITOPTIONAL=	Yes
-MODNPM_LOCKS=		${WRKSRC}/launcher/package-lock.json
+MODNPM_TARGETS=		${WRKSRC}/launcher
 MODELECTRON_BUILDER=	Yes
 MODELECTRON_SRC=	${WRKSRC}/launcher
 MODELECTRON_TARGET=	byar_chobby_launcher
 
-pre-patch:
-	# node_modules
-	mv ${WRKSRC}/node_modules ${WRKSRC}/launcher/
+# DIST_TUPLE run after MODNPM_post-extract
+post-extract:
+	mv ${WRKDIR}/spring-launcher-${COMMIT} ${WRKSRC}/launcher
 
 pre-build:
 	# dist_cfg->launcher/ : build, src/config.json, src/renderer
