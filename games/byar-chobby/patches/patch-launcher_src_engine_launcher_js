@@ -1,0 +1,12 @@
+Index: launcher/src/engine_launcher.js
+--- launcher/src/engine_launcher.js.orig
++++ launcher/src/engine_launcher.js
+@@ -149,6 +149,8 @@ class Launcher extends EventEmitter {
+ 		var args = ['--write-dir', resolve(springPlatform.writePath)];
+ 		if (config.isolation) {
+ 			args.push('--isolation');
++			args.push('--isolation-dir',
++				'${TRUEPREFIX}/share/games/spring/');
+ 		}
+ 		if (extraArgs != undefined) {
+ 			args = args.concat(extraArgs);

@@ -7,7 +7,7 @@ COMMENT =	launcher for Beyond All Reason
 V =		1.2988.0
 DISTNAME =	BYAR-Chobby-${V}
 PKGNAME=	${DISTNAME:L}
-REVISION=	0
+REVISION=	1
 
 DIST_TUPLE =	github beyond-all-reason BYAR-Chobby v${V} .
 
@@ -41,6 +41,8 @@ post-extract:
 	mv ${WRKDIR}/spring-launcher-${COMMIT} ${WRKSRC}/launcher
 
 pre-build:
+	# subst engine_launcher.js TRUEPREFIX for --isolation-dir
+	${SUBST_CMD} ${WRKSRC}/launcher/src/engine_launcher.js
 	# dist_cfg->launcher/ : build, src/config.json, src/renderer
 # XXX from github workflow, cook something less smart ?
 	cp -r ${WRKSRC}/dist_cfg/* ${WRKSRC}/launcher/src/

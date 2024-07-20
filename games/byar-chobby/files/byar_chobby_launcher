@@ -1,4 +1,18 @@
 #!/bin/sh
 
+DATASIZE="8388608" # 8G
+
+xm_log() {
+	echo -n "$@\nDo you want to run Beyond All Reason anyway?" | \
+		${X11BASE}/bin/xmessage -file - -center -buttons yes:0,no:1 -default no
+}
+
+if [ $(ulimit -Sd) -lt ${DATASIZE} ]; then
+	ulimit -Sd ${DATASIZE} || \
+		xm_log "Cannot increase datasize-cur to at least ${DATASIZE}
+(If you don't increase these limits, spring might fail to work properly.)"
+		[ $? -eq 0 ] || exit
+fi
+
 exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
 	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar" $@
