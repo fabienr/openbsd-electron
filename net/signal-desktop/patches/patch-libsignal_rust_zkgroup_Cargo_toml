@@ -5,7 +5,7 @@ Index: libsignal/rust/zkgroup/Cargo.toml
  signal-crypto = { path = "../crypto" }
  zkcredential = { path = "../zkcredential", features = ["rayon"] }
  
--curve25519-dalek = { git = 'https://github.com/signalapp/curve25519-dalek', tag = 'signal-curve25519-4.1.1', version = "4.1.1", features = ["serde"] }
+-curve25519-dalek = { git = 'https://github.com/signalapp/curve25519-dalek', tag = 'signal-curve25519-4.1.3', version = "4.1.1", features = ["serde"] }
 +curve25519-dalek = "*"
  
  aes-gcm-siv = "0.11.1"

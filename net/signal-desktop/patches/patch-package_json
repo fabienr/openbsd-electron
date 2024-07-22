@@ -3,19 +3,19 @@ Index: package.json
 +++ package.json
 @@ -18,8 +18,8 @@
    "scripts": {
-     "postinstall": "yarn build:acknowledgments && patch-package && yarn electron:install-app-deps",
-     "postuninstall": "yarn build:acknowledgments",
+     "postinstall": "npm run build:acknowledgments && patch-package && npm run electron:install-app-deps",
+     "postuninstall": "npm run build:acknowledgments",
 -    "start": "electron .",
 -    "generate": "npm-run-all build-protobuf build:esbuild build:dns-fallback build:icu-types build:compact-locales sass get-expire-time copy-components",
 +    "start": "electron --no-sandbox .",
 +    "generate": "npm-run-all build-protobuf build:esbuild build:icu-types build:compact-locales sass get-expire-time copy-components",
-     "build-release": "yarn run build",
+     "build-release": "npm run build",
      "sign-release": "node ts/updater/generateSignature.js",
      "notarize": "echo 'No longer necessary'",
-@@ -352,9 +352,6 @@
-     "fabric/jsdom": "https://registry.yarnpkg.com/nop/-/nop-1.0.0.tgz",
-     "fast-glob/glob-parent": "5.1.2",
-     "read-last-lines/mz/thenify-all/thenify": "3.3.1"
+@@ -363,9 +363,6 @@
+         }
+       }
+     }
 -  },
 -  "engines": {
 -    "node": "20.11.1"

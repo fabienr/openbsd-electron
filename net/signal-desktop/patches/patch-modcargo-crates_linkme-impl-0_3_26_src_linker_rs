@@ -1,6 +1,6 @@
-Index: modcargo-crates/linkme-impl-0.3.25/src/linker.rs
---- modcargo-crates/linkme-impl-0.3.25/src/linker.rs.orig
-+++ modcargo-crates/linkme-impl-0.3.25/src/linker.rs
+Index: modcargo-crates/linkme-impl-0.3.26/src/linker.rs
+--- modcargo-crates/linkme-impl-0.3.26/src/linker.rs.orig
++++ modcargo-crates/linkme-impl-0.3.26/src/linker.rs
 @@ -30,6 +30,22 @@ pub mod freebsd {
      }
  }

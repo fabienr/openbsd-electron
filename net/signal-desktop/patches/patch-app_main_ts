@@ -1,7 +1,7 @@
 Index: app/main.ts
 --- app/main.ts.orig
 +++ app/main.ts
-@@ -606,7 +606,7 @@ let windowIcon: string;
+@@ -608,7 +608,7 @@ let windowIcon: string;
  
  if (OS.isWindows()) {
    windowIcon = join(__dirname, '../build/icons/win/icon.ico');
@@ -10,7 +10,7 @@ Index: app/main.ts
    windowIcon = join(__dirname, '../images/signal-logo-desktop-linux.png');
  } else {
    windowIcon = join(__dirname, '../build/icons/png/512x512.png');
-@@ -656,6 +656,8 @@ async function safeLoadURL(window: BrowserWindow, url:
+@@ -658,6 +658,8 @@ async function safeLoadURL(window: BrowserWindow, url:
  }
  
  async function createWindow() {
@@ -19,7 +19,7 @@ Index: app/main.ts
    const usePreloadBundle =
      !isTestEnvironment(getEnvironment()) || forcePreloadBundle;
  
-@@ -2293,7 +2295,7 @@ ipc.on('draw-attention', () => {
+@@ -2445,7 +2447,7 @@ ipc.on('draw-attention', () => {
      return;
    }
  

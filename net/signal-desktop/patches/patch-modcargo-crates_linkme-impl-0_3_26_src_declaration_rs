@@ -1,6 +1,6 @@
-Index: modcargo-crates/linkme-impl-0.3.25/src/declaration.rs
---- modcargo-crates/linkme-impl-0.3.25/src/declaration.rs.orig
-+++ modcargo-crates/linkme-impl-0.3.25/src/declaration.rs
+Index: modcargo-crates/linkme-impl-0.3.26/src/declaration.rs
+--- modcargo-crates/linkme-impl-0.3.26/src/declaration.rs.orig
++++ modcargo-crates/linkme-impl-0.3.26/src/declaration.rs
 @@ -109,6 +109,13 @@ pub fn expand(input: TokenStream) -> TokenStream {
      let freebsd_dupcheck_start = freebsd_section_start.replacen("linkme", "linkm2", 1);
      let freebsd_dupcheck_stop = freebsd_section_stop.replacen("linkme", "linkm2", 1);

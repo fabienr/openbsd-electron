@@ -1,6 +1,6 @@
 COMMENT=	Signal Desktop links with Signal
 
-V=		7.11.0
+V=		7.16.0
 DISTNAME=	Signal-Desktop-${V}
 PKGNAME=	${DISTNAME:L}
 REVISION=	0
@@ -18,20 +18,20 @@ PERMIT_PACKAGE=	Yes
 WANTLIB += ${MODCARGO_WANTLIB} c++ crypto m
 
 # make versions
-# ELECTRON_V=30.0.6
+# ELECTRON_V=30.0.9
 # NODE_V=20.11.1
-# better-sqlite3 depends
+# better-sqlite3 deps
 # BETTER_SQLITE3_V=8.7.1
 FTS5_V=		0.2.1
 SQLCIPHER_HASH=	ef53ea45ed92b928ecfd33c552d8d405263e86e63dec38e1ec63e1b0193b630b
 SQLCIPHER_URI=	https://build-artifacts.signal.org/desktop/
 SQLCIPHER_V=	4.5.5-fts5-fix--3.0.7--${FTS5_V}-${SQLCIPHER_HASH}
 # libsignal depends
-LIBSIGNAL_V=	0.46.2
+LIBSIGNAL_V=	0.52.3
 BORING_ID=	b9a75167dc08a3b16dd203e0af78c8962c5439bd
 # ringrtc depends
-RINGRTC_V=	2.42.0
-LIBWEBRTC_V=	6261i
+RINGRTC_V=	2.44.2
+LIBWEBRTC_V=	6478b
 
 # libsignal, boring depends
 # see https://github.com/signalapp/boring/tree/libsignal/boring-sys/deps
@@ -71,12 +71,14 @@ DIST_TUPLE+=	github signalapp webrtc ${LIBWEBRTC_V} .
 
 # see webrtc-deps (.include webrtc.inc)
 _DISTDIR=	signal-desktop
-SITES.chrome=	https://chromium.googlesource.com/
+SITES.android=	https://android.googlesource.com/
 SITES.boring=	https://boringssl.googlesource.com/
+SITES.chrome=	https://chromium.googlesource.com/
 TEMPLATE_DISTFILES.webrtc= \
   ${_DISTDIR}/<account>-<project>-{<account>/<project>.git/+archive/}<id>.tar.gz
-TEMPLATE_DISTFILES.chrome= ${TEMPLATE_DISTFILES.webrtc}
-TEMPLATE_DISTFILES.boring= ${TEMPLATE_DISTFILES.webrtc}
+TEMPLATE_DISTFILES.android=	${TEMPLATE_DISTFILES.webrtc}
+TEMPLATE_DISTFILES.boring=	${TEMPLATE_DISTFILES.webrtc}
+TEMPLATE_DISTFILES.chrome=	${TEMPLATE_DISTFILES.webrtc}
 EXTRACT_CASES+=${_DISTDIR}/*.tar.gz) \
 	_filename=$${archive\#\#*/} && \
 	mkdir -p $${_filename%.tar.gz} && \
@@ -86,21 +88,24 @@ EXTRACT_CASES+=${_DISTDIR}/*.tar.gz) \
 WEBRTC_T=	${WRKDIR}/ringrtc-${RINGRTC_V}/src/webrtc
 WEBRTC_SRC=	${RINGRTC_SRC}/src/webrtc/src
 WEBRTC_DEPS= \
-	src/base chromium/src-base \
-	src/build chromium/src-build \
-	src/buildtools chromium/src-buildtools \
-	src/ringrtc/opus/src xiph-opus \
-	src/testing chromium/src-testing \
-	src/third_party chromium/src-third_party \
-	src/third_party/boringssl/src .-boringssl \
-	src/third_party/catapult .-catapult \
-	src/third_party/icu chromium/deps-icu \
-	src/third_party/libjpeg_turbo chromium/deps-libjpeg_turbo \
-	src/third_party/libsrtp chromium/deps-libsrtp \
-	src/third_party/libvpx/source/libvpx webm-libvpx \
-	src/third_party/libyuv libyuv-libyuv \
-	src/third_party/nasm chromium/deps-nasm \
-	src/tools chromium/src-tools
+	src/base chromium/src base \
+	src/build chromium/src build \
+	src/buildtools chromium/src buildtools \
+	src/ringrtc/opus/src xiph opus \
+	src/testing chromium/src testing \
+	src/third_party chromium/src third_party \
+	src/third_party/boringssl/src . boringssl \
+	src/third_party/catapult . catapult \
+	src/third_party/icu chromium/deps icu \
+	src/third_party/libjpeg_turbo chromium/deps libjpeg_turbo \
+	src/third_party/libsrtp chromium/deps libsrtp \
+	src/third_party/libvpx/source/libvpx webm libvpx \
+	src/third_party/libyuv libyuv libyuv \
+	src/third_party/nasm chromium/deps nasm \
+	src/third_party/perfetto platform/external perfetto \
+	src/third_party/protobuf-javascript/src \
+		protocolbuffers protobuf-javascript \
+	src/tools chromium/src tools
 
 ALL_PATCHFILES+=${PATCHDIR}/chromium/patch-*
 PATCH_CASES+=	${PATCHDIR}/chromium/patch-*) \
@@ -132,14 +137,18 @@ MODCARGO_RUSTFLAGS+=	-Clink-dead-code
 # libclang.so
 MODCARGO_ENV +=		LIBCLANG_PATH=${LOCALBASE}/llvm${MODCLANG_VERSION}/lib \
 			LD_LIBRARY_PATH=${LOCALBASE}/llvm${MODCLANG_VERSION}/lib
-MODPY_RUNDEP=		No
-MODYARN_TARGETS=	${LIBSIGNAL_NODE} \
-			${RINGRTC_NODE} \
-			${WRKSRC}/sticker-creator \
-			${WRKSRC}
+
 MODELECTRON_BUILDER=	Yes
 MODELECTRON_SRC=	${WRKSRC}
 MODELECTRON_TARGET=	signal-desktop
+
+MODNPM_TARGETS=		${WRKSRC} \
+			${WRKSRC}/sticker-creator
+
+MODYARN_TARGETS=	${LIBSIGNAL_NODE} \
+			${RINGRTC_NODE}
+
+MODPY_RUNDEP=		No
 
 BUILD_DEPENDS+=	devel/app-builder \
 		devel/gn \
@@ -148,7 +157,7 @@ RUN_DEPENDS+=	devel/desktop-file-utils
 
 DEBUG_PACKAGES=	${BUILD_PACKAGES}
 
-SUBST_VARS+=	WRKSRC MODCARGO_TARGET_DIR
+SUBST_VARS+=	WRKDIR WRKSRC MODCARGO_TARGET_DIR
 
 # pre-define source date, no git show -s --format=%ct
 MAKE_ENV+=	SOURCE_DATE_EPOCH=$$(date +'%s')
@@ -227,8 +236,10 @@ post-extract:
 	mkdir -p ${WEBRTC_T}
 	mv ${WRKDIR}/webrtc-${LIBWEBRTC_V} ${WEBRTC_T}/src
 	mv ${WRKDIR}/{,xiph-}opus-*
-.for _dst _name in ${WEBRTC_DEPS}
-	mv ${WRKDIR}/${_name:T}-* ${WEBRTC_T}/${_dst}
+	mv ${WRKDIR}/{,protocolbuffers-}protobuf-javascript-*
+.for _dst _project _name in ${WEBRTC_DEPS}
+#	mkdir -p `dirname ${WEBRTC_T}/${_dst}`
+	mv ${WRKDIR}/${_project:T}*${_name}-* ${WEBRTC_T}/${_dst}
 .endfor
 
 pre-patch:
@@ -239,9 +250,12 @@ pre-patch:
 	mv ${RINGRTC_SRC} ${WRKSRC}/ringrtc
 	ln -s ${WRKSRC}/ringrtc ${RINGRTC_SRC}
 	# apply signal-desktop patches
-	for _p in ${WRKSRC}/patches/*.patch; do \
-		${PATCH} -f -p1 -z .orig.signal \
-			-d ${WRKSRC} -i $${_p}; \
+	# XXX protobufjs+7.3.2.patch does not apply, use -l
+	# [ $${_p} == "protobufjs+7.3.2.patch" ] && continue;
+	cd ${WRKSRC} && for _p in patches/*.patch; do \
+		echo "===>  Applying signal-desktop $${_p}" ; \
+		${PATCH} -l -f -p1 -z .orig.signal \
+			-d ${WRKSRC} -i ${WRKSRC}/$${_p}; \
 	done
 
 pre-configure:
@@ -264,9 +278,9 @@ do-build:
 	mkdir -p ${WRKSRC}/build
 	cp ${FILESDIR}/dns-fallback.json ${WRKSRC}/build/dns-fallback.json
 	# build signal
-	cd ${WRKSRC} && env -i ${MAKE_ENV} yarn build:acknowledgments
-	cd ${WRKSRC} && env -i ${MAKE_ENV} yarn generate
-	cd ${WRKSRC} && env -i ${MAKE_ENV} yarn build:esbuild:prod
+	cd ${WRKSRC} && env -i ${MAKE_ENV} npm run build:acknowledgments
+	cd ${WRKSRC} && env -i ${MAKE_ENV} npm run generate
+	cd ${WRKSRC} && env -i ${MAKE_ENV} npm run build:esbuild:prod
 	# electron-builder
 	${ELECTRON_BUILDER_BUILD}
 
@@ -326,6 +340,7 @@ libwebrtc:
 	# build libwebrtc native depends for ringrtc
 	cd ${WEBRTC_SRC} && env -i ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/release
+# XXX not needed, compile_commands.json helps debugging
 	cd ${WEBRTC_SRC} && env -i ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/release \
 		-t compdb > compile_commands.json
@@ -345,7 +360,8 @@ ringrtc: libwebrtc
 sticker-creator:
 	# build sticker-creator
 	cd ${WRKSRC}/sticker-creator && env -i ${MAKE_ENV} \
-		yarn build
+		PATH='${PORTPATH}:${WRKSRC}/sticker-creator/node_modules/.bin' \
+		npm run build
 
 test-libsignal: libsignal
 	# copy libsignal native lib
@@ -423,7 +439,8 @@ user-dev:
 
 # make versions : download, extract then print versions for depends
 # make modyarn-gen-modules : regen modules.inc, see devel/yarn
-# make modcargo-gen-crates : handle multiple regen crates.inc
+# make modnpm-gen-modules : regen modules.inc, see devel/npm
+# make modcargo-gen-crates : handle multiple Cargo.toml, regen crates.inc
 # make webrtc-deps
 
 _TMP = /tmp/signal-desktop-${V}
@@ -471,7 +488,7 @@ versions:
 		sed -e "s/ '//" -e "s/';//") ; \
 	printf "SQLCIPHER_V=\t%s--%s--\$${FTS5_V}-\$${SQLCIPHER_HASH}\n" \
 		$$_sqlcipher_v $$_openssl_v ; \
-	printf "# libsignel depends\n" ; \
+	printf "# libsignal depends\n" ; \
 	printf "LIBSIGNAL_V=\t%s\n" $$_libsignal_v ; \
 	ftp -VMo ${_TMP}/Cargo.lock \
 		${_LIBSIGNAL_GH}/v$${_libsignal_v}/Cargo.lock ; \
@@ -488,7 +505,7 @@ versions:
 # handle multiple cargo files and add github depends for libsignal
 # XXX make modcargo-gen-crates-licenses doesn't preserve git+ depends
 modcargo-gen-crates:
-	@make extract >/dev/null 2>&1
+	@${_MAKE} extract >/dev/null 2>&1
 	@echo '# run: make modcargo-gen-crates-licenses'
 	@cat ${MODCARGO_CARGOS_TOML:toml=lock} | awk '\
 		/^name = / { n=$$3; gsub("\"", "", n); } \
@@ -507,19 +524,24 @@ webrtc-deps:
 	@make extract >/dev/null 2>&1
 	# make webrtc-deps > webrtc.inc
 	@echo "DIST_TUPLE+= \\"
-.for _dst _name in ${WEBRTC_DEPS}
+.for _dst _project _name in ${WEBRTC_DEPS}
 	@_id=$$(\
-		grep -E '${_name:S|.-||:S|-|/|}(\.git)?@' \
+		grep -E "${_project:S|.||}/${_name}(\.git)?(' \+ ')?@" \
 			${WEBRTC_SRC}/DEPS | \
 		awk -F '@' '{print $$2}' | \
-		sed -e "s/',//" -e "s/'//") ; \
-	if [ "${_name:S/.-//}" = "boringssl" ] ; then \
-		printf 'boring %s %s . \\\n' "${_name:S/-/ /}" $$_id; \
-	elif [ "${_name}" = "xiph-opus" ] ; then \
-		printf 'github %s %s . \\\n' "${_name:S/-/ /}" $$_id; \
+		sed -e "s/' \+ '//" -e "s/',//" -e "s/'//" ) ; \
+	if [ "${_name}" = "boringssl" ] ; then \
+		_repo="boring"; \
+	elif [ "${_name}" = "opus" ] ; then \
+		_repo="github"; \
+	elif [ "${_name}" = "perfetto" ] ; then \
+		_repo="android"; \
+	elif [ "${_name}" = "protobuf-javascript" ] ; then \
+		_repo="github"; \
 	else \
-		printf 'chrome %s %s . \\\n' "${_name:S/-/ /}" $$_id; \
-	fi
+		_repo="chrome"; \
+	fi ; \
+	printf '%s ${_project} ${_name} %s . \\\n' $$_repo $$_id
 .endfor
 	@echo
 
@@ -528,44 +550,44 @@ dns-fallback:
 	@make configure >/dev/null 2>&1
 	# make dns-fallback > files/dns-fallback.json
 	@cd ${WRKSRC} && \
-	env -i ${MAKE_ENV} yarn build:dns-fallback && \
-	cat ${WRKSRC}/build/dns-fallback.json
+		${_PBUILD} env -i ${MAKE_ENV} npm run build:dns-fallback && \
+		cat ${WRKSRC}/build/dns-fallback.json
 
 chromium-patches:
 	make extract
 	# remember to update cvs co -D "..." if you change targeted version
-	@if [ -d ${WRKDIR}/chromium ]; then \
-		echo "${WRKDIR}/chromium exists, skip cvs co" ; \
+	@if [ -d ${_TMP}/chromium ]; then \
+		echo "${_TMP}/chromium exists, skip cvs co" ; \
 	else \
-		cd ${WRKDIR} && \
+		cd ${_TMP} && \
 		cvs co -d chromium ports/www/chromium ; \
 	fi
 	# test chromium patches
-	rm -rf ${WRKDIR}/patches
-	mkdir -p ${WRKDIR}/patches/chromium{,.rej,.miss,.new}
-	mkdir -p ${WRKDIR}/patches/webrtc
-	@for p in ${WRKDIR}/chromium/patches/patch-*; do \
+	rm -rf ${_TMP}/patches
+	mkdir -p ${_TMP}/patches/chromium{,.rej,.miss,.new}
+	mkdir -p ${_TMP}/patches/webrtc
+	@for p in ${_TMP}/chromium/patches/patch-*; do \
 		if [[ $$p == *"third_party_webrtc"* ]]; then \
-			cp $${p} ${WRKDIR}/patches/webrtc/$${p##*/} ; \
-			p=${WRKDIR}/patches/webrtc/$${p##*/} ; \
+			cp $${p} ${_TMP}/patches/webrtc/$${p##*/} ; \
+			p=${_TMP}/patches/webrtc/$${p##*/} ; \
 			sed -i -e 's|third_party/webrtc/||g' $$p ; \
 		fi ; \
 		f=$$(grep 'Index' $$p | sed -e 's/.*: //' ) ; \
 		if grep -q "@@ -0,0" $$p; then \
-			cp $${p} ${WRKDIR}/patches/chromium/ ; \
-			cp $${p} ${WRKDIR}/patches/chromium.new/ ; \
+			cp $${p} ${_TMP}/patches/chromium/ ; \
+			cp $${p} ${_TMP}/patches/chromium.new/ ; \
 		elif [ -f "${WEBRTC_SRC}/$$f" ]; then \
 			${PATCH} ${PATCH_DIST_ARGS} -sfC -z .orig.chromium \
 				-d ${WEBRTC_SRC} < $${p} && \
-				cp $${p} ${WRKDIR}/patches/chromium/ || \
-				cp $${p} ${WRKDIR}/patches/chromium.rej/ ; \
+				cp $${p} ${_TMP}/patches/chromium/ || \
+				cp $${p} ${_TMP}/patches/chromium.rej/ ; \
 		else \
-			cp $${p} ${WRKDIR}/patches/chromium.miss/ ; \
+			cp $${p} ${_TMP}/patches/chromium.miss/ ; \
 		fi ; \
 	done
 	@echo "rejected:"
-	@ls ${WRKDIR}/patches/chromium.rej
-	# if ok, copy ${WRKDIR}/patches/chromium into port
+	@ls ${_TMP}/patches/chromium.rej
+	# if ok, copy ${_TMP}/patches/chromium into port
 
 .include "modules.inc"
 .include "crates.inc"
