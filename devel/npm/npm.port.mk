@@ -41,6 +41,21 @@ MODNPM_post-extract += \
 
 MODNPM_post-extract += rm -rf ${MODNPM_CACHE} ;
 
+.if !empty(MODNPM_BIN) && empty(_GEN_MODULES)
+# XXX multiple module may end with same bin, use ln -f
+# ln: .../node_modules/.bin/jest: File exists
+# /node_modules/jest-cli/./bin/jest.js;/node_modules/.bin/jest
+# /node_modules/jest/./bin/jest.js;/node_modules/.bin/jest
+MODNPM_post-extract += \
+	for _ln in $$(echo "${MODNPM_BIN}"); do \
+		_src=$${_ln%;*} ; _dst=$${_ln\#*;} ; \
+		_t=`dirname ${WRKSRC}/$${_dst}`; \
+		[[ -d $$_t ]] || mkdir -p $$_t ; \
+		chmod +x ${WRKSRC}/$${_src} ; \
+		ln -fs ${WRKSRC}/$${_src} ${WRKSRC}/$${_dst} ; \
+	done ;
+.endif
+
 # XXX path to npm_dist
 .if !target(modnpm-gen-modules)
 modnpm-gen-modules:
@@ -56,4 +71,13 @@ modnpm-gen-modules:
 		${MODNPM_INCLUDES:='-i %'} \
 		${MODNPM_EXCLUDES:='-x %'} \
 		${WRKSRC} ${MODNPM_LOCKS}
+.endif
+
+# XXX path to npm_bin
+.if !target(modnpm-gen-bin)
+modnpm-gen-bin:
+	@${_MAKE} extract >/dev/null 2>&1
+	# make modnpm-gen-bin >> modules.inc
+	@/usr/ports/mystuff/devel/npm/npm_bin \
+		${WRKSRC} ${MODNPM_TARGETS}
 .endif
