@@ -15,7 +15,7 @@ EXTRACT_SUFX=	.tgz
 MODULES=	lang/python
 MODPY_BUILDDEP=	Yes
 
-RUN_DEPENDS=	lang/node
+RUN_DEPENDS+=	lang/node
 
 NO_BUILD=	Yes
 
