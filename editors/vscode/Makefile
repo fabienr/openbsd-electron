@@ -125,15 +125,16 @@ pre-build:
 			echo "skip $${subdir}" && \
 			continue; \
 		echo "rebuild $${subdir}"; \
-		cd $${subdir} && env -i ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
+		cd $${subdir} && ${SETENV} ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
 			node ${MODNPM_GYP_BIN} rebuild --verbose; \
 		touch $${subdir}/.build_done; \
 	done
-	cd ${WRKSRC}/extensions && env -i ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
+	cd ${WRKSRC}/extensions && ${SETENV} ${MAKE_ENV} \
+		${ELECTRON_REBUILD_ENV} \
 		npm rebuild --verbose
 	# rebuild native node modules for node
 .for dir in build remote
-	cd ${WRKSRC}/${dir} && env -i ${MAKE_ENV} \
+	cd ${WRKSRC}/${dir} && ${SETENV} ${MAKE_ENV} \
 		npm_config_nodedir=${LOCALBASE} \
 		npm rebuild --verbose
 .endfor
@@ -147,14 +148,14 @@ pre-build:
 
 do-build:
 	# build and package vscode
-	cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		yarn run tsc -p build/tsconfig.build.json
 	echo "require('graceful-fs').gracefulify(require('fs'));" \
 		> ${WRKSRC}/use-graceful-fs.js
 # XXX _pbuild default to openfiles-max=1024 is not eough ?
 	ulimit -Sn `ulimit -Hn`
 	ulimit -Sd `ulimit -Hd`
-	cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		NODE_OPTIONS="--require ${WRKSRC}/use-graceful-fs.js" \
 		yarn gulp vscode-linux-x64-min
 	# copy marketplace extensions
@@ -209,13 +210,13 @@ pre-test:
 do-test:
 	# XXX Xvfb :1 &
 	# unit tests
-	cd ${WRKSRC} && env -i ${TEST_ENV} DISPLAY=:1 \
+	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		LD_LIBRARY_PATH="${LOCALBASE}/electron" \
 		./scripts/test.sh || true
 	# UI smoke tests
 	# XXX Error: Unsupported platform: openbsd
 	# node_modules/playwright-core/lib/server/registry/index.js
-	cd ${WRKSRC} && env -i ${TEST_ENV} DISPLAY=:1 \
+	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
 		yarn smoketest
 

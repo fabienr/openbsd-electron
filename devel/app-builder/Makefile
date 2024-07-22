@@ -25,18 +25,18 @@ WRKDIST =	${WRKSRC}
 pre-test:
 	# setup npm, pnpm, yarn node_modules
 	cd ${WRKSRC}/pkg/node-modules/npm-demo && \
-		env -i ${MAKE_ENV} HOME=${WRKDIR} \
+		${SETENV} ${MAKE_ENV} HOME=${WRKDIR} \
 		npm ci --ignore-scripts
 	cd ${WRKSRC}/pkg/node-modules/pnpm-demo && \
-		env -i ${MAKE_ENV} HOME=${WRKDIR} \
+		${SETENV} ${MAKE_ENV} HOME=${WRKDIR} \
 		pnpm install --ignore-scripts --frozen-lockfile
 	cd ${WRKSRC}/pkg/node-modules/yarn-demo && \
-		env -i ${MAKE_ENV} HOME=${WRKDIR} \
+		${SETENV} ${MAKE_ENV} HOME=${WRKDIR} \
 		yarn install --ignore-scripts --frozen-lockfile
 
 do-test:
 	cd ${WRKSRC} && \
-		env -i ${MAKE_ENV} HOME=${WRKDIR} DEBUG=* \
+		${SETENV} ${MAKE_ENV} HOME=${WRKDIR} DEBUG=* \
 		${MODGO_CMD} test ./pkg/... ; \
 		chmod -R u+w ${MODGO_WORKSPACE}/pkg/mod
 

@@ -278,9 +278,9 @@ do-build:
 	mkdir -p ${WRKSRC}/build
 	cp ${FILESDIR}/dns-fallback.json ${WRKSRC}/build/dns-fallback.json
 	# build signal
-	cd ${WRKSRC} && env -i ${MAKE_ENV} npm run build:acknowledgments
-	cd ${WRKSRC} && env -i ${MAKE_ENV} npm run generate
-	cd ${WRKSRC} && env -i ${MAKE_ENV} npm run build:esbuild:prod
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} npm run build:acknowledgments
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} npm run generate
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} npm run build:esbuild:prod
 	# electron-builder
 	${ELECTRON_BUILDER_BUILD}
 
@@ -308,7 +308,7 @@ do-test:	test-libsignal \
 
 fts5:
 	# build fts5-extension native depends for better-sqlite3
-	cd ${FTS5_SRC} && env -i ${MAKE_ENV} ${CONFIGURE_ENV} \
+	cd ${FTS5_SRC} && ${SETENV} ${MAKE_ENV} ${CONFIGURE_ENV} \
 		${MODCARGO_ENV} ${MODCARGO_CARGO_BIN} build \
 		--release
 
@@ -316,12 +316,12 @@ better-sqlite3: fts5
 	# build better-sqlite3 native depends
 	cp ${DISTDIR}/${DISTFILES.sqlcipher} ${SQLCIPHER_T}/sqlcipher.tar.gz
 	${SUBST_CMD} ${SQLCIPHER_T}/sqlite3.gyp
-	cd ${SQLCIPHER_T}/.. && env -i ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
+	cd ${SQLCIPHER_T}/.. && ${SETENV} ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
 		node ${MODNPM_GYP_BIN} rebuild
 
 libsignal:
 	# build libsignal native depends (fake node-gyp build)
-	cd ${LIBSIGNAL_SRC} && env -i ${MAKE_ENV} ${CONFIGURE_ENV} \
+	cd ${LIBSIGNAL_SRC} && ${SETENV} ${MAKE_ENV} ${CONFIGURE_ENV} \
 		${MODCARGO_ENV} ${MODCARGO_CARGO_BIN} build \
 		-p libsignal-node --features testing-fns --release
 	# install libsignal prebuild
@@ -332,22 +332,22 @@ libsignal:
 libwebrtc:
 	# configure libwebrtc native depends for ringrtc
 	echo "# fake gclient_args" > ${WEBRTC_SRC}/build/config/gclient_args.gni
-	cd ${WEBRTC_SRC} && env -i ${MAKE_ENV} \
+	cd ${WEBRTC_SRC} && ${SETENV} ${MAKE_ENV} \
 		build/linux/unbundle/replace_gn_files.py \
 		--system-libraries ${GN_SYSTEM_LIBS}
-	cd ${WEBRTC_SRC} && env -i ${CONFIGURE_ENV} ${MAKE_ENV} \
+	cd ${WEBRTC_SRC} && ${SETENV} ${CONFIGURE_ENV} ${MAKE_ENV} \
 		gn gen out/release --args="${GN_ARGS}"
 	# build libwebrtc native depends for ringrtc
-	cd ${WEBRTC_SRC} && env -i ${MAKE_ENV} \
+	cd ${WEBRTC_SRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/release
 # XXX not needed, compile_commands.json helps debugging
-	cd ${WEBRTC_SRC} && env -i ${MAKE_ENV} \
+	cd ${WEBRTC_SRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/release \
 		-t compdb > compile_commands.json
 
 ringrtc: libwebrtc
 	# build ringrtc native depends
-	cd ${RINGRTC_SRC} && env -i ${MAKE_ENV} ${CONFIGURE_ENV} \
+	cd ${RINGRTC_SRC} && ${SETENV} ${MAKE_ENV} ${CONFIGURE_ENV} \
 		OUTPUT_DIR=${WEBRTC_SRC}/out \
 		${MODCARGO_ENV} ${MODCARGO_CARGO_BIN} build -p ringrtc \
 		--features electron --release \
@@ -359,7 +359,7 @@ ringrtc: libwebrtc
 
 sticker-creator:
 	# build sticker-creator
-	cd ${WRKSRC}/sticker-creator && env -i ${MAKE_ENV} \
+	cd ${WRKSRC}/sticker-creator && ${SETENV} ${MAKE_ENV} \
 		PATH='${PORTPATH}:${WRKSRC}/sticker-creator/node_modules/.bin' \
 		npm run build
 
@@ -369,9 +369,9 @@ test-libsignal: libsignal
 	cp ${MODCARGO_TARGET_DIR}/release/libsignal_node.so \
 		${LIBSIGNAL_NODE}/build/Release/node.napi.node
 	# build libsignal test
-	cd ${LIBSIGNAL_NODE} && env -i ${MAKE_ENV} yarn tsc
+	cd ${LIBSIGNAL_NODE} && ${SETENV} ${MAKE_ENV} yarn tsc
 	# run libsignal test
-	cd ${LIBSIGNAL_NODE} && env -i ${MAKE_ENV} yarn test
+	cd ${LIBSIGNAL_NODE} && ${SETENV} ${MAKE_ENV} yarn test
 
 # XXX .sndio/cookie ?
 # audio_device_sndio.cc:26: Couldn't open audio device
@@ -382,18 +382,18 @@ test-ringrtc: ringrtc
 	cp ${MODCARGO_TARGET_DIR}/release/libringrtc.so \
 		${RINGRTC_NODE}/build/openbsd/libringrtc-${NODE_ARCH}.node
 	# build ringrtc test
-	cd ${RINGRTC_NODE} && env -i ${MAKE_ENV} yarn tsc
+	cd ${RINGRTC_NODE} && ${SETENV} ${MAKE_ENV} yarn tsc
 	# run ringrtc test
 	mkdir -p ${WRKDIR}/.config/chromium
 # XXX cp cookie from user env
 	cp -R ~/.sndio ${WRKDIR}/
-	cd ${RINGRTC_NODE} && env -i ${MAKE_ENV} DISPLAY=:1 \
+	cd ${RINGRTC_NODE} && ${SETENV} ${MAKE_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
 		yarn test
 
 test-sticker-creator:
 	# run sticker-creator test
-	cd ${WRKSRC}/sticker-creator && env -i ${MAKE_ENV} \
+	cd ${WRKSRC}/sticker-creator && ${SETENV} ${MAKE_ENV} \
 		CI=ci yarn test
 
 test-signal-desktop:
@@ -413,19 +413,19 @@ test-signal-desktop:
 		cp ${MODCARGO_TARGET_DIR}/release/libsignal_node.so \
 			@signalapp/libsignal-client/build/Release/node.napi.node
 	# run signal-desktop test
-	cd ${WRKSRC} && env -i ${TEST_ENV} DISPLAY=:1 \
+	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
 		yarn test
 # XXX fake launch test from system or make one more wraper ?
-	cd ${WRKSRC} && env -i ${TEST_ENV} DISPLAY=:1 \
+	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
 		yarn test-release
-	cd ${WRKSRC} && env -i ${TEST_ENV} DISPLAY=:1 \
+	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
 		yarn test-mock
 # XXX ts/util/asyncIterables.js
 # SyntaxError: Unexpected token '['
-	cd ${WRKSRC} && env -i ${TEST_ENV} DISPLAY=:1 \
+	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
 		ELECTRON_OVERRIDE_DIST_PATH=${WRKSRC}/node_modules/.bin \
 		yarn test-node-coverage
@@ -550,7 +550,7 @@ dns-fallback:
 	@make configure >/dev/null 2>&1
 	# make dns-fallback > files/dns-fallback.json
 	@cd ${WRKSRC} && \
-		${_PBUILD} env -i ${MAKE_ENV} npm run build:dns-fallback && \
+		${_PBUILD} ${SETENV} ${MAKE_ENV} npm run build:dns-fallback && \
 		cat ${WRKSRC}/build/dns-fallback.json
 
 chromium-patches:

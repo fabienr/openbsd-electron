@@ -58,7 +58,7 @@ ELECTRON_BUILDER_BUILD=\
 	mkdir -p ${WRKDIR}/electron && \
 		ln -fs ${LOCALBASE}/electron/${ELECTRON_V}/electron \
 			${WRKDIR}/electron/electron ; \
-	cd ${MODELECTRON_SRC} && env -i ${MAKE_ENV} \
+	cd ${MODELECTRON_SRC} && ${SETENV} ${MAKE_ENV} \
 		./node_modules/electron-builder/cli.js \
 		--linux --dir \
 		--config.npmRebuild=false \

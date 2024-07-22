@@ -56,7 +56,7 @@ pre-build:
 	done
 	# package.json
 # XXX replace with a patch ?
-	cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		node build/make_package_json.js \
 			launcher/package.json \
 			dist_cfg/config.json \

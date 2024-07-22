@@ -423,20 +423,20 @@ pre-configure:
 # 2. bootstrap gn, the tool to generate ninja files
 # 3. run gn with the appropriate configuration arguments
 do-configure:
-	cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		build/linux/unbundle/replace_gn_files.py \
 		--system-libraries ${GN_SYSTEM_LIBS}
-	cd ${WRKSRC}/tools/gn && env -i ${MAKE_ENV} \
+	cd ${WRKSRC}/tools/gn && ${SETENV} ${MAKE_ENV} \
 		LDFLAGS=-L${LOCALBASE}/lib ${MODPY_BIN} \
 		bootstrap/bootstrap.py --no-clean -s ${GN_BOOTSTRAP_FLAGS}
-	cd ${WRKSRC} && env -i ${CONFIGURE_ENV} \
+	cd ${WRKSRC} && ${SETENV} ${CONFIGURE_ENV} \
 		${WRKSRC}/out/${BUILDTYPE}/gn gen out/${BUILDTYPE} \
 		--args="import(\"//electron/build/args/${GN_FILE}\") ${GN_ARGS}"
 
 do-build:
-	@cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	@cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${ALL_TARGET}
-	@cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	@cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${ALL_TARGET} \
 		-t compdb > compile_commands.json
 
@@ -447,9 +447,9 @@ post-build:
 	${STRIP} --only-keep-debug \
 		-o ${WRKSRC}/out/${BUILDTYPE}/chromedriver.debug \
 		${WRKSRC}/out/${BUILDTYPE}/chromedriver.unstripped
-	@cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	@cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${POST_BUILD_TARGET}
-	@cd ${WRKSRC} && env -i ${MAKE_ENV} \
+	@cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${POST_BUILD_TARGET} \
 		-t compdb >> compile_commands.json
 # XXX looks like we don't care about distfiles release to install apps, remove ?
@@ -542,7 +542,7 @@ do-test:
 	ulimit -Sn `ulimit -Hn`
 	ulimit -Sd `ulimit -Hd`
 	# XXX LOCAL_GIT_DIRECTORY=${LOCALBASE} ?
-	cd ${WRKSRC}/electron && env -i ${TEST_ENV} \
+	cd ${WRKSRC}/electron && ${SETENV} ${TEST_ENV} \
 		ELECTRON_OUT_DIR=${BUILDTYPE} \
 		LD_LIBRARY_PATH=${BUILDDIR} \
 		DISPLAY=:1 \
@@ -608,7 +608,7 @@ node-patches:
 _gn_args-list:
 	# ${WRKDIR}/gn_args.list
 	@if [[ ! -e "${WRKDIR}/gn_args.list" ]] ; then \
-		cd ${WRKSRC} && env -i ${CONFIGURE_ENV} \
+		cd ${WRKSRC} && ${SETENV} ${CONFIGURE_ENV} \
 		${WRKSRC}/out/${BUILDTYPE}/gn args out/${BUILDTYPE} \
 		--list > ${WRKDIR}/gn_args.list ; \
 	fi
@@ -619,7 +619,7 @@ _gn_args-chromium-list:
 	@if [[ ! -e "${WRKDIR}/gn_args-chromium.list" ]] ; then \
 		cd ${PORTSDIR}/www/chromium ; \
 		_wrksrc=$$(make show=WRKSRC) ; \
-		cd $$_wrksrc && env -i ${CONFIGURE_ENV} \
+		cd $$_wrksrc && ${SETENV} ${CONFIGURE_ENV} \
 			$$_wrksrc/out/${BUILDTYPE}/gn args out/${BUILDTYPE} \
 			--list > ${WRKDIR}/gn_args-chromium.list ; \
 	fi

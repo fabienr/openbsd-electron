@@ -49,7 +49,7 @@ MODYARN_post-extract+= \
 		echo 'yarn-offline-mirror "${MODYARN_CACHE}"' >> \
 			${PORTHOME}/.yarnrc ; \
 		for _target in ${MODYARN_TARGETS}; do \
-			cd $$_target && env -i ${MAKE_ENV} \
+			cd $$_target && ${SETENV} ${MAKE_ENV} \
 			yarn install --frozen-lockfile --offline \
 			--ignore-scripts --ignore-engines \
 			${MODYARN_OMITOPTIONAL:S/Yes/--ignore-optional/:S/No//}\

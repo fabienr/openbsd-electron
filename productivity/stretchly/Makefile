@@ -30,7 +30,7 @@ ICONS_TARGET=		${PREFIX}/share/icons/hicolor
 
 pre-build:
 	# generate icon files
-	cd ${WRKSRC} && env -i ${MAKE_ENV} app-builder icon \
+	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} app-builder icon \
 		--input=icon.icns --out=icons --format=set --root=build
 .for size in 16 48
 	mv ${WRKSRC}/icons/icon_${size}x${size}.png \
