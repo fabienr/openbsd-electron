@@ -59,7 +59,7 @@ MODNPM_post-extract += \
 # XXX path to npm_dist
 .if !target(modnpm-gen-modules)
 modnpm-gen-modules:
-	@${_MAKE} -D _GEN_MODULES extract >/dev/null 2>&1
+	@make -D _GEN_MODULES extract >/dev/null 2>&1
 	# make modnpm-gen-modules > modules.inc
 	# MODNPM_OMITDEV=${MODNPM_OMITDEV}
 	# MODNPM_OMITOPTIONAL=${MODNPM_OMITOPTIONAL}
@@ -76,7 +76,7 @@ modnpm-gen-modules:
 # XXX path to npm_bin
 .if !target(modnpm-gen-bin)
 modnpm-gen-bin:
-	@${_MAKE} extract >/dev/null 2>&1
+	@make extract >/dev/null 2>&1
 	# make modnpm-gen-bin >> modules.inc
 	@/usr/ports/mystuff/devel/npm/npm_bin \
 		${WRKSRC} ${MODNPM_TARGETS}

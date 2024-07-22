@@ -552,7 +552,7 @@ do-test:
 
 _TMP = /tmp/electron-${ELECTRON_V}
 chromium-patches:
-	${_MAKE} -D _MAKE_PATCHES patch
+	make -D _MAKE_PATCHES patch
 	# remember to update cvs co -D "..." if you change targeted version
 	if [ -d ${_TMP}/chromium ]; then \
 		echo "${_TMP}/chromium exists, skip cvs co" ; \
@@ -583,7 +583,7 @@ chromium-patches:
 	# if ok, copy ${_TMP}/patches/chromium into port && make clean
 
 node-patches:
-	${_MAKE} -D _MAKE_PATCHES patch
+	make -D _MAKE_PATCHES patch
 	# remember to update cvs co -D "..." if you change targeted version
 	if [ -d ${_TMP}/node ]; then \
 		echo "${_TMP}/node exists, skip cvs co" ; \

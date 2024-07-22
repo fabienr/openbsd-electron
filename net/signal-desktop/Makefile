@@ -505,7 +505,7 @@ versions:
 # handle multiple cargo files and add github depends for libsignal
 # XXX make modcargo-gen-crates-licenses doesn't preserve git+ depends
 modcargo-gen-crates:
-	@${_MAKE} extract >/dev/null 2>&1
+	@make extract >/dev/null 2>&1
 	@echo '# run: make modcargo-gen-crates-licenses'
 	@cat ${MODCARGO_CARGOS_TOML:toml=lock} | awk '\
 		/^name = / { n=$$3; gsub("\"", "", n); } \
