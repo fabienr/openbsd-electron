@@ -1,4 +1,5 @@
 bin/stretchly
+${ELECTRON_DIST_APPS}/
 ${ELECTRON_DIST_APPS}/stretchly.asar
 ${ELECTRON_DIST_APPS}/stretchly.asar.unpacked/
 ${ELECTRON_DIST_APPS}/stretchly.asar.unpacked/node_modules/

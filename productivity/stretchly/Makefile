@@ -1,10 +1,7 @@
 COMMENT=	break time reminder app
 
-COMMIT=		ba95df8854b12f2518aa5bd3059c88679b8cda0b
-DISTNAME=	stretchly-${COMMIT}
-PKGNAME=	stretchly-1.15.1
-
-DIST_TUPLE=	github hovancik stretchly ${COMMIT} .
+V=1.16.0
+DIST_TUPLE=	github hovancik stretchly v${V} .
 
 CATEGORIES=	productivity
 
