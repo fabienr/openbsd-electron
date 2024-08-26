@@ -1,7 +1,16 @@
 Index: build/gulpfile.vscode.js
 --- build/gulpfile.vscode.js.orig
 +++ build/gulpfile.vscode.js
-@@ -340,7 +340,7 @@ function packageTask(platform, arch, sourceFolderName,
+@@ -339,7 +339,7 @@ function packageTask(platform, arch, sourceFolderName,
+ 				'resources/win32/code_70x70.png',
+ 				'resources/win32/code_150x150.png'
+ 			], { base: '.' }));
+-		} else if (platform === 'linux') {
++		} else if (platform === 'linux' || platform === 'openbsd') {
+ 			all = es.merge(all, gulp.src('resources/linux/code.png', { base: '.' }));
+ 		} else if (platform === 'darwin') {
+ 			const shortcut = gulp.src('resources/darwin/bin/code.sh')
+@@ -353,7 +353,7 @@ function packageTask(platform, arch, sourceFolderName,
  			.pipe(util.skipDirectories())
  			.pipe(util.fixWin32DirectoryPermissions())
  			.pipe(filter(['**', '!**/.github/**'], { dot: true })) // https://github.com/microsoft/vscode/issues/116523

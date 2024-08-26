@@ -1,16 +1,18 @@
 # XXX _pbuild default to openfiles-max=1024 is not eough ?
 
-# XXX vscode 1.90.0 version mismatch :
-# .yarnrc, electron 29.4.0 vs 29.4.1
-# remote/.yarnrc, node 20.11.1 vs 20.13.1
+# XXX vscode 1.92.2 version mismatch :
+# .yarnrc, electron 30.1.2 vs 31.3.1
+# remote/.yarnrc, node 20.14.0 vs 20.16.0
 
 # XXX too restrictive ?
 ONLY_FOR_ARCHS=	amd64
 
 COMMENT=	Visual Studio Code - Open Source ("Code - OSS")
 
-V=		1.90.1
-DIST_TUPLE=	github microsoft vscode ${V} .
+V=		1.92.2
+ID=		00427fda202cf85d39c62e6f445879604d12b0f6
+PKGNAME=	vscode-${V}
+DIST_TUPLE=	github microsoft vscode ${ID} .
 
 CATEGORIES=	editors
 
@@ -21,8 +23,8 @@ MAINTAINER=	fabien@openbsd.org
 PERMIT_PACKAGE=	Yes
 
 # check builtInExtensions from product.json, use pre-build .vsix (.zip)
-VSCODE_EXTENSIONS =	js-debug-companion 1.1.2 \
-			js-debug 1.90.0 \
+VSCODE_EXTENSIONS =	js-debug-companion 1.1.3 \
+			js-debug 1.92.0 \
 			vscode-js-profile-table 1.0.9
 SITES.extensions=https://open-vsx.org/vscode/gallery/publishers/ms-vscode/vsextensions/
 .for _ext _v in ${VSCODE_EXTENSIONS}
@@ -39,7 +41,7 @@ WANTLIB += ${COMPILER_LIBCXX} c m notify util
 
 COMPILER=	base-clang ports-gcc
 
-# npm for MODNPM_GYP_BIN only
+# npm is for MODNPM_GYP_BIN only
 MODULES =	devel/npm \
 		devel/yarn \
 		lang/python \
@@ -78,13 +80,15 @@ MODYARN_LOCKS=$$( \
 CXXFLAGS+=	-I${LOCALBASE}/include/inotify
 LDFLAGS+=	-L${LOCALBASE}/lib
 
-DIST_TARGET =		${ELECTRON_DIST_APPS}/code-oss
+DIST_TARGET =	${ELECTRON_DIST_APPS}/code-oss
 
-# BUILD_SOURCEVERSION, github commitid matching release
-MAKE_ENV+=	BUILD_SOURCEVERSION=${COMMIT}
 MAKE_ENV+=	PLAYWRIGHT_BROWSERS_PATH=${WRKDIR}/pw-browsers \
 		PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 MAKE_ENV+=	CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
+
+# BUILD_SOURCEVERSION, github commitid matching release
+#MAKE_ENV+=	BUILD_SOURCEVERSION=${ID}
+#TEST_ENV+=	BUILD_SOURCEVERSION=${ID}
 
 post-extract:
 	cp ${WRKSRC}/build/.moduleignore{.linux,.openbsd}
@@ -117,7 +121,6 @@ do-configure:
 
 pre-build:
 	# rebuild native node modules for electron
-# XXX do not rebuild if .build_done (for testing only ?)
 	for subdir in `find ${WRKSRC}/node_modules -type f \
 	    -name binding.gyp -exec dirname {} ';'`; do \
 		name=`basename $${subdir}`; \
@@ -191,7 +194,7 @@ do-install:
 pre-test:
 	# setup electron dependency for unit tests
 	mkdir -p ${WRKSRC}/.build/electron
-	mkdir -p ${WRKDIR}/.config/chromium
+	mkdir -p ${WRKDIR}/.config/electron
 # XXX not ok 95 app module sandbox options
 # Unhandled exception in main spec runner:... to not include '--no-sandbox'
 #	cp ${TRUEPREFIX}/bin/electron_nosandbox \
@@ -204,14 +207,11 @@ pre-test:
 	cp -Rp ${WRKDIR}/ms-vscode.${_ext}-${_v}/extension/* \
 		$${_dst}/ms-vscode.${_ext}
 .endfor
-	rm -rf ${WRKSRC}/out
-	ln -s ${WRKSRC}/out-build ${WRKSRC}/out
 
 do-test:
 	# XXX Xvfb :1 &
 	# unit tests
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		LD_LIBRARY_PATH="${LOCALBASE}/electron" \
 		./scripts/test.sh || true
 	# UI smoke tests
 	# XXX Error: Unsupported platform: openbsd
