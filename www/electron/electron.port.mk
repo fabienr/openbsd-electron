@@ -1,7 +1,14 @@
 # sync with Makefile
-ELECTRON_V=		29.4.4
+ELECTRON_V=		31.3.1
 ELECTRON_DIST_APPS=	electron/resources
 ELECTRON_WRAPPER=	electron/${ELECTRON_V}/electron.sh
+
+# rebuild/update depends if version changed
+ELECTRON_REV=${ELECTRON_V:S/.//g}
+.if !empty(REVISION)
+REV:=${REVISION}
+.endif
+REVISION=${ELECTRON_REV}${REV}
 
 MODELECTRON_BUILDER?=No
 # directory to build/install with app-builder
@@ -72,7 +79,7 @@ ELECTRON_BUILDER_INSTALL=\
 		${PREFIX}/${ELECTRON_DIST_TARGET}.asar.unpacked ; \
 	${INSTALL_DATA} ${ELECTRON_BUILDER_DIR}/app.asar \
 		${PREFIX}/${ELECTRON_DIST_TARGET}.asar
-# XXX which app use this file ?
+# XXX how app use this file ?
 #	${INSTALL_DATA} ${BUILDDIR}/app-update.yml \
 #		${PREFIX}/${ELECTRON_DIST_TARGET}-update.yml
 
