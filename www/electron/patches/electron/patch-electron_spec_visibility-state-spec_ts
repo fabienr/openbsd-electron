@@ -1,0 +1,12 @@
+Index: electron/spec/visibility-state-spec.ts
+--- electron/spec/visibility-state-spec.ts.orig
++++ electron/spec/visibility-state-spec.ts
+@@ -10,7 +10,7 @@ import { setTimeout } from 'node:timers/promises';
+ 
+ // visibilityState specs pass on linux with a real window manager but on CI
+ // the environment does not let these specs pass
+-ifdescribe(process.platform !== 'linux')('document.visibilityState', () => {
++ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('document.visibilityState', () => {
+   let w: BaseWindow & {webContents: WebContents};
+ 
+   afterEach(() => {

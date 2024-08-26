@@ -1,10 +1,11 @@
 use electron specific files.
 strsep unveil lines by tabulation, allow space in path.
+allow unveil failures to list non-existent directories.
 
 Index: sandbox/policy/openbsd/sandbox_openbsd.cc
 --- sandbox/policy/openbsd/sandbox_openbsd.cc.orig
 +++ sandbox/policy/openbsd/sandbox_openbsd.cc
-@@ -64,11 +64,11 @@
+@@ -65,11 +65,11 @@
  
  #define MAXTOKENS	3
  
@@ -21,7 +22,7 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
  
  namespace sandbox {
  namespace policy {
-@@ -230,7 +230,7 @@ bool SandboxLinux::SetUnveil(const std::string process
+@@ -234,7 +234,7 @@ bool SandboxLinux::SetUnveil(const std::string process
          continue;
  
        for (ap = tokens; ap < &tokens[MAXTOKENS - 1] &&
@@ -30,7 +31,15 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
          if (**ap != '\0')
            ap++;
        }
-@@ -316,7 +316,7 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
+@@ -261,7 +261,6 @@ bool SandboxLinux::SetUnveil(const std::string process
+ 
+       if (unveil(path, tokens[1]) == -1) {
+         LOG(ERROR) << "failed unveiling " << path << " with permissions " << tokens[1];
+-        _exit(1);
+       } else {
+         VLOG(5) << "unveiling " << path << " with permissions " << tokens[1];
+       }
+@@ -320,7 +319,7 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
  
    switch(sandbox_type) {
      case sandbox::mojom::Sandbox::kNoSandbox:
@@ -39,7 +48,7 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
        break;
      case sandbox::mojom::Sandbox::kRenderer:
        // prot_exec needed by v8
-@@ -333,13 +333,13 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
+@@ -337,13 +336,13 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
        break;
  #endif
      case sandbox::mojom::Sandbox::kAudio:

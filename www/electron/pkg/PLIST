@@ -245,6 +245,7 @@ electron/${ELECTRON_V}/node_headers/include/node/v8-profiler.h
 electron/${ELECTRON_V}/node_headers/include/node/v8-promise.h
 electron/${ELECTRON_V}/node_headers/include/node/v8-proxy.h
 electron/${ELECTRON_V}/node_headers/include/node/v8-regexp.h
+electron/${ELECTRON_V}/node_headers/include/node/v8-sandbox.h
 electron/${ELECTRON_V}/node_headers/include/node/v8-script.h
 electron/${ELECTRON_V}/node_headers/include/node/v8-snapshot.h
 electron/${ELECTRON_V}/node_headers/include/node/v8-source-location.h

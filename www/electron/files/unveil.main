@@ -74,7 +74,7 @@
 ~/.local/share/fonts			r
 ~/.local/share/glib-2.0			r
 
-# needs write access due to chromium profile icons 
+# needs write access due to chromium profile icons
 ~/.local/share/icons			rwc
 
 ~/.local/share/mime			r
@@ -83,11 +83,12 @@
 
 # electron
 ~/.config/Electron			rwc
-
-# stretchly
-~/.config/Stretchly			rwc
+~/.config/Electron Test Main		rwc
+~/.config/electron-test-mixed-sandbox	rwc
+~/.config/electron-test-remote-control	rwc
 
 # byar_chobby_launcher
+/usr/local/bin/7za			rx
 /usr/local/bin/pr-downloader		rx
 /usr/local/bin/spring			rx
 ~/.config/Beyond-All-Reason		rwc
@@ -96,7 +97,37 @@
 # signal-desktop
 ~/.config/Signal			rwc
 
-# XXX debug
+# stretchly
+~/.config/Stretchly			rwc
+
 # ktrace -Bdi 'command'
 # kdump | awk '/NAMI/{$1="";$2="";$3="";print}' | sort | uniq > ktrace.NAMI 
 #/					rwcx
+
+# XXX extras
+
+# vscode
+#/bin/ksh				rx	# terminal
+#/bin/sh				rx	# python ?
+#/bin/which				rx	# needed ?
+/usr/bin/cvs				rx	# cvs
+/usr/local/bin/git			rx	# git
+#/usr/local/bin/go			rx	# go
+#/usr/local/bin/gopls			rx	# go
+#/usr/local/bin/python3			rx	# python
+/etc/gitconfig				r	# git
+~/.config/git				r	# git
+~/.cvsrc				r	# cvs
+~/.config/Code - OSS			rwc
+~/.vscode-oss				rwc
+~/workspaces				rwc
+# common src trees
+/usr/ports				rwc
+/usr/src				rwc
+/usr/www				rwc
+
+# vscode, custom settings
+/home/_pobj				rwc
+~/sync/diff				r
+~/mystuff				rwc
+~/stuff					rwc

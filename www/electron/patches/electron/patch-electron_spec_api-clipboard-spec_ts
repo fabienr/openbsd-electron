@@ -1,0 +1,30 @@
+Index: electron/spec/api-clipboard-spec.ts
+--- electron/spec/api-clipboard-spec.ts.orig
++++ electron/spec/api-clipboard-spec.ts
+@@ -51,7 +51,7 @@ ifdescribe(process.platform !== 'win32' || process.arc
+     });
+   });
+ 
+-  ifdescribe(process.platform !== 'linux')('clipboard.readBookmark', () => {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('clipboard.readBookmark', () => {
+     it('returns title and url', () => {
+       clipboard.writeBookmark('a title', 'https://electronjs.org');
+ 
+@@ -70,7 +70,7 @@ ifdescribe(process.platform !== 'win32' || process.arc
+   });
+ 
+   describe('clipboard.read()', () => {
+-    ifit(process.platform !== 'linux')('does not crash when reading various custom clipboard types', () => {
++    ifit(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('does not crash when reading various custom clipboard types', () => {
+       const type = process.platform === 'darwin' ? 'NSFilenamesPboardType' : 'FileNameW';
+ 
+       expect(() => {
+@@ -111,7 +111,7 @@ ifdescribe(process.platform !== 'win32' || process.arc
+       const readImage = clipboard.readImage();
+       expect(readImage.toDataURL()).to.equal(i.toDataURL());
+ 
+-      if (process.platform !== 'linux') {
++      if (!(['freebsd', 'linux', 'openbsd'].includes(process.platform))) {
+         if (process.platform !== 'win32') {
+           expect(clipboard.readBookmark()).to.deep.equal(bookmark);
+         } else {

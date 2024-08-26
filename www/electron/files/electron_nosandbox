@@ -36,6 +36,5 @@ else
 fi
 export LD_LIBRARY_PATH
 
-# XXX use --no-sandbox ?
 LANG=${_l} exec "${TRUEPREFIX}/electron/${ELECTRON_V}/electron" \
 	--no-sandbox "${@}"

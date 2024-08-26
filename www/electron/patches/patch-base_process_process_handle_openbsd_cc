@@ -1,0 +1,16 @@
+Index: base/process/process_handle_openbsd.cc
+--- base/process/process_handle_openbsd.cc.orig
++++ base/process/process_handle_openbsd.cc
+@@ -57,10 +57,10 @@ FilePath GetProcessExecutablePath(ProcessHandle proces
+ 
+   int mib[] = { CTL_KERN, KERN_PROC_ARGS, process, KERN_PROC_ARGV };
+ 
+-  if ((cpath = getenv("CHROME_EXE_PATH")) != NULL)
++  if ((cpath = getenv("ELECTRON_EXE_PATH")) != NULL)
+     result = FilePath(cpath);
+   else
+-    result = FilePath("/usr/local/chrome/chrome");
++    result = FilePath("${LOCALBASE}/electron/${ELECTRON_V}/electron");
+ 
+   if (sysctl(mib, std::size(mib), NULL, &len, NULL, 0) != -1) {
+     retvalargs = static_cast<char**>(malloc(len));

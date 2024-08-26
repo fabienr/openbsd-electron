@@ -1,0 +1,24 @@
+Index: electron/spec/api-shell-spec.ts
+--- electron/spec/api-shell-spec.ts.orig
++++ electron/spec/api-shell-spec.ts
+@@ -23,7 +23,7 @@ describe('shell module', () => {
+ 
+     afterEach(async () => {
+       // reset env vars to prevent side effects
+-      if (process.platform === 'linux') {
++      if (['freebsd', 'linux', 'openbsd'].includes(process.platform)) {
+         process.env.DE = envVars.de;
+         process.env.BROWSER = envVars.browser;
+         process.env.DISPLAY = envVars.display;
+@@ -36,6 +36,11 @@ describe('shell module', () => {
+       let requestReceived: Promise<any>;
+       if (process.platform === 'linux') {
+         process.env.BROWSER = '/bin/true';
++        process.env.DE = 'generic';
++        process.env.DISPLAY = '';
++        requestReceived = Promise.resolve();
++      } else if (['freebsd', 'openbsd'].includes(process.platform)) {
++        process.env.BROWSER = '/usr/bin/true';
+         process.env.DE = 'generic';
+         process.env.DISPLAY = '';
+         requestReceived = Promise.resolve();

@@ -1,3 +1,5 @@
+XXX openbsd use a wrapper, skip bin/electron check
+
 Index: electron/spec/api-app-spec.ts
 --- electron/spec/api-app-spec.ts.orig
 +++ electron/spec/api-app-spec.ts
@@ -6,12 +8,12 @@ Index: electron/spec/api-app-spec.ts
  
    describe('app.getPreferredSystemLanguages()', () => {
 -    ifit(process.platform !== 'linux')('should not be empty', () => {
-+    ifit(process.platform !== 'linux' && process.platform !== 'openbsd')('should not be empty', () => {
++    ifit(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('should not be empty', () => {
        expect(app.getPreferredSystemLanguages().length).to.not.equal(0);
      });
  
 -    ifit(process.platform === 'linux')('should be empty or contain C entry', () => {
-+    ifit(process.platform === 'linux' || process.platform === 'openbsd')('should be empty or contain C entry', () => {
++    ifit(['freebsd', 'linux', 'openbsd'].includes(process.platform))('should be empty or contain C entry', () => {
        const languages = app.getPreferredSystemLanguages();
        if (languages.length) {
          expect(languages).to.not.include('C');
@@ -20,7 +22,7 @@ Index: electron/spec/api-app-spec.ts
      });
  
 -    ifit(['darwin', 'linux'].includes(process.platform))('exits gracefully', async function () {
-+    ifit(['darwin', 'linux', 'openbsd'].includes(process.platform))('exits gracefully', async function () {
++    ifit(['darwin', 'freebsd', 'linux', 'openbsd'].includes(process.platform))('exits gracefully', async function () {
        const electronPath = process.execPath;
        const appPath = path.join(fixturesPath, 'api', 'singleton');
        appProcess = cp.spawn(electronPath, [appPath]);
@@ -39,7 +41,7 @@ Index: electron/spec/api-app-spec.ts
  
    //   before(function () {
 -  //     if (process.platform !== 'linux') {
-+  //     if (process.platform !== 'linux' && process.platform !== 'openbsd') {
++  //     if (!(['freebsd', 'linux', 'openbsd'].includes(process.platform))) {
    //       this.skip()
    //     }
    //   })
@@ -48,7 +50,7 @@ Index: electron/spec/api-app-spec.ts
      const platformIsNotSupported =
          (process.platform === 'win32') ||
 -        (process.platform === 'linux' && !app.isUnityRunning());
-+        ((process.platform === 'linux' || process.platform === 'openbsd') && !app.isUnityRunning());
++        (['freebsd', 'linux', 'openbsd'].includes(process.platform) && !app.isUnityRunning());
  
      const expectedBadgeCount = 42;
  
@@ -57,32 +59,20 @@ Index: electron/spec/api-app-spec.ts
    });
  
 -  ifdescribe(process.platform !== 'linux' && !process.mas && (process.platform !== 'darwin' || process.arch === 'arm64'))('app.get/setLoginItemSettings API', function () {
-+  ifdescribe(process.platform !== 'linux' && process.platform !== 'openbsd' && !process.mas && (process.platform !== 'darwin' || process.arch === 'arm64'))('app.get/setLoginItemSettings API', function () {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)) && !process.mas && (process.platform !== 'darwin' || process.arch === 'arm64'))('app.get/setLoginItemSettings API', function () {
      const isMac = process.platform === 'darwin';
      const isWin = process.platform === 'win32';
  
-@@ -976,7 +979,7 @@ describe('app module', () => {
+@@ -975,7 +978,7 @@ describe('app module', () => {
      });
    });
  
 -  ifdescribe(process.platform !== 'linux')('accessibilitySupportEnabled property', () => {
-+  ifdescribe(process.platform !== 'linux' && process.platform !== 'openbsd')('accessibilitySupportEnabled property', () => {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('accessibilitySupportEnabled property', () => {
      it('with properties', () => {
        it('can set accessibility support enabled', () => {
          expect(app.accessibilitySupportEnabled).to.eql(false);
-@@ -1102,8 +1105,11 @@ describe('app module', () => {
-       };
- 
-       beforeEach(() => {
-+        console.log("remove ", userDataPath)
-         fs.removeSync(userDataPath);
-+        console.log("remove ", tempBrowserDataPath)
-         fs.removeSync(tempBrowserDataPath);
-+        console.log("remove done")
-       });
- 
-       it('writes to userData by default', () => {
-@@ -1114,7 +1120,9 @@ describe('app module', () => {
+@@ -1151,7 +1154,9 @@ describe('app module', () => {
  
        it('can be changed', () => {
          expect(hasSessionFiles(userDataPath)).to.equal(false);
@@ -92,75 +82,66 @@ Index: electron/spec/api-app-spec.ts
          expect(hasSessionFiles(userDataPath)).to.equal(false);
          expect(hasSessionFiles(tempBrowserDataPath)).to.equal(true);
        });
-@@ -1138,7 +1146,7 @@ describe('app module', () => {
+@@ -1175,7 +1180,7 @@ describe('app module', () => {
      });
    });
  
 -  ifdescribe(process.platform !== 'linux')('select-client-certificate event', () => {
-+  ifdescribe(process.platform !== 'linux' && process.platform !== 'openbsd')('select-client-certificate event', () => {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('select-client-certificate event', () => {
      let w: BrowserWindow;
  
      before(function () {
-@@ -1273,7 +1281,7 @@ describe('app module', () => {
+@@ -1310,7 +1315,7 @@ describe('app module', () => {
  
    describe('getApplicationNameForProtocol()', () => {
      // TODO: Linux CI doesn't have registered http & https handlers
 -    ifit(!(process.env.CI && process.platform === 'linux'))('returns application names for common protocols', function () {
-+    ifit(!(process.env.CI && (process.platform === 'linux' || process.platform === 'openbsd')))('returns application names for common protocols', function () {
++    ifit(!(process.env.CI && ['freebsd', 'linux', 'openbsd'].includes(process.platform)))('returns application names for common protocols', function () {
        // We can't expect particular app names here, but these protocols should
        // at least have _something_ registered. Except on our Linux CI
        // environment apparently.
-@@ -1291,7 +1299,7 @@ describe('app module', () => {
+@@ -1328,7 +1333,7 @@ describe('app module', () => {
      });
    });
  
 -  ifdescribe(process.platform !== 'linux')('getApplicationInfoForProtocol()', () => {
-+  ifdescribe(process.platform !== 'linux' && process.platform !== 'openbsd')('getApplicationInfoForProtocol()', () => {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('getApplicationInfoForProtocol()', () => {
      it('returns promise rejection for a bogus protocol', async function () {
        await expect(
          app.getApplicationInfoForProtocol('bogus-protocol://')
-@@ -1341,7 +1349,7 @@ describe('app module', () => {
+@@ -1378,7 +1383,7 @@ describe('app module', () => {
    });
  
    // FIXME Get these specs running on Linux CI
 -  ifdescribe(process.platform !== 'linux')('getFileIcon() API', () => {
-+  ifdescribe(process.platform !== 'linux' && process.platform !== 'openbsd')('getFileIcon() API', () => {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('getFileIcon() API', () => {
      const iconPath = path.join(__dirname, 'fixtures/assets/icon.ico');
      const sizes = {
        small: 16,
-@@ -1422,7 +1430,7 @@ describe('app module', () => {
+@@ -1459,7 +1464,7 @@ describe('app module', () => {
            expect(entry.memory).to.have.property('privateBytes').that.is.greaterThan(0);
          }
  
 -        if (process.platform !== 'linux') {
-+        if (process.platform !== 'linux' && process.platform !== 'openbsd') {
++        if (!(['freebsd', 'linux', 'openbsd'].includes(process.platform))) {
            expect(entry.sandboxed).to.be.a('boolean');
          }
  
-@@ -1448,7 +1456,7 @@ describe('app module', () => {
-   });
- 
-   // FIXME https://github.com/electron/electron/issues/24224
--  ifdescribe(process.platform !== 'linux')('getGPUInfo() API', () => {
-+  ifdescribe(process.platform !== 'linux' && process.platform !== 'openbsd')('getGPUInfo() API', () => {
-     const appPath = path.join(fixturesPath, 'api', 'gpu-info.js');
- 
-     const getGPUInfo = async (type: string) => {
-@@ -1497,7 +1505,7 @@ describe('app module', () => {
+@@ -1533,7 +1538,7 @@ describe('app module', () => {
  
      it('succeeds with complete GPUInfo', async () => {
        const completeInfo = await getGPUInfo('complete');
 -      if (process.platform === 'linux') {
-+      if (process.platform === 'linux' || process.platform === 'openbsd') {
++      if (['freebsd', 'linux', 'openbsd'].includes(process.platform)) {
          // For linux and macOS complete info is same as basic info
          await verifyBasicGPUInfo(completeInfo);
          const basicInfo = await getGPUInfo('basic');
-@@ -1521,7 +1529,7 @@ describe('app module', () => {
+@@ -1557,7 +1562,7 @@ describe('app module', () => {
      });
    });
  
 -  ifdescribe(!(process.platform === 'linux' && (process.arch === 'arm64' || process.arch === 'arm')))('sandbox options', () => {
-+  ifdescribe(!((process.platform === 'linux' || process.platform === 'openbsd') && (process.arch === 'arm64' || process.arch === 'arm')))('sandbox options', () => {
-     // Our ARM tests are run on VSTS rather than CircleCI, and the Docker
-     // setup on VSTS disallows syscalls that Chrome requires for setting up
-     // sandboxing.
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform) && (process.arch === 'arm64' || process.arch === 'arm')))('sandbox options', () => {
+     let appProcess: cp.ChildProcess = null as any;
+     let server: net.Server = null as any;
+     const socketPath = process.platform === 'win32' ? '\\\\.\\pipe\\electron-mixed-sandbox' : '/tmp/electron-mixed-sandbox';

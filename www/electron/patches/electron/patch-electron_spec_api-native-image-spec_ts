@@ -1,0 +1,12 @@
+Index: electron/spec/api-native-image-spec.ts
+--- electron/spec/api-native-image-spec.ts.orig
++++ electron/spec/api-native-image-spec.ts
+@@ -425,7 +425,7 @@ describe('nativeImage module', () => {
+     });
+   });
+ 
+-  ifdescribe(process.platform !== 'linux')('createThumbnailFromPath(path, size)', () => {
++  ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('createThumbnailFromPath(path, size)', () => {
+     useRemoteContext({ webPreferences: { contextIsolation: false, nodeIntegration: true } });
+ 
+     it('throws when invalid size is passed', async () => {

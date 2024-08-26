@@ -6,12 +6,12 @@ Index: electron/script/spec-runner.js
  
  const utils = require('./lib/utils');
 -const { YARN_VERSION } = require('./yarn');
-+// XXX use system yarn
++// already setup by MODYARN
 +//const { YARN_VERSION } = require('./yarn');
  
  const BASE = path.resolve(__dirname, '../..');
 -const NPX_CMD = process.platform === 'win32' ? 'npx.cmd' : 'npx';
-+// XXX use system yarn
++// already setup by MODYARN
 +//const NPX_CMD = process.platform === 'win32' ? 'npx.cmd' : 'npx';
  
  const runners = new Map([
@@ -42,7 +42,7 @@ Index: electron/script/spec-runner.js
    }
    const runnerArgs = [`electron/${specDir}`, ...unknownArgs.slice(2)];
 -  if (process.platform === 'linux') {
-+  if (process.platform === 'linux' || process.platform === 'openbsd') {
++  if (['freebsd', 'linux', 'openbsd'].includes(process.platform)) {
 +    /*// XXX use --no-sandbox ?
 +    runnerArgs.unshift(path.resolve(__dirname, 'dbus_mock.py'),
 +      exe, "--no-sandbox");*/
@@ -53,14 +53,23 @@ Index: electron/script/spec-runner.js
    const { status, signal } = childProcess.spawnSync(exe, runnerArgs, {
      cwd: path.resolve(__dirname, '../..'),
      stdio: 'inherit'
-@@ -218,7 +229,9 @@ async function installSpecModules (dir) {
+@@ -218,7 +229,10 @@ async function installSpecModules (dir) {
    if (fs.existsSync(path.resolve(dir, 'node_modules'))) {
-     await fs.remove(path.resolve(dir, 'node_modules'));
+     await fs.promises.rm(path.resolve(dir, 'node_modules'), { force: true, recursive: true });
    }
 -  const { status } = childProcess.spawnSync(NPX_CMD, [`yarn@${YARN_VERSION}`, 'install', '--frozen-lockfile'], {
-+// XXX use system yarn
-+//  const { status } = childProcess.spawnSync(NPX_CMD, [`yarn@${YARN_VERSION}`, 'install', '--frozen-lockfile'], {
-+  const { status } = childProcess.spawnSync('yarn', ['install', '--frozen-lockfile'], {
++
++/* already setup by MODYARN */
++const { status } = childProcess.spawnSync('yarn', ['install', '--frozen-lockfile --offline --ignore-scripts --ignore-engines'], {
++// const { status } = childProcess.spawnSync(NPX_CMD, [`yarn@${YARN_VERSION}`, 'install', '--frozen-lockfile'], {
      env,
      cwd: dir,
      stdio: 'inherit',
+@@ -228,6 +242,7 @@ async function installSpecModules (dir) {
+     console.log(`${fail} Failed to yarn install in '${dir}'`);
+     process.exit(1);
+   }
++
+ }
+ 
+ function getSpecHash () {

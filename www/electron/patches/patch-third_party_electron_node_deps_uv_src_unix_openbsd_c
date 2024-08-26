@@ -1,7 +1,7 @@
 Avoid HW_MODEL and HW_CPUSPEED syscall to run under pledge().
 Replace HW_MODEL by HW_MACHINE, set cpuspeed to 0.
 
-Up to now, the only consumers are os.cpus().length.
+Up to 2024/08, the only consumers are os.cpus().length.
 
 Index: third_party/electron_node/deps/uv/src/unix/openbsd.c
 --- third_party/electron_node/deps/uv/src/unix/openbsd.c.orig

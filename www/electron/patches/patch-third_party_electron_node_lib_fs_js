@@ -4,7 +4,7 @@ always call realpath*.native() instead.
 Index: third_party/electron_node/lib/fs.js
 --- third_party/electron_node/lib/fs.js.orig
 +++ third_party/electron_node/lib/fs.js
-@@ -2551,134 +2551,7 @@ if (isWindows) {
+@@ -2650,134 +2650,7 @@ if (isWindows) {
   * @returns {string | Buffer}
   */
  function realpathSync(p, options) {
@@ -41,9 +41,10 @@ Index: third_party/electron_node/lib/fs.js
 -
 -  // On windows, check that the root exists. On unix there is no need.
 -  if (isWindows) {
--    const ctx = { path: base };
--    binding.lstat(pathModule.toNamespacedPath(base), false, undefined, ctx);
--    handleErrorFromBinding(ctx);
+-    const out = binding.lstat(pathModule.toNamespacedPath(base), false, undefined, true /* throwIfNoEntry */);
+-    if (out === undefined) {
+-      return;
+-    }
 -    knownHard.add(base);
 -  }
 -
@@ -83,9 +84,10 @@ Index: third_party/electron_node/lib/fs.js
 -      // for our internal use.
 -
 -      const baseLong = pathModule.toNamespacedPath(base);
--      const ctx = { path: base };
--      const stats = binding.lstat(baseLong, true, undefined, ctx);
--      handleErrorFromBinding(ctx);
+-      const stats = binding.lstat(baseLong, true, undefined, true /* throwIfNoEntry */);
+-      if (stats === undefined) {
+-        return;
+-      }
 -
 -      if (!isFileType(stats, S_IFLNK)) {
 -        knownHard.add(base);
@@ -106,11 +108,8 @@ Index: third_party/electron_node/lib/fs.js
 -        }
 -      }
 -      if (linkTarget === null) {
--        const ctx = { path: base };
--        binding.stat(baseLong, false, undefined, ctx);
--        handleErrorFromBinding(ctx);
--        linkTarget = binding.readlink(baseLong, undefined, undefined, ctx);
--        handleErrorFromBinding(ctx);
+-        binding.stat(baseLong, false, undefined, true);
+-        linkTarget = binding.readlink(baseLong, undefined);
 -      }
 -      resolvedLink = pathModule.resolve(previous, linkTarget);
 -
@@ -127,9 +126,10 @@ Index: third_party/electron_node/lib/fs.js
 -
 -    // On windows, check that the root exists. On unix there is no need.
 -    if (isWindows && !knownHard.has(base)) {
--      const ctx = { path: base };
--      binding.lstat(pathModule.toNamespacedPath(base), false, undefined, ctx);
--      handleErrorFromBinding(ctx);
+-      const out = binding.lstat(pathModule.toNamespacedPath(base), false, undefined, true /* throwIfNoEntry */);
+-      if (out === undefined) {
+-        return;
+-      }
 -      knownHard.add(base);
 -    }
 -  }
@@ -140,11 +140,15 @@ Index: third_party/electron_node/lib/fs.js
  }
  
  /**
-@@ -2708,130 +2581,7 @@ realpathSync.native = (path, options) => {
+@@ -2807,134 +2680,7 @@ realpathSync.native = (path, options) => {
   * @returns {void}
   */
  function realpath(p, options, callback) {
--  callback = typeof options === 'function' ? options : maybeCallback(callback);
+-  if (typeof options === 'function') {
+-    callback = options;
+-  } else {
+-    validateFunction(callback, 'cb');
+-  }
 -  options = getOptions(options);
 -  p = toPathIfFileURL(p);
 -

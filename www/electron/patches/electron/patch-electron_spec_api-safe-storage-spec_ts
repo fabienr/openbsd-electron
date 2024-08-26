@@ -1,0 +1,21 @@
+Index: electron/spec/api-safe-storage-spec.ts
+--- electron/spec/api-safe-storage-spec.ts.orig
++++ electron/spec/api-safe-storage-spec.ts
+@@ -26,7 +26,7 @@ describe('safeStorage module', () => {
+ 
+ describe('safeStorage module', () => {
+   before(() => {
+-    if (process.platform === 'linux') {
++    if (['freebsd', 'linux', 'openbsd'].includes(process.platform)) {
+       safeStorage.setUsePlainTextEncryption(true);
+     }
+   });
+@@ -44,7 +44,7 @@ describe('safeStorage module', () => {
+     });
+   });
+ 
+-  ifdescribe(process.platform === 'linux')('SafeStorage.getSelectedStorageBackend()', () => {
++  ifdescribe(['freebsd', 'linux', 'openbsd'].includes(process.platform))('SafeStorage.getSelectedStorageBackend()', () => {
+     it('should return a valid backend', () => {
+       expect(safeStorage.getSelectedStorageBackend()).to.equal('basic_text');
+     });
