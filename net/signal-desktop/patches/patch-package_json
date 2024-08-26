@@ -1,24 +1,13 @@
 Index: package.json
 --- package.json.orig
 +++ package.json
-@@ -18,8 +18,8 @@
-   "scripts": {
-     "postinstall": "npm run build:acknowledgments && patch-package && npm run electron:install-app-deps",
-     "postuninstall": "npm run build:acknowledgments",
--    "start": "electron .",
--    "generate": "npm-run-all build-protobuf build:esbuild build:dns-fallback build:icu-types build:compact-locales sass get-expire-time copy-components",
-+    "start": "electron --no-sandbox .",
-+    "generate": "npm-run-all build-protobuf build:esbuild build:icu-types build:compact-locales sass get-expire-time copy-components",
-     "build-release": "npm run build",
-     "sign-release": "node ts/updater/generateSignature.js",
-     "notarize": "echo 'No longer necessary'",
-@@ -363,9 +363,6 @@
-         }
+@@ -368,9 +368,6 @@
        }
      }
--  },
--  "engines": {
--    "node": "20.11.1"
    },
+-  "engines": {
+-    "node": "20.15.1"
+-  },
    "build": {
      "appId": "org.whispersystems.signal-desktop",
+     "mac": {

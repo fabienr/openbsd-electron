@@ -1,9 +1,8 @@
 COMMENT=	Signal Desktop links with Signal
 
-V=		7.16.0
+V=		7.21.0
 DISTNAME=	Signal-Desktop-${V}
 PKGNAME=	${DISTNAME:L}
-REVISION=	0
 
 DIST_TUPLE=	github signalapp Signal-Desktop v${V} .
 
@@ -18,8 +17,8 @@ PERMIT_PACKAGE=	Yes
 WANTLIB += ${MODCARGO_WANTLIB} c++ crypto m
 
 # make versions
-# ELECTRON_V=30.0.9
-# NODE_V=20.11.1
+# ELECTRON_V=31.3.1
+# NODE_V=20.15.1
 # better-sqlite3 deps
 # BETTER_SQLITE3_V=8.7.1
 FTS5_V=		0.2.1
@@ -27,15 +26,20 @@ SQLCIPHER_HASH=	ef53ea45ed92b928ecfd33c552d8d405263e86e63dec38e1ec63e1b0193b630b
 SQLCIPHER_URI=	https://build-artifacts.signal.org/desktop/
 SQLCIPHER_V=	4.5.5-fts5-fix--3.0.7--${FTS5_V}-${SQLCIPHER_HASH}
 # libsignal depends
-LIBSIGNAL_V=	0.52.3
+LIBSIGNAL_V=	0.54.0
 BORING_ID=	b9a75167dc08a3b16dd203e0af78c8962c5439bd
 # ringrtc depends
-RINGRTC_V=	2.44.2
-LIBWEBRTC_V=	6478b
+RINGRTC_V=	2.46.0
+LIBWEBRTC_V=	6478i
 
 # libsignal, boring depends
-# see https://github.com/signalapp/boring/tree/libsignal/boring-sys/deps
+#https://github.com/signalapp/boring/tree/${BORING_ID}/boring-sys/deps
 BORINGSSL_ID=	44b3df6f03d85c901767250329c571db405122d5
+
+# libsignal, test depends
+#https://github.com/signalapp/libsignal/tree/v${LIBSIGNAL_V}/rust/message-backup/tests/res
+LIBSIGNAL_TEST=	8072a8abce3415a66371256cf3e02e01af8c9235
+LIBSIGNAL_TDIR=	rust/message-backup/tests/res/Signal-Message-Backup-Tests
 
 # better-sqlite3, MIT
 SQLCIPHER_T=		${WRKSRC}/node_modules/@signalapp/better-sqlite3/deps
@@ -54,6 +58,7 @@ LIBSIGNAL_NODE=	${LIBSIGNAL_SRC}/node
 LIBSIGNAL_TOML=	${LIBSIGNAL_SRC}/Cargo.toml
 LIBSIGNAL_T=	node_modules/@signalapp/libsignal-client/prebuilds
 DIST_TUPLE+=	github signalapp libsignal v${LIBSIGNAL_V} .
+DIST_TUPLE+=	github signalapp Signal-Message-Backup-Tests ${LIBSIGNAL_TEST} .
 
 # boringssl, OpenSSL/ISC
 BORINGSSL_T=	${WRKDIR}/boring-${BORING_ID}/boring-sys/deps
@@ -238,12 +243,10 @@ post-extract:
 	mv ${WRKDIR}/{,xiph-}opus-*
 	mv ${WRKDIR}/{,protocolbuffers-}protobuf-javascript-*
 .for _dst _project _name in ${WEBRTC_DEPS}
-#	mkdir -p `dirname ${WEBRTC_T}/${_dst}`
 	mv ${WRKDIR}/${_project:T}*${_name}-* ${WEBRTC_T}/${_dst}
 .endfor
 
 pre-patch:
-# XXX DIST_TUPLE run after MODYARN
 	# link depends into ${WRKSRC} to handle patches
 	mv ${LIBSIGNAL_SRC} ${WRKSRC}/libsignal
 	ln -s ${WRKSRC}/libsignal ${LIBSIGNAL_SRC}
@@ -301,8 +304,8 @@ do-install:
 # XXX test-fts5 ?
 # XXX test-better-sqlite ?
 # XXX test-libwebrtc ?
+# XXX skipt test-ringrtc, spawn electron but does not run
 do-test:	test-libsignal \
-		test-ringrtc \
 		test-sticker-creator \
 		test-signal-desktop
 
@@ -339,11 +342,10 @@ libwebrtc:
 		gn gen out/release --args="${GN_ARGS}"
 	# build libwebrtc native depends for ringrtc
 	cd ${WEBRTC_SRC} && ${SETENV} ${MAKE_ENV} \
-		ninja -j ${MAKE_JOBS} -C out/release
-# XXX not needed, compile_commands.json helps debugging
-	cd ${WEBRTC_SRC} && ${SETENV} ${MAKE_ENV} \
 		ninja -j ${MAKE_JOBS} -C out/release \
 		-t compdb > compile_commands.json
+	cd ${WEBRTC_SRC} && ${SETENV} ${MAKE_ENV} \
+		ninja -j ${MAKE_JOBS} -C out/release
 
 ringrtc: libwebrtc
 	# build ringrtc native depends
@@ -368,6 +370,10 @@ test-libsignal: libsignal
 	mkdir -p ${LIBSIGNAL_NODE}/build/Release
 	cp ${MODCARGO_TARGET_DIR}/release/libsignal_node.so \
 		${LIBSIGNAL_NODE}/build/Release/node.napi.node
+	# link libsignal message backup tests
+	rm -rf ${LIBSIGNAL_SRC}/${LIBSIGNAL_TDIR}
+	ln -fs ${WRKDIR}/Signal-Message-Backup-Tests-${LIBSIGNAL_TEST} \
+		${LIBSIGNAL_SRC}/${LIBSIGNAL_TDIR}
 	# build libsignal test
 	cd ${LIBSIGNAL_NODE} && ${SETENV} ${MAKE_ENV} yarn tsc
 	# run libsignal test
@@ -375,8 +381,10 @@ test-libsignal: libsignal
 
 # XXX .sndio/cookie ?
 # audio_device_sndio.cc:26: Couldn't open audio device
+# XXX skipt test-ringrtc, spawn electron but does not run
 test-ringrtc: ringrtc
 	# XXX Xvfb :1 &
+	# XXX doas cp -R ~/.sndio ${WRKDIR}/
 	# copy ringrtc native lib
 	mkdir -p ${RINGRTC_NODE}/build/openbsd
 	cp ${MODCARGO_TARGET_DIR}/release/libringrtc.so \
@@ -384,11 +392,9 @@ test-ringrtc: ringrtc
 	# build ringrtc test
 	cd ${RINGRTC_NODE} && ${SETENV} ${MAKE_ENV} yarn tsc
 	# run ringrtc test
-	mkdir -p ${WRKDIR}/.config/chromium
-# XXX cp cookie from user env
-	cp -R ~/.sndio ${WRKDIR}/
+	mkdir -p ${WRKDIR}/.config/electron
 	cd ${RINGRTC_NODE} && ${SETENV} ${MAKE_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
+		ELECTRON_PATH=${LOCALBASE}/bin/electron \
 		yarn test
 
 test-sticker-creator:
@@ -398,11 +404,11 @@ test-sticker-creator:
 
 test-signal-desktop:
 	# XXX Xvfb :1 &
-	mkdir -p ${WRKDIR}/.config/chromium
+	mkdir -p ${WRKDIR}/.config/electron
 	# setup electron wraper
 	mkdir -p ${WRKSRC}/node_modules/.bin
 	rm -rf ${WRKSRC}/node_modules/.bin/electron
-	ln -fs ${LOCALBASE}/bin/electron_nosandbox \
+	ln -fs ${LOCALBASE}/bin/electron \
 		${WRKSRC}/node_modules/.bin/electron
 	rm -rf ${WRKSRC}/dist/linux-unpacked/signal-desktop
 	${SUBST_PROGRAM} ${FILESDIR}/signal-desktop \
@@ -414,19 +420,19 @@ test-signal-desktop:
 			@signalapp/libsignal-client/build/Release/node.napi.node
 	# run signal-desktop test
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
+		ELECTRON_PATH=${LOCALBASE}/bin/electron \
 		yarn test
 # XXX fake launch test from system or make one more wraper ?
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
+		ELECTRON_PATH=${LOCALBASE}/bin/electron \
 		yarn test-release
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
+		ELECTRON_PATH=${LOCALBASE}/bin/electron \
 		yarn test-mock
 # XXX ts/util/asyncIterables.js
 # SyntaxError: Unexpected token '['
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
+		ELECTRON_PATH=${LOCALBASE}/bin/electron \
 		ELECTRON_OVERRIDE_DIST_PATH=${WRKSRC}/node_modules/.bin \
 		yarn test-node-coverage
 
@@ -435,13 +441,15 @@ test-signal-desktop:
 user-dev:
 	cp ${WRKSRC}/config/{production,local-development}.json
 	cd ${WRKSRC} && \
-		NODE_ENV=development electron_nosandbox .
+		NODE_ENV=development electron .
 
 # make versions : download, extract then print versions for depends
 # make modyarn-gen-modules : regen modules.inc, see devel/yarn
 # make modnpm-gen-modules : regen modules.inc, see devel/npm
 # make modcargo-gen-crates : handle multiple Cargo.toml, regen crates.inc
-# make webrtc-deps
+# make webrtc-deps : extract ID from ${WEBRTC_SRC}/DEPS, regen DIST_TUPLE
+# make dns-fallback : no net during build, pre-made files/dns-fallback.json
+# make chromium-patches : check OpenBSD specific patches for chromium src
 
 _TMP = /tmp/signal-desktop-${V}
 _SIGNAL_GH =	https://raw.githubusercontent.com/signalapp/Signal-Desktop/
@@ -545,7 +553,6 @@ webrtc-deps:
 .endfor
 	@echo
 
-# XXX dns-fallback to pre-made dns-fallback.json
 dns-fallback:
 	@make configure >/dev/null 2>&1
 	# make dns-fallback > files/dns-fallback.json
