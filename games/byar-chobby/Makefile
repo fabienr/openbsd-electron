@@ -1,7 +1,3 @@
-# XXX games/recoil-rts is not compatible with byar, in discussion with thfr@
-# move ${LOCALBASE}/bin/spring to ${LOCALBASE}/share/games/spring/spring
-# use a wraper : exec "${LOCALBASE}/share/games/spring/spring" "${@}"
-
 COMMENT =	launcher for Beyond All Reason
 
 V =		1.2988.0

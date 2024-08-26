@@ -1,4 +1,5 @@
 bin/byar_chobby_launcher
+${ELECTRON_DIST_APPS}/
 ${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar
 ${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/
 ${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/
