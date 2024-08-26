@@ -118,34 +118,32 @@ while (my $file = shift) {
 my $dists = ();
 my $cp = ();
 foreach my $id (keys %modules) {
-	my $project = ".";
-	my $pkg = $id;
+	my $account = "";
+	my $project = $id;
 	my $version;
-	my $location;
-	my $target;
+	my $dist = "\${MODNPM_DIST}/";
+	my $location = "";
 	if (scalar $id =~ /\Q\//g) {
-		($project, $pkg) = split '/', $id;
+		($account, $project) = split '/', $id;
+		$dist .= $account."-";
+		$location .= $account."-";
 	}
-	my $dist = "npm ".$project." ".$pkg;
+	$dist .= "{".$id."/-/}".$project;
+	$location .= $project;
 	foreach my $version (keys %{$modules{$id}}) {
-		$location = $project."-".$pkg."-".$version;
-		push @{$dists}, $dist." ".$version." .";
+		push @{$dists}, $dist."-".$version.".tgz";
 		foreach my $path (@{$modules{$id}{$version}}) {
 			# cp dst;src, sort to create shorter path first
-			push @{$cp}, $path.";".$location;
+			push @{$cp}, $path.";".$location."-".$version;
 		}
 	}
 }
 
-say "DIST_TUPLE += \\";
+say "DISTFILES.npm += \\";
 foreach my $l (sort @{$dists}) {
 	say $l." \\";
 }
 say "";
-# XXX note it should be possible to avoid cp in each dir
-#    and use links instead but then there is issue to resolve them
-# XXX take a look at pnpm
-# XXX take a look at npm experimental shape
 say "MODNPM_CP += \\";
 foreach my $l (reverse sort @{$cp}) {
 	say $l." \\";

@@ -14,21 +14,28 @@ MODNPM_GYP_BIN=${MODNPM_NPM_MOD}/node_modules/node-gyp/bin/node-gyp.js
 
 SITES.npm ?=	https://registry.npmjs.org/
 
-# XXX use DISTFILES.npm instead of DIST_TUPLE ? (get rid of .- maybe)
-TEMPLATE_DISTFILES.npm ?= \
-	${MODNPM_DIST}/<account>-{<account>/<project>/-/}<project>-<id>.tgz
+# don't extract, avoid conflict with MODYARN, see post-extract
+EXTRACT_CASES+=		${MODNPM_DIST}/*.tgz) ;;
 
 # XXX always fix permission, at least for pngjs-6.0.0 (from games/byar-chobby)
-EXTRACT_CASES +=	${MODNPM_DIST}/*.tgz) \
+EXTRACT_NPM =		${MODNPM_DIST}/*.tgz) \
 	_filename=$${archive\#\#*/} ; \
 	_location=${MODNPM_CACHE}/$${_filename%.tgz} ; \
-	[[ -d ${MODNPM_CACHE} ]] || mkdir ${MODNPM_CACHE} ; \
 	${GZIP_CMD} -d <${FULLDISTDIR}/$$archive | ${TAR} -xf - -- && \
 	mv "`${TAR} -ztf ${FULLDISTDIR}/$$archive | \
 		awk -F/ '{print $$1}' | uniq`" $$_location && \
 	chmod -R a+rX $$_location ;;
 
+# check MODNPM_CP for actual stuff to install
 .if !empty(MODNPM_CP) && empty(_GEN_MODULES)
+MODNPM_post-extract += \
+	PATH=${PORTPATH}; set -e; cd ${WRKDIR}; \
+	[[ -d ${MODNPM_CACHE} ]] || mkdir ${MODNPM_CACHE}; \
+	for archive in ${EXTRACT_ONLY}; do \
+		case $$archive in \
+		${EXTRACT_NPM} \
+		esac; \
+	done ;
 # note _dst;_src because list is sorted to let shorter _dst path come first
 MODNPM_post-extract += \
 	for _cp in $$(echo "${MODNPM_CP}"); do \
@@ -65,7 +72,7 @@ modnpm-gen-modules:
 	# MODNPM_OMITOPTIONAL=${MODNPM_OMITOPTIONAL}
 	# MODNPM_INCLUDES=${MODNPM_INCLUDES}
 	# MODNPM_EXCLUDES=${MODNPM_EXCLUDES}
-	@/usr/ports/mystuff/devel/npm/npm_dist \
+	@${_PERLSCRIPT}/modnpm-gen-modules \
 		${MODNPM_OMITDEV:S/Yes/-d/:S/No//} \
 		${MODNPM_OMITOPTIONAL:S/Yes/-o/:S/No//} \
 		${MODNPM_INCLUDES:='-i %'} \
@@ -78,6 +85,6 @@ modnpm-gen-modules:
 modnpm-gen-bin:
 	@make extract >/dev/null 2>&1
 	# make modnpm-gen-bin >> modules.inc
-	@/usr/ports/mystuff/devel/npm/npm_bin \
+	@${_PERLSCRIPT}/modnpm-gen-bin \
 		${WRKSRC} ${MODNPM_TARGETS}
 .endif
