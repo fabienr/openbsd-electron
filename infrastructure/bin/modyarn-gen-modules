@@ -22,7 +22,9 @@ use warnings;
 
 die if @ARGV < 1;
 
-my $dists = ();
+my $dists_yarn = ();
+my $dists_npm = ();
+my $dists_github = ();
 
 while (my $file = shift) {
 
@@ -30,10 +32,11 @@ while (my $file = shift) {
 
 	my $version;
 	my $id;
+	my $account;
 	my $project;
-	my $pkg;
 	my $type;
 	my $dist;
+	my $dists;
 	my $k;
 	my $v;
 	while(my $line = <$h>) {
@@ -50,53 +53,89 @@ while (my $file = shift) {
 			next;
 		}
 		if ($k ne "resolved") {next;}
-		$project = ".";
-		$pkg = "";
+		$account = "";
+		$project = "";
 		$id = $v;
 		if (index($id, "https://registry.yarnpkg.com/") == 0) {
 			$id =~ s|https://registry.yarnpkg.com/||;
 			$id =~ s|/\-/.*||;
-			$pkg = $id;
+			$project = $id;
 			$type = "yarn";
+			$dists = \@{$dists_yarn};
 		}
 		elsif (index($id, "https://registry.npmjs.org/") == 0) {
 			$id =~ s|https://registry.npmjs.org/||;
 			$id =~ s|/-/.*||;
-			$pkg = $id;
-			$type = "yarn_npm";
+			$project = $id;
+			$type = "npm";
+			$dists = \@{$dists_npm};
 		}
 		elsif (index($id, "https://codeload.github.com/") == 0) {
 			$id =~ s|https://codeload.github.com/||;
 			$version = $id;
 			$version =~ s|.*/tar.gz/||;
 			$id =~ s|/tar.gz/.*||;
-			$pkg = $id;
-			$type = "yarn_codeload";
+			$project = $id;
+			$type = "codeload";
+			$dists = \@{$dists_github};
 		}
 		elsif (index($id, "https://github.com/") == 0) {
 			$id =~ s|https://github.com/||;
 			$version = $id;
 			$version =~ s|.*git#||;
 			$id =~ s|.git#.*||;
-			$pkg = $id;
-			$type = "yarn_github";
+			$project = $id;
+			$type = "github";
+			$dists = \@{$dists_github};
 		}
-		if (not $pkg) {
+		if (not $project) {
 			say STDERR "invalid resolved : " . $id;
 			next;
 		}
-		if (not $pkg) {next;}
-		if (scalar $id =~ /\Q\//g) {
-			($project, $pkg) = split '/', $id;
+		if ($type eq "npm" or $type eq "yarn") {
+			$dist = "\${MODNPM_DIST}/";
+			if (scalar $id =~ /\Q\//g) {
+				($account, $project) = split '/', $id;
+				$dist .= $account."-";
+			}
+			$dist .= "{".$id."/-/}".$project."-".$version.".tgz";
+		} else {
+			$dist = "\${MODYARN_DIST}/";
+			($account, $project) = split '/', $id;
+			if ($type eq "github") {
+				$dist .= $account."%".$project.".git-";
+			} else {
+				$dist .= $account."-".$project."%";
+			}
+			$dist .= "{".$id."/archive/}".$version;
+			$dist .= "\${EXTRACT_SUFX.github}";
 		}
-		$dist = $type." ".$project." ".$pkg." ".$version." .";
-		if (grep(/^$dist$/, @{$dists})) {next;}
-		push @{$dists}, $dist
+		push @{$dists}, $dist;
 	}
 }
 
-say "DIST_TUPLE += \\";
-foreach my $dist (sort @{$dists}) {
+sub uniq {
+	my %seen;
+	grep !$seen{$_}++, @_;
+}
+
+say "DISTFILES.yarn += \\";
+foreach my $dist (uniq sort @{$dists_yarn}) {
 	say $dist." \\";
 }
 say "";
+
+if ($dists_npm) {
+	say "DISTFILES.npm += \\";
+	foreach my $dist (uniq sort @{$dists_npm}) {
+		say $dist." \\";
+	}
+	say "";
+}
+if ($dists_github) {
+	say "DISTFILES.github += \\";
+	foreach my $dist (uniq sort @{$dists_github}) {
+		say $dist." \\";
+	}
+	say "";
+}
