@@ -51,8 +51,8 @@ sub scan_bin
 		next if ($file eq ".");
 		next if ($file eq "..");
 		push @{$bins},
-			"$workdir/$name/$file;".
-			"$workdir/$name/$bin/$file";
+			"$workdir/$name/$bin/$file;".
+			"$workdir/.bin/$file";
 	}
 }
 

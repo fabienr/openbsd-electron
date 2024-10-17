@@ -63,7 +63,6 @@ MODNPM_post-extract += \
 	done ;
 .endif
 
-# XXX path to npm_dist
 .if !target(modnpm-gen-modules)
 modnpm-gen-modules:
 	@make -D _GEN_MODULES extract >/dev/null 2>&1
@@ -80,7 +79,6 @@ modnpm-gen-modules:
 		${WRKSRC} ${MODNPM_LOCKS}
 .endif
 
-# XXX path to npm_bin
 .if !target(modnpm-gen-bin)
 modnpm-gen-bin:
 	@make extract >/dev/null 2>&1
