@@ -41,7 +41,7 @@ sub get_json_file
 sub scan_bin
 {
 	my ( $workdir, $name, $bin ) = @_;
-	my $dir = $workdir/$name/$bin;
+	my $dir = "$workdir/$name/$bin";
 	opendir(D, "$dir") || die "Can't open directory $dir: $!\n";
 	my @names = readdir(D);
 	closedir(D);

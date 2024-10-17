@@ -28,7 +28,7 @@ DPB_PROPERTIES+=	lonesome
 COMMENT=		cross-platform desktop applications
 
 # sync with electron.port.mk
-ELECTRON_V=		31.3.1
+ELECTRON_V=		31.5.0
 ELECTRON_ARCH=		${ARCH:S/aarch64/arm64/:S/amd64/x64/:S/i386/ia32/}
 ELECTRON_PATCH=		${WRKSRC}/electron/patches/config.json
 
@@ -61,8 +61,8 @@ WANTLIB += xcb-dri2 xcb-glx xcb-render xcb-shm xkbcommon xml2
 WANTLIB += xshmfence xslt z zstd
 
 # See electron/DEPS for versions, post-extract & pre-patch
-CHROMIUM_V=			126.0.6478.185
-NODE_V=				20.15.1
+CHROMIUM_V=			126.0.6478.234
+NODE_V=				20.16.0
 NAN_V=				e14bdcd1f72d62bca1d541b66da43130384ec213
 SQUIRREL_MAC_V=			0e5d146ba13101a1302d59ea6e6e0b3cace4ae38
 REACTIVEOBJC_V=			74ab5baccc6f7202c8ac69a8d1e152c29dc1ea76
@@ -71,12 +71,13 @@ ENGFLOW_RECLIENT_CONFIGS_V=	955335c30a752e9ef7bff375baab5e0819b6c00d
 # See third_party/node/node_modules.tar.gz.sha1
 CHROMIUM_NODE_MODULES_HASH=	97a0b3c4c39cf05de1eafb6ffdec0fddd643f0a2
 
-DISTFILES.chromium=	chromium-${CHROMIUM_V}.tar.xz
-SITES.chromium=https://commondatastorage.googleapis.com/chromium-browser-official/
+# DISTFILES.chromium=	chromium-${CHROMIUM_V}.tar.xz
+# SITES.chromium=https://commondatastorage.googleapis.com/chromium-browser-official/
 
 DISTFILES.nodemodule=	chromium-nodejs-{}${CHROMIUM_NODE_MODULES_HASH}
 SITES.nodemodule=https://commondatastorage.googleapis.com/chromium-nodejs/
 
+DIST_TUPLE+=	github chromium chromium ${CHROMIUM_V} .
 DIST_TUPLE+=	github nodejs node v${NODE_V} .
 DIST_TUPLE+=	github nodejs nan ${NAN_V} .
 DIST_TUPLE+=	github Squirrel Squirrel.Mac ${SQUIRREL_MAC_V} .
