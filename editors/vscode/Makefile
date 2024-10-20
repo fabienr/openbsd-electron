@@ -137,8 +137,7 @@ pre-build:
 		npm rebuild --verbose
 	# rebuild native node modules for node
 .for dir in build remote
-	cd ${WRKSRC}/${dir} && ${SETENV} ${MAKE_ENV} \
-		npm_config_nodedir=${LOCALBASE} \
+	cd ${WRKSRC}/${dir} && ${SETENV} ${MAKE_ENV} ${NPM_REBUILD_ENV} \
 		npm rebuild --verbose
 .endfor
 	# copy rg binary files to vscode-ripgrep module directory
