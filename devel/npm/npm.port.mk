@@ -12,6 +12,8 @@ MODNPM_EXCLUDES?= 	# exclude package
 MODNPM_NPM_MOD=${LOCALBASE}/lib/node_modules/npm
 MODNPM_GYP_BIN=${MODNPM_NPM_MOD}/node_modules/node-gyp/bin/node-gyp.js
 
+NPM_REBUILD_ENV=	npm_config_nodedir=${LOCALBASE}
+
 SITES.npm ?=	https://registry.npmjs.org/
 
 # don't extract, avoid conflict with MODYARN, see post-extract
