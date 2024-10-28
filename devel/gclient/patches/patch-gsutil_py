@@ -1,0 +1,34 @@
+Index: gsutil.py
+--- gsutil.py.orig
++++ gsutil.py
+@@ -91,6 +91,10 @@ def temporary_directory(base):
+ def ensure_gsutil(version, target, clean):
+     bin_dir = os.path.join(target, 'gsutil_%s' % version)
+     gsutil_bin = os.path.join(bin_dir, 'gsutil', 'gsutil')
++
++    # XXX gsutil_flag tricks does not work (why?)
++    return gsutil_bin
++
+     gsutil_flag = os.path.join(bin_dir, 'gsutil', 'install.flag')
+     # We assume that if gsutil_flag exists, then we have a good version
+     # of the gsutil package.
+@@ -242,8 +246,7 @@ def run_gsutil(target, args, clean=False):
+     assert sys.platform != 'cygwin'
+ 
+     cmd = [
+-        'vpython3', '-vpython-spec',
+-        os.path.join(THIS_DIR, 'gsutil.vpython3'), '--', gsutil_bin
++        'python3', gsutil_bin
+     ] + args_opt + args
+ 
+     # When .boto is present, try without additional wrappers and handle specific
+@@ -266,6 +269,9 @@ def run_gsutil(target, args, clean=False):
+ 
+         _print_subprocess_result(p)
+         return p.returncode
++
++    # XXX skip luci_auth
++    return _run_subprocess(cmd, interactive=True).returncode
+ 
+     # Skip wrapping commands if luci-auth is already being used or if the
+     # platform is unsupported by luci-auth.

@@ -1,0 +1,13 @@
+Index: utils.py
+--- utils.py.orig
++++ utils.py
+@@ -32,7 +32,8 @@ def depot_tools_version():
+ 
+ def depot_tools_config_dir():
+     # Use depot tools path for mac, windows.
+-    if not sys.platform.startswith('linux'):
++    if (not sys.platform.startswith('linux') and
++      not sys.platform.startswith('openbsd')):
+         return DEPOT_TOOLS_ROOT
+ 
+     # Use $XDG_CONFIG_HOME/depot_tools or $HOME/.config/depot_tools on linux.

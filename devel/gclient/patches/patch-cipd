@@ -1,0 +1,57 @@
+Index: cipd
+--- cipd.orig
++++ cipd
+@@ -30,6 +30,9 @@ case "${UNAME}" in
+   linux)
+     OS="${UNAME}"
+     ;;
++  openbsd)
++    OS="${UNAME}"
++    ;;
+   cygwin*)
+     OS=windows
+     CYGWIN=true
+@@ -121,6 +124,8 @@ function calc_sha256() {
+     sha256sum "$1" | cut -d' ' -f1
+   elif hash shasum 2> /dev/null ; then
+     shasum -a 256 "$1" | cut -d' ' -f1
++  elif hash sha256 2> /dev/null ; then
++    sha256 "$1" | cut -d' ' -f4
+   else
+     >&2 echo -n "[31;1m"
+     >&2 echo -n "Don't know how to calculate SHA256 on your platform. "
+@@ -231,6 +236,8 @@ function clean_bootstrap() {
+ #
+ # It is more efficient that redownloading the binary all the time.
+ function self_update() {
++  # XXX skip self_update
++  return 0
+   "${CLIENT}" selfupdate -version-file "${VERSION_FILE}" -service-url "${CIPD_BACKEND}"
+ }
+ 
+@@ -239,15 +246,16 @@ function self_update() {
+ # crudely search for a CIPD client package name in the .cipd_version JSON file.
+ # It has only "instance_id" as the other field (looking like a base64 string),
+ # so mismatches are very unlikely.
+-INSTALLED_VERSION_FILE="${CIPD_ROOT}/.versions/.cipd_client.cipd_version"
+-if [ -f "${INSTALLED_VERSION_FILE}" ]; then
+-  JSON_BODY=$(<"${INSTALLED_VERSION_FILE}")
+-  if [[ "$JSON_BODY" != *"infra/tools/cipd/${PLATFORM}"* ]]; then
+-    >&2 echo "Detected CIPD client platform change to ${PLATFORM}."
+-    >&2 echo "Deleting the existing client to trigger the bootstrap..."
+-    rm -f "${CLIENT}" "${INSTALLED_VERSION_FILE}"
+-  fi
+-fi
++# XXX skip versions test
++# INSTALLED_VERSION_FILE="${CIPD_ROOT}/.versions/.cipd_client.cipd_version"
++# if [ -f "${INSTALLED_VERSION_FILE}" ]; then
++#   JSON_BODY=$(<"${INSTALLED_VERSION_FILE}")
++#   if [[ "$JSON_BODY" != *"infra/tools/cipd/${PLATFORM}"* ]]; then
++#     >&2 echo "Detected CIPD client platform change to ${PLATFORM}."
++#     >&2 echo "Deleting the existing client to trigger the bootstrap..."
++#     rm -f "${CLIENT}" "${INSTALLED_VERSION_FILE}"
++#   fi
++# fi
+ 
+ # If the client binary doesn't exist, do the bootstrap from scratch.
+ if [ ! -x "${CLIENT}" ]; then
