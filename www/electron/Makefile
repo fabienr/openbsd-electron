@@ -31,6 +31,7 @@ COMMENT=		cross-platform desktop applications
 ELECTRON_V=		31.3.1
 ELECTRON_ARCH=		${ARCH:S/aarch64/arm64/:S/amd64/x64/:S/i386/ia32/}
 ELECTRON_PATCH=		${WRKSRC}/electron/patches/config.json
+REVISION=		0
 
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
 
