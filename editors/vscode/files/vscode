@@ -1,5 +1,22 @@
 #!/bin/sh
 
+# Kerberos support
+if [ -n "$LD_LIBRARY_PATH" ]; then
+	LD_LIBRARY_PATH="${TRUEPREFIX}/heimdal/lib:$LD_LIBRARY_PATH"
+else
+	LD_LIBRARY_PATH="${TRUEPREFIX}/heimdal/lib"
+fi
+export LD_LIBRARY_PATH
+
+# pre-create folder for unveil
+if [ -z "${XDG_CONFIG_HOME}" ]; then
+	[ -d "${HOME}/.config/Code - OSS" ] || \
+	mkdir -p "${HOME}/.config/Code - OSS"
+else
+	[ -d "${XDG_CONFIG_HOME}/Code - OSS" ] || \
+	mkdir -p "${XDG_CONFIG_HOME}/Code - OSS"
+fi
+
 # XXX also --ms-enable-electron-run-as-node ?
 ELECTRON_RUN_AS_NODE=1 exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
 	"${TRUEPREFIX}/${ELECTRON_DIST_APPS}/code-oss/out/cli.js" \

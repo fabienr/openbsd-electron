@@ -5,7 +5,7 @@
  
  		case 'win32':
 -		case 'linux':
-+		case 'linux': case 'freebsd': case 'openbsd':
++		case 'freebsd': case 'linux': case 'openbsd':
  			loaderFilepath = `VSCode-${process.platform}-${arch}/resources/app/out/vs/loader.js`;
  			startupBlobFilepath = `VSCode-${process.platform}-${arch}/snapshot_blob.bin`;
  			break;

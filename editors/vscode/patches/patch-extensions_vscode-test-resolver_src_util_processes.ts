@@ -5,7 +5,7 @@
  			return { success: false, error: err };
  		}
 -	} else if (process.platform === 'darwin' || process.platform === 'linux') {
-+	} else if (process.platform === 'darwin' || process.platform === 'linux' || process.platform === 'openbsd') {
++	} else if (['darwin', 'freebsd', 'linux', 'openbsd'].includes(process.platform)) {
  		try {
  			const cmd = path.join(extensionPath, 'scripts', 'terminateProcess.sh');
  			const result = cp.spawnSync(cmd, [p.pid!.toString()]);

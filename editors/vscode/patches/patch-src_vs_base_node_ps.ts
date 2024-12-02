@@ -6,7 +6,7 @@ Index: src/vs/base/node/ps.ts
  			exec('which ps', {}, (err, stdout, stderr) => {
  				if (err || stderr) {
 -					if (process.platform !== 'linux') {
-+					if (process.platform !== 'linux' && process.platform !== 'openbsd') {
++					if (!(['freebsd', 'linux', 'openbsd'].includes(process.platform))) {
  						reject(err || new Error(stderr.toString()));
  					} else {
  						const cmd = JSON.stringify(FileAccess.asFileUri('vs/base/node/ps.sh').fsPath);

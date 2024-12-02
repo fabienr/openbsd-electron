@@ -1,0 +1,12 @@
+Index: src/vs/workbench/services/actions/common/menusExtensionPoint.ts
+--- src/vs/workbench/services/actions/common/menusExtensionPoint.ts.orig
++++ src/vs/workbench/services/actions/common/menusExtensionPoint.ts
+@@ -1122,7 +1122,7 @@ class CommandsTableRenderer extends Disposable impleme
+ 
+ 		switch (platform) {
+ 			case 'win32': key = rawKeyBinding.win; break;
+-			case 'linux': key = rawKeyBinding.linux; break;
++			case 'freebsd': case 'linux': case 'openbsd': key = rawKeyBinding.linux; break;
+ 			case 'darwin': key = rawKeyBinding.mac; break;
+ 		}
+ 

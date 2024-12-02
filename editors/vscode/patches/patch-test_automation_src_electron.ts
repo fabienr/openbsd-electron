@@ -5,7 +5,7 @@
  		case 'darwin':
  			return join(buildPath, 'electron', `${product.nameLong}.app`, 'Contents', 'MacOS', 'Electron');
 -		case 'linux':
-+		case 'linux': case 'freebsd': case 'openbsd':
++		case 'freebsd': case 'linux': case 'openbsd':
  			return join(buildPath, 'electron', `${product.applicationName}`);
  		case 'win32':
  			return join(buildPath, 'electron', `${product.nameShort}.exe`);
@@ -14,7 +14,7 @@
  		case 'darwin':
  			return join(root, 'Contents', 'MacOS', 'Electron');
 -		case 'linux': {
-+		case 'linux': case 'freebsd': case 'openbsd': {
++		case 'freebsd': case 'linux': case 'openbsd': {
  			const product = require(join(root, 'resources', 'app', 'product.json'));
  			return join(root, product.applicationName);
  		}

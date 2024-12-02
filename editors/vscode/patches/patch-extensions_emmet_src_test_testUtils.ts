@@ -5,7 +5,7 @@
  
  export function pathEquals(path1: string, path2: string): boolean {
 -	if (process.platform !== 'linux') {
-+	if (process.platform !== 'linux' && process.platform !== 'openbsd') {
++	if (['freebsd', 'linux', 'openbsd'].includes(process.platform)) {
  		path1 = path1.toLowerCase();
  		path2 = path2.toLowerCase();
  	}

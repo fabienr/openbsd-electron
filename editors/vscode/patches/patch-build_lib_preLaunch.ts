@@ -1,15 +1,16 @@
---- build/lib/preLaunch.ts.orig	2022-07-05 18:15:23 UTC
+Index: build/lib/preLaunch.ts
+--- build/lib/preLaunch.ts.orig
 +++ build/lib/preLaunch.ts
 @@ -35,9 +35,9 @@ async function ensureNodeModules() {
  	}
  }
  
 -async function getElectron() {
--	await runProcess(yarn, ['electron']);
+-	await runProcess(npm, ['run', 'electron']);
 -}
-+// async function getElectron() {
-+// 	await runProcess(yarn, ['electron']);
-+// }
++//async function getElectron() {
++//	await runProcess(npm, ['run', 'electron']);
++//}
  
  async function ensureCompiled() {
  	if (!(await exists('out'))) {

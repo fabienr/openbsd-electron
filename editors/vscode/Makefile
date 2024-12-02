@@ -1,108 +1,95 @@
 # XXX _pbuild default to openfiles-max=1024 is not eough ?
-
-# XXX vscode 1.92.2 version mismatch :
-# .yarnrc, electron 30.1.2 vs 31.3.1
-# remote/.yarnrc, node 20.14.0 vs 20.16.0
+# XXX kerberos test ?
 
 # XXX too restrictive ?
 ONLY_FOR_ARCHS=	amd64
 
 COMMENT=	Visual Studio Code - Open Source ("Code - OSS")
 
-V=		1.92.2
-ID=		00427fda202cf85d39c62e6f445879604d12b0f6
+V=		1.95.3
+COMMIT=		f1a4fb101478ce6ec82fe9627c43efbf9e98c813
 PKGNAME=	vscode-${V}
-DIST_TUPLE=	github microsoft vscode ${ID} .
+DIST_TUPLE=	github microsoft vscode ${V} .
 
 CATEGORIES=	editors
 
 HOMEPAGE=	https://code.visualstudio.com/
+
 MAINTAINER=	fabien@openbsd.org
 
 # MIT
 PERMIT_PACKAGE=	Yes
 
 # check builtInExtensions from product.json, use pre-build .vsix (.zip)
-VSCODE_EXTENSIONS =	js-debug-companion 1.1.3 \
-			js-debug 1.92.0 \
-			vscode-js-profile-table 1.0.9
-SITES.extensions=https://open-vsx.org/vscode/gallery/publishers/ms-vscode/vsextensions/
-.for _ext _v in ${VSCODE_EXTENSIONS}
-DISTFILES.extensions+=	ms-vscode.${_ext}-${_v}.vsix{${_ext}/${_v}/vspackage}
+VSCODE_EXTENSIONS=	js-debug-companion js-debug-companion 1.1.3 \
+			js-debug js-debug 1.95.3 \
+			js-profile-visualizer vscode-js-profile-table 1.0.10
+SITES.exts=		https://github.com/microsoft/
+
+.for _git _ext _v in ${VSCODE_EXTENSIONS}
+SITES.${_ext}=		${SITES.exts}/vscode-${_git}/releases/download/v${_v}/
+DISTFILES.${_ext}=	ms-vscode.${_ext}.${_v}.vsix
 .endfor
-EXTRACT_CASES +=	*.vsix) \
+
+EXTRACT_CASES+=		*.vsix) \
 	_filename=$${archive\#\#*/} && \
 	${UNZIP} -oq ${FULLDISTDIR}/$$archive \
 		-d ${WRKDIR}/$${_filename%.vsix} ;;
-
-PATCH_LIST=	patch-* node_modules/patch-*
 
 WANTLIB += ${COMPILER_LIBCXX} c m notify util
 
 COMPILER=	base-clang ports-gcc
 
-# npm is for MODNPM_GYP_BIN only
-MODULES =	devel/npm \
-		devel/yarn \
+MODULES=	devel/npm \
 		lang/python \
+		security/heimdal \
 		www/electron
+
+MODPY_RUNDEP=	No
+
+MODNPM_TARGETS=$$( \
+	grep "'," ${WRKSRC}/build/npm/dirs.js | \
+		cut -f 2 -d "'" | \
+		xargs -L1 printf '${WRKSRC}/%s\n')
+MODNPM_LOCKS=$$( \
+	grep "'," ${WRKSRC}/build/npm/dirs.js | \
+		cut -f 2 -d "'" | \
+		xargs -L1 printf '${WRKSRC}/%s/package-lock.json\n')
+MODNPM_BUILD=	No
+MODNPM_INSTALL=	No
+
+MODELECTRON_BUILD=	No
+MODELECTRON_INSTALL=	No
 
 BUILD_DEPENDS=	archivers/unzip \
 		archivers/zip \
 		devel/libinotify \
 		lang/node \
 		textproc/ripgrep
-
 RUN_DEPENDS=	devel/desktop-file-utils \
 		devel/xdg-utils \
 		shells/bash
-
 LIB_DEPENDS=	devel/libnotify
 
 USE_GMAKE=	Yes
 
-MODPY_RUNDEP=	No
-
-# XXX tree-sitter is not optional, looks like
-# build/lib/policies.ts:11:25 - error TS2307:
-# Cannot find module 'tree-sitter' or its corresponding type declarations
-#MODYARN_OMITOPTIONAL=Yes
-
-MODYARN_TARGETS=$$( \
-	grep "'," ${WRKSRC}/build/npm/dirs.js | \
-		cut -f 2 -d "'" | \
-		xargs -L1 printf '${WRKSRC}/%s\n')
-MODYARN_LOCKS=$$( \
-	grep "'," ${WRKSRC}/build/npm/dirs.js | \
-		cut -f 2 -d "'" | \
-		xargs -L1 printf '${WRKSRC}/%s/yarn.lock\n')
-
 CXXFLAGS+=	-I${LOCALBASE}/include/inotify
 LDFLAGS+=	-L${LOCALBASE}/lib
 
-DIST_TARGET =	${ELECTRON_DIST_APPS}/code-oss
-
+MAKE_ENV+=	BUILD_SOURCEVERSION=${SOURCE_COMMIT_HASH}
+# Don't download browser binaries on playwright node_modules installation
 MAKE_ENV+=	PLAYWRIGHT_BROWSERS_PATH=${WRKDIR}/pw-browsers \
 		PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
 MAKE_ENV+=	CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
 
-# BUILD_SOURCEVERSION, github commitid matching release
-#MAKE_ENV+=	BUILD_SOURCEVERSION=${ID}
-#TEST_ENV+=	BUILD_SOURCEVERSION=${ID}
+DIST_TARGET =	${ELECTRON_DIST_APPS}/code-oss
 
 post-extract:
 	cp ${WRKSRC}/build/.moduleignore{.linux,.openbsd}
-	# early patch for yarn package manager
-	for p in ${PATCHDIR}/post_extract/patch-*; do \
-		${PATCH} ${PATCH_DIST_ARGS} \
-		-z .orig.post_extract \
-		-d ${WRKSRC} < $${p}; \
-	done
 
 do-configure:
-	# setup yarnrc for using local node headers
-	echo 'nodedir "${ELECTRON_NODE_DIR}"' >> ${WRKSRC}/.yarnrc
-	echo 'nodedir "${LOCALBASE}"' >> ${WRKSRC}/remote/.yarnrc
+	mkdir -p ${WRKDIR}/tmp
 	# preset desktop files
 	sed -i.bak \
 		's/@@NAME_LONG@@/Code - OSS/; \
@@ -123,22 +110,19 @@ pre-build:
 	# rebuild native node modules for electron
 	for subdir in `find ${WRKSRC}/node_modules -type f \
 	    -name binding.gyp -exec dirname {} ';'`; do \
-		name=`basename $${subdir}`; \
 		[ -f $${subdir}/.build_done ] && \
 			echo "skip $${subdir}" && \
 			continue; \
 		echo "rebuild $${subdir}"; \
 		cd $${subdir} && ${SETENV} ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
-			node ${MODNPM_GYP_BIN} rebuild --verbose; \
+			node ${NPM_GYP_BIN} rebuild --verbose ; \
 		touch $${subdir}/.build_done; \
 	done
 	cd ${WRKSRC}/extensions && ${SETENV} ${MAKE_ENV} \
-		${ELECTRON_REBUILD_ENV} \
-		npm rebuild --verbose
+		${ELECTRON_REBUILD_ENV} npm rebuild --verbose
 	# rebuild native node modules for node
 .for dir in build remote
-	cd ${WRKSRC}/${dir} && ${SETENV} ${MAKE_ENV} ${NPM_REBUILD_ENV} \
-		npm rebuild --verbose
+	cd ${WRKSRC}/${dir} && ${NPM_CMD} rebuild ${NPM_ARGS}
 .endfor
 	# copy rg binary files to vscode-ripgrep module directory
 	mkdir -p ${WRKSRC}/node_modules/@vscode/ripgrep/bin
@@ -151,20 +135,21 @@ pre-build:
 do-build:
 	# build and package vscode
 	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
-		yarn run tsc -p build/tsconfig.build.json
+		node ./node_modules/typescript/bin/tsc \
+		-p build/tsconfig.build.json
 	echo "require('graceful-fs').gracefulify(require('fs'));" \
-		> ${WRKSRC}/use-graceful-fs.js
+		> ${WRKSRC}/use-graceful-fs.cjs
 # XXX _pbuild default to openfiles-max=1024 is not eough ?
 	ulimit -Sn `ulimit -Hn`
 	ulimit -Sd `ulimit -Hd`
 	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
-		NODE_OPTIONS="--require ${WRKSRC}/use-graceful-fs.js" \
-		yarn gulp vscode-linux-x64-min
+		NODE_OPTIONS="--require ${WRKSRC}/use-graceful-fs.cjs" \
+		node ./node_modules/gulp/bin/gulp.js vscode-linux-x64-min
 	# copy marketplace extensions
-.for _ext _v in ${VSCODE_EXTENSIONS}
+.for _git _ext _v in ${VSCODE_EXTENSIONS}
 	_dst='${WRKDIR}/VSCode-linux-x64/extensions' && \
 	mkdir -p $${_dst}/ms-vscode.${_ext} && \
-	cp -Rp ${WRKDIR}/ms-vscode.${_ext}-${_v}/extension/* \
+	cp -Rp ${WRKDIR}/ms-vscode.${_ext}*${_v}/extension/* \
 		$${_dst}/ms-vscode.${_ext}
 .endfor
 
@@ -200,24 +185,24 @@ pre-test:
 #		${WRKSRC}/.build/electron/code-oss
 	cp ${TRUEPREFIX}/bin/electron \
 		${WRKSRC}/.build/electron/code-oss
-.for _ext _v in ${VSCODE_EXTENSIONS}
+.for _git _ext _v in ${VSCODE_EXTENSIONS}
 	_dst='${WRKSRC}/.build/builtInExtensions' && \
 	mkdir -p $${_dst}/ms-vscode.${_ext} && \
-	cp -Rp ${WRKDIR}/ms-vscode.${_ext}-${_v}/extension/* \
+	cp -Rp ${WRKDIR}/ms-vscode.${_ext}*${_v}/extension/* \
 		$${_dst}/ms-vscode.${_ext}
 .endfor
 
+# XXX Xvfb :1 &
 do-test:
-	# XXX Xvfb :1 &
 	# unit tests
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		./scripts/test.sh || true
 	# UI smoke tests
-	# XXX Error: Unsupported platform: openbsd
-	# node_modules/playwright-core/lib/server/registry/index.js
+# XXX Error: Unsupported platform: openbsd
+# node_modules/playwright-core/lib/server/registry/index.js
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
 		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
-		yarn smoketest
+		npm run smoketest
 
 .include "modules.inc"
 
