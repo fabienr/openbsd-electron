@@ -48,7 +48,7 @@ Index: ringrtc/src/webrtc/src/modules/audio_device/audio_device_impl.cc
  #if !defined(WEBRTC_ENABLE_LINUX_PULSE)
    // Build flag 'rtc_include_pulse_audio' is set to false. In this mode:
    // - kPlatformDefaultAudio => ALSA, and
-@@ -252,6 +258,14 @@ int32_t AudioDeviceModuleImpl::CreatePlatformSpecificO
+@@ -253,6 +259,14 @@ int32_t AudioDeviceModuleImpl::CreatePlatformSpecificO
      RTC_LOG(LS_INFO) << "Mac OS X Audio APIs will be utilized.";
    }
  #endif  // WEBRTC_MAC

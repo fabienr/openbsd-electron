@@ -1,12 +1,12 @@
 Index: package.json
 --- package.json.orig
 +++ package.json
-@@ -368,9 +368,6 @@
+@@ -371,9 +371,6 @@
        }
      }
    },
 -  "engines": {
--    "node": "20.15.1"
+-    "node": "20.18.0"
 -  },
    "build": {
      "appId": "org.whispersystems.signal-desktop",
