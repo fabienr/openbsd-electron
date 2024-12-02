@@ -1,68 +1,113 @@
 MODNPM_DIST=	npm_modules
 
-MODNPM_CACHE?=		${WRKDIR}/.npm
 MODNPM_TARGETS?=	${WRKSRC}
 MODNPM_LOCKS?=		${MODNPM_TARGETS:=%/package-lock.json}
 
 MODNPM_OMITDEV?=	No # omit dev depends
 MODNPM_OMITOPTIONAL?=	No # omit optional depends
-MODNPM_INCLUDES?= 	# include package
-MODNPM_EXCLUDES?= 	# exclude package
+MODNPM_INCLUDES?= 	# include modules
+MODNPM_EXCLUDES?= 	# exclude modules
 
-MODNPM_NPM_MOD=${LOCALBASE}/lib/node_modules/npm
-MODNPM_GYP_BIN=${MODNPM_NPM_MOD}/node_modules/node-gyp/bin/node-gyp.js
+.if ${NO_BUILD:L} == "no"
+MODNPM_BUILDDEP?=	Yes
+.else
+MODNPM_BUILDDEP?=	No
+.endif
+MODNPM_RUNDEP?=	Yes
+.if ${NO_TEST:L} == "no"
+MODNPM_TESTDEP?=	Yes
+.else
+MODNPM_TESTDEP?=	No
+.endif
 
-NPM_REBUILD_ENV=	npm_config_nodedir=${LOCALBASE}
+MODNPM_BUILD?=		Yes
+MODNPM_INSTALL?=	Yes
+MODNPM_INSTALL_TARGET?=	${WRKSRC}
+MODNPM_INSTALL_DIR?=	lib/node_modules
 
-SITES.npm ?=	https://registry.npmjs.org/
+# to run node-gyp in custom build
+NPM_NODE_MODULES=${LOCALBASE}/lib/node_modules/npm
+NPM_GYP_BIN=${NPM_NODE_MODULES}/node_modules/node-gyp/bin/node-gyp.js
+
+# to run npm rebuild
+NPM_CMD?=	${SETENV} ${MAKE_ENV} ${NPM_REBUILD_ENV} HOME=${WRKDIR} npm
+NPM_ARGS?=	--offline --verbose --foreground-scripts
+
+NPM_REBUILD_ENV?=	npm_config_nodedir=${LOCALBASE}
+
+SITES.npm?=		https://registry.npmjs.org/
 
 # don't extract, avoid conflict with MODYARN, see post-extract
 EXTRACT_CASES+=		${MODNPM_DIST}/*.tgz) ;;
 
-# XXX always fix permission, at least for pngjs-6.0.0 (from games/byar-chobby)
-EXTRACT_NPM =		${MODNPM_DIST}/*.tgz) \
-	_filename=$${archive\#\#*/} ; \
-	_location=${MODNPM_CACHE}/$${_filename%.tgz} ; \
-	${GZIP_CMD} -d <${FULLDISTDIR}/$$archive | ${TAR} -xf - -- && \
-	mv "`${TAR} -ztf ${FULLDISTDIR}/$$archive | \
-		awk -F/ '{print $$1}' | uniq`" $$_location && \
-	chmod -R a+rX $$_location ;;
+.if ${MODNPM_BUILDDEP:L} == "yes"
+BUILD_DEPENDS +=	lang/node
+.endif
+.if ${MODNPM_RUNDEP:L} == "yes"
+RUN_DEPENDS +=		lang/node
+.endif
+.if ${MODNPM_TESTDEP:L} == "yes"
+TEST_DEPENDS +=		lang/node
+.endif
 
-# check MODNPM_CP for actual stuff to install
-.if !empty(MODNPM_CP) && empty(_GEN_MODULES)
-MODNPM_post-extract += \
-	PATH=${PORTPATH}; set -e; cd ${WRKDIR}; \
-	[[ -d ${MODNPM_CACHE} ]] || mkdir ${MODNPM_CACHE}; \
-	for archive in ${EXTRACT_ONLY}; do \
-		case $$archive in \
-		${EXTRACT_NPM} \
-		esac; \
-	done ;
-# note _dst;_src because list is sorted to let shorter _dst path come first
-MODNPM_post-extract += \
-	for _cp in $$(echo "${MODNPM_CP}"); do \
-		_dst=$${_cp%;*} ; _src=$${_cp\#*;} ; \
-		_t=`dirname ${WRKSRC}/$${_dst}`; \
-		[[ -d $$_t ]] || mkdir -p $$_t ; \
-		cp -Rp ${WRKDIR}/.npm/$${_src} ${WRKSRC}/$${_dst} ; \
+# check MODNPM_TREE for actual stuff to install
+.if !empty(MODNPM_TREE) && empty(_GEN_MODULES)
+# note _dst;_tgz because list is sorted to let shorter _dst path come first
+MODNPM_post-extract+= \
+	for _module in $$(echo "${MODNPM_TREE}"); do \
+		_dst=$${_module%;*} ; _tgz=$${_module\#*;} ; \
+		[ -d ${WRKDIR}/$${_dst} ] || mkdir -p ${WRKDIR}/$${_dst} ; \
+		tar -xzf ${DISTDIR}/${MODNPM_DIST}/$${_tgz} \
+			-s '/^[^\/]*$$//' -s '/[^\/]*\///' \
+			-C ${WRKDIR}/$${_dst} ; \
 	done ;
 .endif
 
-MODNPM_post-extract += rm -rf ${MODNPM_CACHE} ;
+.if !target(do-build) && ${MODNPM_BUILD:L} == "yes"
+do-build:
+	@for _target in $$(echo "${MODNPM_TARGETS}"); do \
+		echo "MODNPM: build $${_target}" ; \
+		cd $${_target} && ${NPM_CMD} rebuild ${NPM_ARGS} ; \
+	done
+.endif
 
-.if !empty(MODNPM_BIN) && empty(_GEN_MODULES)
-# XXX multiple module may end with same bin, use ln -f
-# ln: .../node_modules/.bin/jest: File exists
-# /node_modules/jest-cli/./bin/jest.js;/node_modules/.bin/jest
-# /node_modules/jest/./bin/jest.js;/node_modules/.bin/jest
-MODNPM_post-extract += \
-	for _ln in $$(echo "${MODNPM_BIN}"); do \
-		_src=$${_ln%;*} ; _dst=$${_ln\#*;} ; \
-		_t=`dirname ${WRKSRC}/$${_dst}`; \
-		[[ -d $$_t ]] || mkdir -p $$_t ; \
-		chmod +x ${WRKSRC}/$${_src} ; \
-		ln -fs ${WRKSRC}/$${_src} ${WRKSRC}/$${_dst} ; \
-	done ;
+.if !target(do-install) && ${MODNPM_INSTALL:L} == "yes"
+do-install:
+# without cache, npm install can't work, hard to workaround
+# 1. get rid of dev: bundledDependencies, npm pack --omit=dev, tar -x
+# 2. if needed, copy libs .node into fake
+# 3. if needed, link bin
+	@echo "MODNPM: install ${MODNPM_INSTALL_TARGET}" ; \
+	_target=${MODNPM_INSTALL_TARGET} ; \
+	_distname=$${_target##*/} ; \
+	_module=$${_distname%-*} ; \
+	_dist=${PREFIX}/${MODNPM_INSTALL_DIR}/$${_module} ; \
+	\
+	echo "MODNPM: bundle $${_module} in $${_dist}" ; \
+	sed -i '1s/^{$$/{"bundledDependencies":true,/' \
+		$${_target}/package.json ; \
+	cd $${_target} && ${SETENV} HOME=${WRKDIR} npm pack \
+		${MODNPM_OMITOPTIONAL:L:S/yes/--omit=optional/:S/no//} \
+		--omit=dev --pack-destination=${WRKDIR} ; \
+	${INSTALL_DATA_DIR} $${_dist} ; \
+	tar -xzf ${WRKDIR}/$${_distname}.tgz -s '/[^\/]*\///' \
+		-C $${_dist} ; \
+	\
+	cd $${_target} && \
+	for _node in $$(find ./ -name '*.node' \
+	    -and ! -path '*/build-tmp-napi-v*' \
+	    -and ! -path '*/obj.target*' ); do \
+		_dir=`dirname $${_node}` ; \
+		echo "MODNPM: bundle $${_node}" ; \
+		${INSTALL_DATA_DIR} $${_dist}/$${_dir} ; \
+		cp -p $${_node} $${_dist}/$${_dir}/ ; \
+	done ; \
+	\
+	for _bin in $$(echo "${MODNPM_BIN}"); do \
+		echo "MODNPM: link bin/$${_bin#*;}" ; \
+		ln -s ../${MODNPM_INSTALL_DIR}/$${_module}/$${_bin%;*} \
+			${PREFIX}/bin/$${_bin#*;} ; \
+	done
 .endif
 
 .if !target(modnpm-gen-modules)
@@ -73,18 +118,10 @@ modnpm-gen-modules:
 	# MODNPM_OMITOPTIONAL=${MODNPM_OMITOPTIONAL}
 	# MODNPM_INCLUDES=${MODNPM_INCLUDES}
 	# MODNPM_EXCLUDES=${MODNPM_EXCLUDES}
-	@${_PERLSCRIPT}/modnpm-gen-modules \
-		${MODNPM_OMITDEV:S/Yes/-d/:S/No//} \
-		${MODNPM_OMITOPTIONAL:S/Yes/-o/:S/No//} \
+	@${_PBUILD} ${_PERLSCRIPT}/modnpm-gen-modules \
+		${MODNPM_OMITDEV:L:S/yes/-d/:S/no//} \
+		${MODNPM_OMITOPTIONAL:L:S/yes/-o/:S/no//} \
 		${MODNPM_INCLUDES:='-i %'} \
 		${MODNPM_EXCLUDES:='-x %'} \
-		${WRKSRC} ${MODNPM_LOCKS}
-.endif
-
-.if !target(modnpm-gen-bin)
-modnpm-gen-bin:
-	@make extract >/dev/null 2>&1
-	# make modnpm-gen-bin >> modules.inc
-	@${_PERLSCRIPT}/modnpm-gen-bin \
-		${WRKSRC} ${MODNPM_TARGETS}
+		${WRKDIR} ${MODNPM_INSTALL_TARGET} ${MODNPM_LOCKS}
 .endif

@@ -45,7 +45,12 @@ getopts('doi:x:', {
 
 die if @ARGV < 2;
 
-my $wrksrc = shift;
+my $wrkdir = shift;
+my $target = shift;
+
+my $bins = ();
+my @dists_npm = ();
+my @dists_github = ();
 my %modules;
 
 # from Port.pm
@@ -58,21 +63,67 @@ sub get_json_file
 	return decode_json $data;
 }
 
+sub _dir_bin
+{
+	my ( $workdir, $bin ) = @_;
+	my $dir = "$workdir/$bin";
+	opendir(D, "$dir") || die "Can't open directory $dir: $!\n";
+	my @names = readdir(D);
+	closedir(D);
+
+	$workdir =~ s/$target//;
+	foreach my $file (@names) {
+		next if ($file eq ".");
+		next if ($file eq "..");
+		push @{$bins}, "$workdir/$bin/$file;$file";
+	}
+}
+
+sub _module_bin
+{
+	my ( $workdir, $node ) = @_;
+	if (exists $node->{bin} && ref($node->{bin}) eq "HASH") {
+		$workdir =~ s/$target//;
+		foreach my $bin (keys %{$node->{bin}}) {
+			push @{$bins}, "$workdir/$node->{bin}{$bin};$bin";
+		}
+	} elsif (exists $node->{bin}) {
+		$workdir =~ s/$target//;
+		push @{$bins}, "$workdir/$node->{bin};$node->{name}";
+	} elsif (exists $node->{directories}{bin}) {
+		_dir_bin($workdir, $node->{directories}{bin});
+	}
+}
+
 sub _modules_add
 {
 	my ( $path, $node ) = @_;
 	my $version = $node->{version};
 	if (index($version, "npm:") == 0) {
-		$version =~ s/.*@//;
+		$version =~ s/.*@^?//;
 	}
-	my $id = $node->{resolved};
-	if (index($id, "https://registry.npmjs.org") != 0) {
-		# XXX handle git+ssh://git@github.com/ ?
-		say STDERR "invalid resolved : " . $id;
-		return;
+	my $id;
+	if (exists($node->{resolved})) {
+		$id = $node->{resolved};
+		if (index($id, "https://registry.npmjs.org") == 0) {
+			$id =~ s|https://registry.npmjs.org/||;
+			$id =~ s|/\-/.*||;
+		} elsif (index($id, "git+ssh://git\@github.com/") == 0) {
+			# git+ssh://git@github.com/account/project.git#version
+			$id =~ s|.*\@github.com/||;
+			($version = $id) =~ s|.*#||;
+			$id =~ s|.git#.*||;
+			$id = "github:".$id;
+		} else {
+			say STDERR "invalid resolved : " . $id;
+			return;
+		}
+	} elsif (exists($node->{name})) {
+		$id = $node->{name};
+	} else {
+		$id = $path;
+		$id =~ s|(.*/)?node_modules/||;
 	}
-	$id =~ s|https://registry.npmjs.org/||;
-	$id =~ s|/\-/.*||;
 	if (exists $excludes{$id}) {
 		say STDERR "exclude : " . $path;
 		return;
@@ -83,6 +134,11 @@ sub _modules_add
 		return;
 	} elsif (exists $node->{dev} && $omitdev) {
 		say STDERR "skip dev : " . $path;
+		return;
+	} elsif (exists($node->{os}) and not grep (/openbsd/, @{$node->{os}})
+	    and not grep (/!win32/, @{$node->{os}})) {
+		say STDERR "ignore (os) : " . $path . " : " .
+		    join(", ", @{$node->{os}});
 		return;
 	}
 	if ( not exists $modules{$id}{$version} ) {
@@ -103,9 +159,12 @@ sub _dependencies
 }
 
 while (my $file = shift) {
+	my $nodes;
 	my $dirname  = dirname($file);
-	$dirname =~ s/$wrksrc//;
-	my $nodes = get_json_file($file);
+	$nodes = get_json_file("$target/package.json");
+	_module_bin($target, $nodes);
+	$nodes = get_json_file($file);
+	$dirname =~ s/$wrkdir//;
 	# flat package-lock.json format
 	foreach my $node (sort keys %{$nodes->{packages}}) {
 		if ($node eq "") {next;}
@@ -115,37 +174,70 @@ while (my $file = shift) {
 	_dependencies($dirname."/node_modules/", $nodes);
 }
 
-my $dists = ();
-my $cp = ();
+my $tree = ();
 foreach my $id (keys %modules) {
-	my $account = "";
-	my $project = $id;
+	my $dists;
+	my $account;
+	my $project;
 	my $version;
+	my $location;
 	my $dist = "\${MODNPM_DIST}/";
-	my $location = "";
-	if (scalar $id =~ /\Q\//g) {
-		($account, $project) = split '/', $id;
-		$dist .= $account."-";
-		$location .= $account."-";
+	my $sufx = ".tgz";
+	if (index($id, "github:") == 0) {
+		$dists = \@dists_github;
+		($project = $id) =~ s/github\://;
+		($account, $project) = split '/', $project;
+		$location = $account."-".$project;
+		$dist .= $location."-{".$account."/".$project."/archive/}";
+		$sufx = "\${EXTRACT_SUFX.github}";
+	} else {
+		$dists = \@dists_npm;
+		($location = $id) =~ s/\//-/;
+		$project = $id;
+		if ($id =~ /\//) {
+			($account, $project) = split '/', $id;
+			$dist .= $account."-";
+		}
+		$dist .= "{".$id."/-/}".$project."-";
 	}
-	$dist .= "{".$id."/-/}".$project;
-	$location .= $project;
 	foreach my $version (keys %{$modules{$id}}) {
-		push @{$dists}, $dist."-".$version.".tgz";
+		push @{$dists}, $dist.$version.$sufx;
 		foreach my $path (@{$modules{$id}{$version}}) {
-			# cp dst;src, sort to create shorter path first
-			push @{$cp}, $path.";".$location."-".$version;
+			# tree: dst;src, sort to create shorter path first
+			push @{$tree}, $path.";".$location."-".$version.$sufx;
 		}
 	}
 }
 
-say "DISTFILES.npm += \\";
-foreach my $l (sort @{$dists}) {
-	say $l." \\";
+sub uniq {
+	my %seen;
+	grep !$seen{$_}++, @_;
+}
+if (scalar @dists_npm) {
+	say "DISTFILES.npm += \\";
+	foreach my $dist (uniq sort @dists_npm) {
+		say $dist." \\";
+	}
+	say "";
+}
+if (scalar @dists_github) {
+	say "DISTFILES.github += \\";
+	foreach my $dist (uniq sort @dists_github) {
+		say $dist." \\";
+	}
+	say "";
+}
+
+say "MODNPM_TREE += \\";
+foreach my $module (reverse sort @{$tree}) {
+	say $module." \\";
 }
 say "";
-say "MODNPM_CP += \\";
-foreach my $l (reverse sort @{$cp}) {
-	say $l." \\";
+
+if ($bins) {
+	say "MODNPM_BIN += \\";
+	foreach my $l (sort @{$bins}) {
+		say $l." \\";
+	}
+	say "";
 }
-say "";
