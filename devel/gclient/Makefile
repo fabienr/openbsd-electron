@@ -20,22 +20,17 @@ HOMEPAGE =	https://chromium.googlesource.com/chromium/tools/depot_tools.git
 MAINTAINER =	fabien@openbsd.org
 
 # BSD-like & Apache 2.0
-PERMIT_PACKAGE=		Yes
+PERMIT_PACKAGE=	Yes
 
-SITES=https://chromium.googlesource.com/chromium/tools/depot_tools.git/+archive/
-DISTFILES =	depot_tools-{}${COMMIT}.tar.gz
+# googlesource.com does not provide stable snapshots
+SITES=		http://distfiles.opencrew.tech/depot_tools/
 
 SITES.gs =	https://storage.googleapis.com/pub/
 DISTFILES.gs =	gsutil_${GSUTIL_V}.zip
 
+# XXX devel/cipd port
 SITES.cipd =	https://chrome-infra-packages.appspot.com/
 DISTFILES.cipd=cipd-${CIPD_PLATFORM}-${CIPD_COMMIT}{client?platform=${CIPD_PLATFORM}&version=git_revision:${CIPD_COMMIT}}
-
-EXTRACT_CASES+=depot_tools*) \
-	_filename=$${archive\#\#*/} && \
-	mkdir -p $${_filename%.tar.gz} && \
-	${GZIP_CMD} -d <${FULLDISTDIR}/$$archive | \
-		${TAR} -C $${_filename%.tar.gz} -xf - -- ;;
 
 EXTRACT_CASES+=cipd-*) \
 	cp ${FULLDISTDIR}/$$archive ${WRKSRC}/.cipd_client && \
@@ -58,7 +53,7 @@ post-extract:
 	mkdir -p ${GSUTIL_T}
 	mv ${WRKDIR}/gsutil ${GSUTIL_T}
 	# fake gsutil install from gclient
-# XXX doesn't work ? see patches
+# XXX doesn't work, see patches
 	touch ${GSUTIL_T}/gsutil/install.flag
 	# fix MODPY_COMPILEALL
 	rm -rf ${GSUTIL_T}/gsutil/gslib/vendored/boto/docs
@@ -83,5 +78,22 @@ do-install:
 	# wrapper
 	${SUBST_PROGRAM} ${FILESDIR}/gclient \
 		${PREFIX}/bin/gclient
+
+### targets for port maintainer(s)
+
+_SRC?=	${WRKDIR}/gn
+_FETCH?=https://chromium.googlesource.com/chromium/tools/depot_tools.git \
+	${COMMIT}
+tarball:
+	mkdir -p ${_SRC}/${DISTNAME}
+	cd ${_SRC}/${DISTNAME} && [ -d ".git" ] || ( \
+	HOME=${_SRC} git init && \
+	HOME=${_SRC} git fetch ${_FETCH} --depth 1 && \
+	HOME=${_SRC} git checkout FETCH_HEAD \
+	)
+	cd ${_SRC} && \
+	find ./${DISTNAME} -type f -a ! -path '*/.git/*' | sort > files && \
+	tar -cRzf ${DISTNAME}${EXTRACT_SUFX} -I files && \
+	sha256 -b ${DISTNAME}${EXTRACT_SUFX}
 
 .include <bsd.port.mk>
