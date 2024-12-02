@@ -3,7 +3,7 @@ XXX openbsd use a wrapper, skip bin/electron check
 Index: electron/spec/api-app-spec.ts
 --- electron/spec/api-app-spec.ts.orig
 +++ electron/spec/api-app-spec.ts
-@@ -123,11 +123,11 @@ describe('app module', () => {
+@@ -126,11 +126,11 @@ describe('app module', () => {
    });
  
    describe('app.getPreferredSystemLanguages()', () => {
@@ -17,7 +17,7 @@ Index: electron/spec/api-app-spec.ts
        const languages = app.getPreferredSystemLanguages();
        if (languages.length) {
          expect(languages).to.not.include('C');
-@@ -190,7 +190,7 @@ describe('app module', () => {
+@@ -193,7 +193,7 @@ describe('app module', () => {
        expect(code).to.equal(123, 'exit code should be 123, if you see this please tag @MarshallOfSound');
      });
  
@@ -26,7 +26,7 @@ Index: electron/spec/api-app-spec.ts
        const electronPath = process.execPath;
        const appPath = path.join(fixturesPath, 'api', 'singleton');
        appProcess = cp.spawn(electronPath, [appPath]);
-@@ -269,6 +269,9 @@ describe('app module', () => {
+@@ -272,6 +272,9 @@ describe('app module', () => {
  
        // Ensure secondInstanceArgs is a subset of secondInstanceArgsReceived
        for (const arg of secondInstanceArgs) {
@@ -36,7 +36,7 @@ Index: electron/spec/api-app-spec.ts
          expect(secondInstanceArgsReceived).to.include(arg,
            `argument ${arg} is missing from received second args`);
        }
-@@ -444,7 +447,7 @@ describe('app module', () => {
+@@ -447,7 +450,7 @@ describe('app module', () => {
    //   let w = null
  
    //   before(function () {
@@ -45,7 +45,7 @@ Index: electron/spec/api-app-spec.ts
    //       this.skip()
    //     }
    //   })
-@@ -551,7 +554,7 @@ describe('app module', () => {
+@@ -554,7 +557,7 @@ describe('app module', () => {
    describe('app.badgeCount', () => {
      const platformIsNotSupported =
          (process.platform === 'win32') ||
@@ -54,7 +54,7 @@ Index: electron/spec/api-app-spec.ts
  
      const expectedBadgeCount = 42;
  
-@@ -595,7 +598,7 @@ describe('app module', () => {
+@@ -598,7 +601,7 @@ describe('app module', () => {
      });
    });
  
@@ -63,7 +63,7 @@ Index: electron/spec/api-app-spec.ts
      const isMac = process.platform === 'darwin';
      const isWin = process.platform === 'win32';
  
-@@ -975,7 +978,7 @@ describe('app module', () => {
+@@ -978,7 +981,7 @@ describe('app module', () => {
      });
    });
  
@@ -72,7 +72,7 @@ Index: electron/spec/api-app-spec.ts
      it('with properties', () => {
        it('can set accessibility support enabled', () => {
          expect(app.accessibilitySupportEnabled).to.eql(false);
-@@ -1151,7 +1154,9 @@ describe('app module', () => {
+@@ -1154,7 +1157,9 @@ describe('app module', () => {
  
        it('can be changed', () => {
          expect(hasSessionFiles(userDataPath)).to.equal(false);
@@ -82,7 +82,7 @@ Index: electron/spec/api-app-spec.ts
          expect(hasSessionFiles(userDataPath)).to.equal(false);
          expect(hasSessionFiles(tempBrowserDataPath)).to.equal(true);
        });
-@@ -1175,7 +1180,7 @@ describe('app module', () => {
+@@ -1178,7 +1183,7 @@ describe('app module', () => {
      });
    });
  
@@ -91,7 +91,7 @@ Index: electron/spec/api-app-spec.ts
      let w: BrowserWindow;
  
      before(function () {
-@@ -1310,7 +1315,7 @@ describe('app module', () => {
+@@ -1313,7 +1318,7 @@ describe('app module', () => {
  
    describe('getApplicationNameForProtocol()', () => {
      // TODO: Linux CI doesn't have registered http & https handlers
@@ -100,7 +100,7 @@ Index: electron/spec/api-app-spec.ts
        // We can't expect particular app names here, but these protocols should
        // at least have _something_ registered. Except on our Linux CI
        // environment apparently.
-@@ -1328,7 +1333,7 @@ describe('app module', () => {
+@@ -1331,7 +1336,7 @@ describe('app module', () => {
      });
    });
  
@@ -109,7 +109,7 @@ Index: electron/spec/api-app-spec.ts
      it('returns promise rejection for a bogus protocol', async function () {
        await expect(
          app.getApplicationInfoForProtocol('bogus-protocol://')
-@@ -1378,7 +1383,7 @@ describe('app module', () => {
+@@ -1381,7 +1386,7 @@ describe('app module', () => {
    });
  
    // FIXME Get these specs running on Linux CI
@@ -118,7 +118,7 @@ Index: electron/spec/api-app-spec.ts
      const iconPath = path.join(__dirname, 'fixtures/assets/icon.ico');
      const sizes = {
        small: 16,
-@@ -1459,7 +1464,7 @@ describe('app module', () => {
+@@ -1463,7 +1468,7 @@ describe('app module', () => {
            expect(entry.memory).to.have.property('privateBytes').that.is.greaterThan(0);
          }
  
@@ -127,7 +127,7 @@ Index: electron/spec/api-app-spec.ts
            expect(entry.sandboxed).to.be.a('boolean');
          }
  
-@@ -1533,7 +1538,7 @@ describe('app module', () => {
+@@ -1537,7 +1542,7 @@ describe('app module', () => {
  
      it('succeeds with complete GPUInfo', async () => {
        const completeInfo = await getGPUInfo('complete');
@@ -136,7 +136,7 @@ Index: electron/spec/api-app-spec.ts
          // For linux and macOS complete info is same as basic info
          await verifyBasicGPUInfo(completeInfo);
          const basicInfo = await getGPUInfo('basic');
-@@ -1557,7 +1562,7 @@ describe('app module', () => {
+@@ -1561,7 +1566,7 @@ describe('app module', () => {
      });
    });
  

@@ -1,0 +1,12 @@
+solutions = [
+  { 'name'        : 'src',
+    'url'         : 'https://chromium.googlesource.com/chromium/src.git',
+    'deps_file'   : 'DEPS',
+    'managed'     : False,
+    'custom_deps' : {},
+    'custom_vars' : {
+      'non_git_source': False,
+      'checkout_configuration': 'small',
+    },
+  },
+]

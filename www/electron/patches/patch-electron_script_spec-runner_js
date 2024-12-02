@@ -1,7 +1,7 @@
 Index: electron/script/spec-runner.js
 --- electron/script/spec-runner.js.orig
 +++ electron/script/spec-runner.js
-@@ -28,10 +28,12 @@ for (const flag of unknownFlags) {
+@@ -32,10 +32,12 @@ for (const flag of unknownFlags) {
  }
  
  const utils = require('./lib/utils');
@@ -16,8 +16,8 @@ Index: electron/script/spec-runner.js
  
  const runners = new Map([
    ['main', { description: 'Main process specs', run: runMainProcessElectronTests }]
-@@ -83,14 +85,19 @@ async function main () {
-     console.log(`Running against Electron ${versionString.green}`);
+@@ -87,14 +89,19 @@ async function main () {
+     console.log(`Running against Electron ${chalk.green(versionString)}`);
    }
  
 +  /*
@@ -37,7 +37,7 @@ Index: electron/script/spec-runner.js
    }
  
    if (!fs.existsSync(path.resolve(__dirname, '../electron.d.ts'))) {
-@@ -161,10 +168,14 @@ async function runTestUsingElectron (specDir, testName
+@@ -165,10 +172,14 @@ async function runTestUsingElectron (specDir, testName
      exe = path.resolve(BASE, utils.getElectronExec());
    }
    const runnerArgs = [`electron/${specDir}`, ...unknownArgs.slice(2)];

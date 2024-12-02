@@ -1,7 +1,7 @@
 Index: electron/spec/api-process-spec.ts
 --- electron/spec/api-process-spec.ts.orig
 +++ electron/spec/api-process-spec.ts
-@@ -42,7 +42,7 @@ describe('process module', () => {
+@@ -46,7 +46,7 @@ describe('process module', () => {
        it('resolves promise successfully with valid data', async () => {
          const memoryInfo = await w.webContents.executeJavaScript('process.getProcessMemoryInfo()');
          expect(memoryInfo).to.be.an('object');
@@ -10,7 +10,7 @@ Index: electron/spec/api-process-spec.ts
            expect(memoryInfo.residentSet).to.be.a('number').greaterThan(0);
          }
          expect(memoryInfo.private).to.be.a('number').greaterThan(0);
-@@ -140,7 +140,7 @@ describe('process module', () => {
+@@ -145,7 +145,7 @@ describe('process module', () => {
        it('resolves promise successfully with valid data', async () => {
          const memoryInfo = await process.getProcessMemoryInfo();
          expect(memoryInfo).to.be.an('object');

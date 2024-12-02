@@ -1,0 +1,12 @@
+Index: deps/ada/ada.h
+--- deps/ada/ada.h.orig
++++ deps/ada/ada.h
+@@ -1292,7 +1292,7 @@ enum class state {
+   /**
+    * @see https://url.spec.whatwg.org/#query-state
+    */
+-  QUERY,
++  ADAQUERY,
+ 
+   /**
+    * @see https://url.spec.whatwg.org/#path-state

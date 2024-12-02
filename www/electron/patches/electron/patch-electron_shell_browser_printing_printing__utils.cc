@@ -1,6 +1,7 @@
---- electron/shell/browser/printing/printing_utils.cc.orig	2024-04-19 08:41:45 UTC
+Index: electron/shell/browser/printing/printing_utils.cc
+--- electron/shell/browser/printing/printing_utils.cc.orig
 +++ electron/shell/browser/printing/printing_utils.cc
-@@ -20,7 +20,7 @@
+@@ -31,7 +31,7 @@
  #include <ApplicationServices/ApplicationServices.h>
  #endif
  

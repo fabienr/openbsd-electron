@@ -1,7 +1,7 @@
 Index: electron/spec/crash-spec.ts
 --- electron/spec/crash-spec.ts.orig
 +++ electron/spec/crash-spec.ts
-@@ -45,7 +45,7 @@ const shouldRunCase = (crashCase: string) => {
+@@ -47,7 +47,7 @@ const shouldRunCase = (crashCase: string) => {
        if (process.platform === 'win32') {
          return process.arch !== 'ia32';
        } else {

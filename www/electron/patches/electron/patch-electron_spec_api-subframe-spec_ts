@@ -1,7 +1,7 @@
 Index: electron/spec/api-subframe-spec.ts
 --- electron/spec/api-subframe-spec.ts.orig
 +++ electron/spec/api-subframe-spec.ts
-@@ -215,7 +215,7 @@ describe('renderer nodeIntegrationInSubFrames', () => 
+@@ -218,7 +218,7 @@ describe('renderer nodeIntegrationInSubFrames', () => 
  });
  
  // app.getAppMetrics() does not return sandbox information on Linux.

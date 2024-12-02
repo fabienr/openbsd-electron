@@ -1,4 +1,5 @@
---- electron/shell/browser/relauncher_linux.cc.orig	2023-01-24 16:58:16 UTC
+Index: electron/shell/browser/relauncher_linux.cc
+--- electron/shell/browser/relauncher_linux.cc.orig
 +++ electron/shell/browser/relauncher_linux.cc
 @@ -6,8 +6,10 @@
  
@@ -9,8 +10,8 @@
  #include <sys/signalfd.h>
 +#endif
  
- #include "base/files/file_util.h"
  #include "base/files/scoped_file.h"
+ #include "base/logging.h"
 @@ -24,6 +26,10 @@ void RelauncherSynchronizeWithParent() {
    base::ScopedFD relauncher_sync_fd(kRelauncherSyncFD);
    static const auto signum = SIGUSR2;

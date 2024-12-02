@@ -1,7 +1,7 @@
 Index: electron/spec/node-spec.ts
 --- electron/spec/node-spec.ts.orig
 +++ electron/spec/node-spec.ts
-@@ -145,7 +145,7 @@ describe('node feature', () => {
+@@ -148,7 +148,7 @@ describe('node feature', () => {
      });
  
      describe('child_process.exec', () => {

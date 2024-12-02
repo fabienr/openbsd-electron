@@ -1,0 +1,78 @@
+Index: content/browser/interest_group/interest_group_storage.cc
+--- content/browser/interest_group/interest_group_storage.cc.orig
++++ content/browser/interest_group/interest_group_storage.cc
+@@ -58,6 +58,38 @@
+ #include "third_party/sqlite/sqlite3.h"
+ #include "url/origin.h"
+ 
++
++// bundle Compress()/Uncompress() from snappy
++// snappy::Raw* to avoid std:string symbol (libcxx may differ)
++
++// ld.lld: error: undefined symbol: snappy::Compress(...)
++size_t inline _Compress(const char* input, size_t input_length,
++                std::string* compressed) {
++  size_t compressed_length;
++  compressed->resize(snappy::MaxCompressedLength(input_length));
++  snappy::RawCompress(input, input_length, &(*compressed)[0],
++                      &compressed_length);
++  compressed->resize(compressed_length);
++  return compressed_length;
++}
++
++// ld.lld: error: undefined symbol: snappy::Uncompress(...)
++bool inline _Uncompress(const char* compressed, size_t compressed_length,
++                std::string* uncompressed) {
++  size_t ulength;
++  if (!snappy::GetUncompressedLength(compressed, compressed_length, &ulength)) {
++    return false;
++  }
++  // On 32-bit builds: max_size() < kuint32max.  Check for that instead
++  // of crashing (e.g., consider externally specified compressed data).
++  if (ulength > uncompressed->max_size()) {
++    return false;
++  }
++  uncompressed->resize(ulength);
++  return snappy::RawUncompress(compressed, compressed_length,
++                               &(*uncompressed)[0]);
++}
++
+ namespace content {
+ 
+ namespace {
+@@ -466,7 +498,7 @@ std::string Serialize(
+ 
+   std::string compressed;
+   base::TimeTicks start = base::TimeTicks::Now();
+-  snappy::Compress(serialized_ads.data(), serialized_ads.size(), &compressed);
++  _Compress(serialized_ads.data(), serialized_ads.size(), &compressed);
+   base::UmaHistogramTimes("Storage.InterestGroup.AdProtoCompressionTime",
+                           base::TimeTicks::Now() - start);
+   if (serialized_ads.size() > 0u) {
+@@ -579,7 +611,7 @@ DecompressAndDeserializeInterestGroupAdVectorProto(
+     const std::string& compressed) {
+   std::string serialized_ads;
+   base::TimeTicks start = base::TimeTicks::Now();
+-  if (!snappy::Uncompress(compressed.data(), compressed.size(),
++  if (!_Uncompress(compressed.data(), compressed.size(),
+                           &serialized_ads)) {
+     base::UmaHistogramEnumeration(
+         "Storage.InterestGroup.AdProtoDecompressionOutcome",
+@@ -1221,7 +1253,7 @@ bool UpgradeV29SchemaToV30(sql::Database& db, sql::Met
+     std::string compressed_ads_pb;
+     base::span<const uint8_t> ads_pb = select_prev_groups.ColumnBlob(2);
+     base::TimeTicks start_ads = base::TimeTicks::Now();
+-    snappy::Compress(reinterpret_cast<const char*>(ads_pb.data()),
++    _Compress(reinterpret_cast<const char*>(ads_pb.data()),
+                      ads_pb.size(), &compressed_ads_pb);
+     UMA_HISTOGRAM_TIMES("Storage.InterestGroup.AdProtoCompressionTime",
+                         base::TimeTicks::Now() - start_ads);
+@@ -1240,7 +1272,7 @@ bool UpgradeV29SchemaToV30(sql::Database& db, sql::Met
+     base::span<const uint8_t> ad_components_pb =
+         select_prev_groups.ColumnBlob(3);
+     base::TimeTicks start_ad_components = base::TimeTicks::Now();
+-    snappy::Compress(reinterpret_cast<const char*>(ad_components_pb.data()),
++    _Compress(reinterpret_cast<const char*>(ad_components_pb.data()),
+                      ad_components_pb.size(), &compressed_ad_components_pb);
+     UMA_HISTOGRAM_TIMES("Storage.InterestGroup.AdProtoCompressionTime",
+                         base::TimeTicks::Now() - start_ad_components);

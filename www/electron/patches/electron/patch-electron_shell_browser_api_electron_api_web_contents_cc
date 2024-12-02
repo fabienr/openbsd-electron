@@ -12,10 +12,19 @@ Index: electron/shell/browser/api/electron_api_web_contents.cc
  
 -#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN)
 +#if BUILDFLAG(IS_LINUX) || BUILDFLAG(IS_WIN) || BUILDFLAG(IS_BSD)
+ #include "ui/aura/window.h"
  #include "ui/gfx/font_render_params.h"
  #endif
+@@ -188,7 +188,7 @@
+ #include "content/public/browser/plugin_service.h"
+ #endif
  
-@@ -517,7 +517,7 @@ std::optional<base::TimeDelta> GetCursorBlinkInterval(
+-#if !IS_MAS_BUILD()
++#if !IS_MAS_BUILD() && !BUILDFLAG(IS_BSD)
+ #include "chrome/browser/hang_monitor/hang_crash_dump.h"  // nogncheck
+ #endif
+ 
+@@ -513,7 +513,7 @@ std::optional<base::TimeDelta> GetCursorBlinkInterval(
        ui::TextInsertionCaretBlinkPeriodFromDefaults());
    if (system_value)
      return *system_value;
@@ -24,7 +33,7 @@ Index: electron/shell/browser/api/electron_api_web_contents.cc
    if (auto* linux_ui = ui::LinuxUi::instance())
      return linux_ui->GetCursorBlinkInterval();
  #elif BUILDFLAG(IS_WIN)
-@@ -881,7 +881,7 @@ void WebContents::InitWithSessionAndOptions(
+@@ -893,7 +893,7 @@ void WebContents::InitWithSessionAndOptions(
    accept_languages.pop_back();
    prefs->accept_languages = accept_languages;
  
@@ -33,7 +42,7 @@ Index: electron/shell/browser/api/electron_api_web_contents.cc
    // Update font settings.
    static const gfx::FontRenderParams params(
        gfx::GetFontRenderParams(gfx::FontRenderParamsQuery(), nullptr));
-@@ -2618,7 +2618,7 @@ void WebContents::ForcefullyCrashRenderer() {
+@@ -2657,13 +2657,13 @@ void WebContents::ForcefullyCrashRenderer() {
  
    content::RenderProcessHost* rph = rwh->GetProcess();
    if (rph) {
@@ -42,7 +51,14 @@ Index: electron/shell/browser/api/electron_api_web_contents.cc
      // A generic |CrashDumpHungChildProcess()| is not implemented for Linux.
      // Instead we send an explicit IPC to crash on the renderer's IO thread.
      rph->ForceCrash();
-@@ -3300,7 +3300,7 @@ void WebContents::CopyImageAt(int x, int y) {
+ #else
+     // Try to generate a crash report for the hung process.
+-#if !IS_MAS_BUILD()
++#if !IS_MAS_BUILD() && !BUILDFLAG(IS_BSD)
+     CrashDumpHungChildProcess(rph->GetProcess().Handle());
+ #endif
+     rph->Shutdown(content::RESULT_CODE_HUNG);
+@@ -3336,7 +3336,7 @@ void WebContents::CopyImageAt(int x, int y) {
  void WebContents::Focus() {
    // Focusing on WebContents does not automatically focus the window on macOS
    // and Linux, do it manually to match the behavior on Windows.
@@ -51,7 +67,7 @@ Index: electron/shell/browser/api/electron_api_web_contents.cc
    if (owner_window())
      owner_window()->Focus(true);
  #endif
-@@ -4150,7 +4150,7 @@ ui::ImageModel WebContents::GetDevToolsWindowIcon() {
+@@ -4212,7 +4212,7 @@ ui::ImageModel WebContents::GetDevToolsWindowIcon() {
  }
  #endif
  

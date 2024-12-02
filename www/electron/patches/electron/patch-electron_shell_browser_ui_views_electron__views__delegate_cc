@@ -1,4 +1,5 @@
---- electron/shell/browser/ui/views/electron_views_delegate.cc.orig	2023-01-24 16:58:16 UTC
+Index: electron/shell/browser/ui/views/electron_views_delegate.cc
+--- electron/shell/browser/ui/views/electron_views_delegate.cc.orig
 +++ electron/shell/browser/ui/views/electron_views_delegate.cc
 @@ -9,7 +9,7 @@
  #include "ui/views/widget/desktop_aura/desktop_native_widget_aura.h"
@@ -27,7 +28,7 @@
  gfx::ImageSkia* ViewsDelegate::GetDefaultWindowIcon() const {
    return nullptr;
  }
-@@ -85,7 +85,7 @@ void ViewsDelegate::OnBeforeWidgetInit(
+@@ -81,7 +81,7 @@ void ViewsDelegate::OnBeforeWidgetInit(
  }
  
  bool ViewsDelegate::WindowManagerProvidesTitleBar(bool maximized) {

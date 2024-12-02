@@ -1,7 +1,7 @@
 Index: electron/shell/app/electron_crash_reporter_client.h
 --- electron/shell/app/electron_crash_reporter_client.h.orig
 +++ electron/shell/app/electron_crash_reporter_client.h
-@@ -31,7 +31,7 @@ class ElectronCrashReporterClient : public crash_repor
+@@ -30,7 +30,7 @@ class ElectronCrashReporterClient : public crash_repor
        const std::map<std::string, std::string>& annotations);
  
    // crash_reporter::CrashReporterClient implementation.
@@ -10,7 +10,7 @@ Index: electron/shell/app/electron_crash_reporter_client.h
    void SetCrashReporterClientIdFromGUID(
        const std::string& client_guid) override;
    void GetProductNameAndVersion(const char** product_name,
-@@ -70,7 +70,7 @@ class ElectronCrashReporterClient : public crash_repor
+@@ -69,7 +69,7 @@ class ElectronCrashReporterClient : public crash_repor
    bool ReportingIsEnforcedByPolicy(bool* breakpad_enabled) override;
  #endif
  

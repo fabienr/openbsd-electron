@@ -3,19 +3,53 @@
 # Could not parse server address: Unknown address type (examples of valid types
 # are "tcp" and on UNIX "unix")
 
-# XXX looks like we don't care about distfiles release to install apps
-# no duplicate electron, installer have to overcome missing distfiles somehow
-# wrong assumption : for ex, cypress needs it or a big hammer patch perhaps.
-
 # XXX start apps with --app= instead of a bundle electron copy
 # runing command line without args bring a different config, diff ?
-# note also some installer use fuses (hotfix into bin), see signal-desktop
+# note also some installer use fuses (hotfix into bin)
+
+# https://www.electronjs.org/docs/latest/tutorial/fuses
+# * runAsNode (Enabled), needed for vscode, ELECTRON_RUN_AS_NODE=1
+# * cookieEncryption (Disabled) -> Enabled, change default ?
+# * nodeOptions (Enabled) -> Disabled, change default ?
+# * nodeCliInspect (Enabled) -> Disabled, change default ?
+# * embeddedAsarIntegrityValidation (Disabled), !openbsd
+# * onlyLoadAppFromAsar (Disabled), required on openbsd
+# * loadBrowserProcessSpecificV8Snapshot (Disabled), XXX
+# * grantFileProtocolExtraPrivileges (Enabled), XXX
+
+# signal-desktop
+#// Disables ELECTRON_RUN_AS_NODE
+#[FuseV1Options.RunAsNode]: false,
+#// Enables cookie encryption
+#[FuseV1Options.EnableCookieEncryption]: true,
+#// Disables the NODE_OPTIONS environment variable
+#[FuseV1Options.EnableNodeOptionsEnvironmentVariable]: false,
+#// Disables the --inspect and --inspect-brk family of CLI options
+#[FuseV1Options.EnableNodeCliInspectArguments]: enableInspectArguments,
+#// Enables validation of the app.asar archive on macOS/Windows
+#[FuseV1Options.EnableEmbeddedAsarIntegrityValidation]:
+#electronPlatformName === 'darwin' || electronPlatformName === 'win32',
+#// Enforces that Electron will only load your app from "app.asar" instead of
+#// its normal search paths
+#[FuseV1Options.OnlyLoadAppFromAsar]: true,
+
+# teams-for-linux
+#[FuseV1Options.EnableCookieEncryption]: true,
 
 # XXX pledge & unveil integration
 # unveil too restrictive on vscode (--no-sandbox)
 # test does not pass without unveil ("/ rwcx")
 # need more app to learn from ecosystem
 
+# XXX something to consider
+#WARNING: --openssl-no-asm will result in binaries that do not take advantage
+#         of modern CPU cryptographic instructions and will therefore be slower.
+#         Please refer to BUILDING.md
+#WARNING: warnings were emitted in the configure phase
+
+BROKEN-i386=v8/src/compiler/turboshaft/int64-lowering-reducer.h:295:24: error:
+# call to member function 'Word32Constant' is ambiguous
+# (but will probably run out of memory linking under DPB even if fixed)
 BROKEN-powerpc64=Check failed: false. OS architecture not handled. (powerpc64)
 
 USE_WXNEEDED=		Yes
@@ -28,10 +62,10 @@ DPB_PROPERTIES+=	lonesome
 COMMENT=		cross-platform desktop applications
 
 # sync with electron.port.mk
-ELECTRON_V=		31.3.1
-ELECTRON_ARCH=		${ARCH:S/aarch64/arm64/:S/amd64/x64/:S/i386/ia32/}
-ELECTRON_PATCH=		${WRKSRC}/electron/patches/config.json
-REVISION=		0
+ELECTRON_V=		33.2.1
+
+# make update-patches happy
+FIX_EXTRACT_PERMISSIONS=Yes
 
 DIST_TUPLE=		github electron electron v${ELECTRON_V} .
 
@@ -43,6 +77,34 @@ MAINTAINER=		fabien@openbsd.org
 
 # MIT
 PERMIT_PACKAGE=		Yes
+
+# XXX make version
+# See electron/DEPS for versions, post-extract & pre-patch
+CHROMIUM_V=		130.0.6723.137
+NODE_V=			20.18.1
+NAN_V=			e14bdcd1f72d62bca1d541b66da43130384ec213
+SQUIRREL_MAC_V=		0e5d146ba13101a1302d59ea6e6e0b3cace4ae38
+REACTIVEOBJC_V=		74ab5baccc6f7202c8ac69a8d1e152c29dc1ea76
+MANTLE_V=		78d3966b3c331292ea29ec38661b25df0a245948
+ENGFLOW_V=		955335c30a752e9ef7bff375baab5e0819b6c00d
+# See chromium/third_party/node/node_modules.tar.gz.sha1
+NODE_MODULES_HASH=	8832b899a93c8be572bd8d8ff9b3e4af563169fe
+
+DIST_TUPLE+=		github nodejs node v${NODE_V} .
+DIST_TUPLE+=		github nodejs nan ${NAN_V} .
+DIST_TUPLE+=		github Squirrel Squirrel.Mac ${SQUIRREL_MAC_V} .
+DIST_TUPLE+=		github ReactiveCocoa ReactiveObjC ${REACTIVEOBJC_V} .
+DIST_TUPLE+=		github Mantle Mantle ${MANTLE_V} .
+DIST_TUPLE+=		github EngFlow reclient-configs ${ENGFLOW_V} .
+
+SITES.chromium=		http://distfiles.opencrew.tech/chromium/
+DISTFILES.chromium=	chromium-${CHROMIUM_V}.tgz
+
+SITES.nodemodule=https://commondatastorage.googleapis.com/chromium-nodejs/
+DISTFILES.nodemodule=	chromium-nodejs-{}${NODE_MODULES_HASH}
+
+# XXX see post-extract, custom extract in node_modules then mv ?
+EXTRACT_CASES+=		chromium-nodejs-${NODE_MODULES_HASH});;
 
 # uses pledge()
 WANTLIB += EGL FLAC GL X11 X11-xcb Xau Xcomposite Xcursor Xdamage
@@ -56,34 +118,10 @@ WANTLIB += gthread-2.0 gtk-3 harfbuzz harfbuzz-gobject harfbuzz-subset
 WANTLIB += icudata icui18n icuuc intl jpeg kvm lcms2 lzma m nghttp2
 WANTLIB += nspr4 nss3 nssutil3 ogg openh264 opus pango-1.0 pangocairo-1.0
 WANTLIB += pangoft2-1.0 pcre2-8 pixman-1 plc4 plds4 png sharpyuv
-WANTLIB += smime3 snappy sndio usbhid util vpx wayland-client
+WANTLIB += smime3 snappy sndio tiff udev usbhid util vpx wayland-client
 WANTLIB += wayland-cursor wayland-egl webp webpdemux webpmux xcb
 WANTLIB += xcb-dri2 xcb-glx xcb-render xcb-shm xkbcommon xml2
 WANTLIB += xshmfence xslt z zstd
-
-# See electron/DEPS for versions, post-extract & pre-patch
-CHROMIUM_V=			126.0.6478.185
-NODE_V=				20.15.1
-NAN_V=				e14bdcd1f72d62bca1d541b66da43130384ec213
-SQUIRREL_MAC_V=			0e5d146ba13101a1302d59ea6e6e0b3cace4ae38
-REACTIVEOBJC_V=			74ab5baccc6f7202c8ac69a8d1e152c29dc1ea76
-MANTLE_V=			78d3966b3c331292ea29ec38661b25df0a245948
-ENGFLOW_RECLIENT_CONFIGS_V=	955335c30a752e9ef7bff375baab5e0819b6c00d
-# See third_party/node/node_modules.tar.gz.sha1
-CHROMIUM_NODE_MODULES_HASH=	97a0b3c4c39cf05de1eafb6ffdec0fddd643f0a2
-
-DISTFILES.chromium=	chromium-${CHROMIUM_V}.tar.xz
-SITES.chromium=https://commondatastorage.googleapis.com/chromium-browser-official/
-
-DISTFILES.nodemodule=	chromium-nodejs-{}${CHROMIUM_NODE_MODULES_HASH}
-SITES.nodemodule=https://commondatastorage.googleapis.com/chromium-nodejs/
-
-DIST_TUPLE+=	github nodejs node v${NODE_V} .
-DIST_TUPLE+=	github nodejs nan ${NAN_V} .
-DIST_TUPLE+=	github Squirrel Squirrel.Mac ${SQUIRREL_MAC_V} .
-DIST_TUPLE+=	github ReactiveCocoa ReactiveObjC ${REACTIVEOBJC_V} .
-DIST_TUPLE+=	github Mantle Mantle ${MANTLE_V} .
-DIST_TUPLE+=	github EngFlow reclient-configs ${ENGFLOW_RECLIENT_CONFIGS_V} .
 
 # Electron depends on Chromium and Node which are bundled&patched all together :
 # 1. patches/pre-patch, ensure electron patches apply correctly
@@ -93,7 +131,8 @@ DIST_TUPLE+=	github EngFlow reclient-configs ${ENGFLOW_RECLIENT_CONFIGS_V} .
 # 5. solve any conflicts, apply custom patches in patches/conflict
 # 6. apply common *BSD patches from patches/electron
 # 7. apply OpenBSD electron's port specific patches
-.if empty(_MAKE_PATCHES)
+ELECTRON_PATCH=	${WRKSRC}/electron/patches/config.json
+.if empty(_GEN_PATCHES)
 # pre-patch electron (1-2) > ALL_PATCHFILES(3-4) > PATCH_LIST(5-7)
 ALL_PATCHFILES=	${PATCHDIR}/chromium/patch-* \
 		${PATCHDIR}/node/patch-*
@@ -121,33 +160,37 @@ MODPY_RUNDEP=		No
 MODQT5_DEPS=		No
 MODYARN_TARGETS=	${WRKSRC}/electron ${WRKSRC}/electron/spec
 
-RUN_DEPENDS+=	devel/xdg-utils \
-		devel/desktop-file-utils \
+RUN_DEPENDS+=	devel/desktop-file-utils \
+		devel/libnotify \
+		devel/xdg-utils \
 		fonts/noto/fonts \
 		graphics/libexif \
-		sysutils/libudev-openbsd \
 		x11/gtk+3,-main \
 		x11/gtk+4,-guic \
 		x11/gtk+3,-cups
+
 BUILD_DEPENDS+=	archivers/bzip2 \
 		audio/pulseaudio \
-		devel/gperf \
 		devel/bison \
+		devel/gperf \
+		devel/gn \
+		devel/ninja \
 		devel/rust-bindgen \
 		lang/node \
 		lang/rust \
 		shells/bash \
 		sysutils/flock \
 		sysutils/pciutils \
-		devel/ninja \
 		x11/py-xcbgen${MODPY_FLAVOR} \
 		x11/qt5/qtbase,-main \
 		${MODGCC4_CPPDEP} \
 		${RUN_DEPENDS}
+
 LIB_DEPENDS+=	archivers/snappy \
 		audio/flac \
 		audio/opus \
 		devel/crc32c \
+		devel/epoll-shim \
 		devel/pango \
 		graphics/jpeg \
 		graphics/lcms2 \
@@ -160,7 +203,9 @@ LIB_DEPENDS+=	archivers/snappy \
 		multimedia/libvpx \
 		multimedia/openh264 \
 		net/libcares \
+		print/cups,-libs \
 		security/nss \
+		sysutils/libudev-openbsd \
 		textproc/icu4c \
 		textproc/libxml \
 		textproc/libxslt \
@@ -168,8 +213,8 @@ LIB_DEPENDS+=	archivers/snappy \
 		x11/gnome/at-spi2-core \
 		x11/gtk+3,-main \
 		x11/xkbcommon \
-		print/cups,-libs \
 		${MODGCC4_CPPLIBDEP}
+
 TEST_DEPENDS+=	devel/py-dbusmock \
 		x11/dbus-python \
 		devel/py-gobject3 \
@@ -177,34 +222,27 @@ TEST_DEPENDS+=	devel/py-dbusmock \
 
 USE_GMAKE=	Yes
 
-# XXX needed ?
+# needed in early stage, for porters only ?
 DEBUG_PACKAGES=	${BUILD_PACKAGES}
 
-# XXX comment only to test
+# comment only to test
 #NO_TEST=manual test only, see do-test
 
 .include <bsd.own.mk>
 
-# XXX ELECTRON_ARCH only for distfiles release
-SUBST_VARS+=	WRKSRC WRKDIR ELECTRON_V ELECTRON_ARCH
+SUBST_VARS+=	ELECTRON_V MODCLANG_VERSION WRKDIR WRKSRC
 
 # Collect all DISTS under 'src'
-WRKDIST=		${WRKDIR}/src
-WRKSRC=			${WRKDIR}/src
+WRKDIST=	${WRKDIR}/src
+WRKSRC=		${WRKDIR}/src
 
-ALL_TARGET=		electron \
-			electron:node_headers \
-			chromedriver
-# XXX also include *zip build targets ? required for building apps ?
-# XXX missing chromedriver(.debug), manual STRIP in post-build ?
-# XXX looks like we don't care about distfiles release to install apps, remove ?
-POST_BUILD_TARGET=	licenses \
-			version \
-			electron_dist_zip \
-			electron_mksnapshot_zip \
-			electron_chromedriver_zip
+BUILD_TARGET=	electron \
+		electron:node_headers \
+		chromedriver \
+		licenses \
+		version
 
-DIST_TARGET_DIR=	electron/${ELECTRON_V}
+DIST_TARGET=	electron/${ELECTRON_V}
 
 # GN_SYSTEM_LIBS : See ${WRKSRC}/build/linux/unbundle/README
 # These libraries are used from the system and the build infrastructure
@@ -227,20 +265,26 @@ GN_SYSTEM_LIBS=	crc32c \
 		opus \
 		snappy
 
+# XXX notyet, use_custom_libcxx=true (llvm17 ?)
+#GN_SYSTEM_LIBS+=re2
+
 # make gn_args-system, search ${WRKDIR}/gn_args.list for use_system/bundled
 GN_ARGS=	use_bundled_fontconfig=false \
 		use_system_libjpeg=true \
 		use_system_harfbuzz=true \
 		use_system_cares=true \
 		use_system_nghttp2=true
-# pdfium only ?
+# pdfium only
 GN_ARGS+=	use_system_lcms2=true \
 		use_system_libpng=true \
 		use_system_libtiff=true \
 		use_system_zlib=true
 
 # make gn_args-check, check www/chromium against ${WRKDIR}/gn_args.list
-_EXTRA_CPPFLAGS=-idirafter ${LOCALBASE}/include -idirafter ${X11BASE}/include
+# C++20 vs. system libc++, use_custom_libcxx=true (default)
+# XXX todo, test use_custom_libunwind=false (default), wasm support needed ?
+EXTRA_CPPFLAGS=	-I${LOCALBASE}/include/libepoll-shim \
+		-idirafter ${LOCALBASE}/include -idirafter ${X11BASE}/include
 GN_ARGS+=	clang_use_chrome_plugins=false \
 		disable_fieldtrial_testing_config=true \
 		enable_backup_ref_ptr_support=false \
@@ -248,7 +292,7 @@ GN_ARGS+=	clang_use_chrome_plugins=false \
 		enable_log_error_not_reached=true \
 		enable_remoting=false \
 		enable_rust=false \
-		extra_cppflags=\"${_EXTRA_CPPFLAGS}\" \
+		extra_cppflags=\"${EXTRA_CPPFLAGS}\" \
 		fatal_linker_warnings=false \
 		icu_use_data_file=false \
 		treat_warnings_as_errors=false \
@@ -306,9 +350,11 @@ DWZ = :
 
 # always build with symbol, bsd.port.mk will strip
 GN_ARGS+=	symbol_level=1
+
 # always link static into bin, no component
 GN_ARGS+=	is_component_build=false \
 		is_component_ffmpeg=false
+
 # do not use lto, otherwise it needs -fno-ret-protector & -mno-retpoline
 GN_ARGS+=	use_thin_lto=false \
 		thin_lto_enable_optimizations=true
@@ -318,16 +364,17 @@ GN_ARGS+=	override_electron_version=\"${ELECTRON_V}\"
 # XXX need chrome-linux-${CHROMIUM_V}-llvm<XX>.profdata${EXTRACT_SUFX}
 GN_ARGS+=	chrome_pgo_phase=0
 
-BUILDTYPE=		Release
-BUILDDIR=		${WRKSRC}/out/${BUILDTYPE}
-GN_FILE=		release.gn
-GN_BOOTSTRAP_FLAGS=	--skip-generate-buildfiles
+BUILDTYPE=	Release
+BUILDDIR=	${WRKSRC}/out/${BUILDTYPE}
+ELECTRON_GN=	//electron/build/args/release.gn
 
 post-extract:
 	# setup distfiles into src
 	mv ${WRKDIR}/chromium-${CHROMIUM_V} ${WRKSRC}
 	mv ${WRKDIR}/electron-${ELECTRON_V} ${WRKSRC}/electron
-	mv ${WRKDIR}/node_modules ${WRKSRC}/third_party/node/node_modules
+	mkdir -p ${WRKSRC}/third_party/node/node_modules
+	tar -xzf ${DISTDIR}/chromium-nodejs-${NODE_MODULES_HASH} \
+		-C ${WRKSRC}/third_party/node/node_modules
 	mv ${WRKDIR}/node-${NODE_V} ${WRKSRC}/third_party/electron_node
 	mv ${WRKDIR}/nan-${NAN_V} ${WRKSRC}/third_party/nan
 	mv ${WRKDIR}/Squirrel.Mac-${SQUIRREL_MAC_V} \
@@ -337,30 +384,31 @@ post-extract:
 		${WRKSRC}/third_party/squirrel.mac/vendor/ReactiveObjC
 	mv ${WRKDIR}/Mantle-${MANTLE_V} \
 		${WRKSRC}/third_party/squirrel.mac/vendor/Mantle
-	mv ${WRKDIR}/reclient-configs-${ENGFLOW_RECLIENT_CONFIGS_V} \
+	mv ${WRKDIR}/reclient-configs-${ENGFLOW_V} \
 		${WRKSRC}/third_party/engflow-reclient-configs
-
-pre-patch:
 	# tweek some patches to apply cleanly
-	@if cd ${PATCHDIR} 2>/dev/null; then \
-		for i in ${PATCHDIR}/pre-patches/patch-*; do \
-			${ECHO_MSG} "===>   Applying pre-patch $$i"; \
+# XXX call there so we fix yarn.lock before module's post-extract
+	@if cd ${PATCHDIR}/pre-patches 2>/dev/null; then \
+		for p in ${PATCHDIR}/pre-patches/patch-*; do \
+			${ECHO_MSG} "===>   Applying pre-patch $${p}"; \
 			${PATCH} ${PATCH_DIST_ARGS} \
 				-z .orig.pre-patch \
-				-d ${WRKSRC}/ < $$i ; \
+				-d ${WRKSRC}/ < $${p} ; \
 		done; \
 	fi
+
+pre-patch:
 	# apply electron patches
-	@for _pair in $$(grep ':' ${ELECTRON_PATCH} | cut -f 4,8 -d '"' ); do \
-		_from=${WRKDIR}/$$(echo $${_pair} | cut -f 1 -d '"') ; \
-		_to=${WRKDIR}/$$(echo $${_pair} | cut -f 2 -d '"') ; \
-		for _p in $$(cat $${_from}/.patches); do \
-			echo "===>   Applying $${_from}/$${_p} into $${_to}"; \
+	@for pair in $$(grep ':' ${ELECTRON_PATCH} | cut -f 4,8 -d '"' ); do \
+		from=${WRKDIR}/$$(echo $${pair} | cut -f 1 -d '"') ; \
+		to=${WRKDIR}/$$(echo $${pair} | cut -f 2 -d '"') ; \
+		for p in $$(cat $${from}/.patches); do \
+			echo "===>   Applying $${from}/$${p} into $${to}"; \
 			${PATCH} -p1 -z .orig.electron \
-				-d $${_to} -i $${_from}/$${_p}; \
-			grep -R '^rename' $${_from}/$${_p} | \
+				-d $${to} -i $${from}/$${p}; \
+			grep -R '^rename' $${from}/$${p} | \
 				cut -f 3 -d ' ' | xargs -r -L2 sh -c \
-				"cd $${_to} && mv \$$@" mv ; \
+				"cd $${to} && mv \$$@" mv ; \
 		done ; \
 	done
 
@@ -372,96 +420,74 @@ pre-configure:
 		--config-only --branding=${FFMPEG_BRAND}
 	cd ${FFMPEG_BDIR} && ${GMAKE} ffversion.h
 	${INSTALL_DATA_DIR} ${FFMPEG_CDIR}
-.for _e in config.h config.asm config_components.h \
+.for f in config.h config.asm config_components.h \
     libavcodec libavformat libavutil
-	-cp -pR ${FFMPEG_BDIR}/${_e} ${FFMPEG_CDIR}
+	cp -pR ${FFMPEG_BDIR}/${f} ${FFMPEG_CDIR}
 .endfor
-	@mkdir -p ${WRKSRC}/third_party/node/openbsd/node-openbsd/bin
-	@ln -sf ${TRUEPREFIX}/bin/node \
+	mkdir -p ${WRKSRC}/third_party/node/openbsd/node-openbsd/bin
+	ln -sf ${TRUEPREFIX}/bin/node \
 		${WRKSRC}/third_party/node/openbsd/node-openbsd/bin/node
-.for _f in \
+.for f in \
     base/process/process_handle_openbsd.cc \
     build/gn_run_binary.py \
+    build/rust/rust_bindgen.gni \
     v8/tools/run.py \
     tools/protoc_wrapper/protoc_wrapper.py \
     third_party/blink/renderer/build/scripts/run_with_pythonpath.py \
     third_party/electron_node/src/env.cc
-	${SUBST_CMD} ${WRKSRC}/${_f}
+	${SUBST_CMD} ${WRKSRC}/${f}
 .endfor
 
-# Configuration consists of three steps:
+# Configuration consists of two steps:
 # 1. replace the specified bundled libraries with hooks to use the system libs
-# 2. bootstrap gn, the tool to generate ninja files
-# 3. run gn with the appropriate configuration arguments
+# 2. run gn with the appropriate configuration arguments
 do-configure:
 	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
 		build/linux/unbundle/replace_gn_files.py \
 		--system-libraries ${GN_SYSTEM_LIBS}
-	cd ${WRKSRC}/tools/gn && ${SETENV} ${MAKE_ENV} \
-		LDFLAGS=-L${LOCALBASE}/lib ${MODPY_BIN} \
-		bootstrap/bootstrap.py --no-clean -s ${GN_BOOTSTRAP_FLAGS}
+# XXX how chromium bundle its gn ? see make tarball
+#	cd ${WRKSRC}/tools/gn && ${SETENV} ${MAKE_ENV} \
+#		LDFLAGS=-L${LOCALBASE}/lib ${MODPY_BIN} \
+#		bootstrap/bootstrap.py --no-clean -s --skip-generate-buildfiles
 	cd ${WRKSRC} && ${SETENV} ${CONFIGURE_ENV} \
-		${WRKSRC}/out/${BUILDTYPE}/gn gen out/${BUILDTYPE} \
-		--args="import(\"//electron/build/args/${GN_FILE}\") ${GN_ARGS}"
+		gn gen out/${BUILDTYPE} \
+		--args="import(\"${ELECTRON_GN}\") ${GN_ARGS}"
 
 do-build:
-	@cd ${WRKSRC} && mkdir -p build && ${SETENV} ${MAKE_ENV} \
-		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${ALL_TARGET} \
-		-t compdb > ${WRKSRC}/build/compile_commands.json
 	@cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
-		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${ALL_TARGET}
-
-post-build:
-# XXX need chromedriver.debug & chromedriver for electron_chromedriver_zip
-	${STRIP} -o ${BUILDDIR}/chromedriver ${BUILDDIR}/chromedriver.unstripped
-	${STRIP} --only-keep-debug -o ${BUILDDIR}/chromedriver.debug \
-		${WRKSRC}/out/${BUILDTYPE}/chromedriver.unstripped
-	@cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} \
-		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${POST_BUILD_TARGET}
-# XXX looks like we don't care about distfiles release to install apps, remove ?
-	@cd ${BUILDDIR} && cp chromedriver.zip \
-		chromedriver-v${ELECTRON_V}-openbsd-${ELECTRON_ARCH}.zip
-	@cd ${BUILDDIR} && cp dist.zip \
-		electron-v${ELECTRON_V}-openbsd-${ELECTRON_ARCH}.zip
-	@cd ${BUILDDIR} && cp mksnapshot.zip \
-		mksnapshot-v${ELECTRON_V}-openbsd-${ELECTRON_ARCH}.zip
-	@cd ${BUILDDIR} && sha256 -r *-v${ELECTRON_V}-openbsd-*.zip | \
-		sed -e 's/ / */' > SHASUMS256.txt
+		ninja -j ${MAKE_JOBS} -C out/${BUILDTYPE} ${BUILD_TARGET}
 
 do-install:
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}
+	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}
 .for f in electron mksnapshot v8_context_snapshot_generator
-	${INSTALL_PROGRAM} ${BUILDDIR}/${f} \
-		${PREFIX}/${DIST_TARGET_DIR}
+	${INSTALL_PROGRAM} ${BUILDDIR}/${f} ${PREFIX}/${DIST_TARGET}
 .endfor
 	${SUBST_PROGRAM} ${FILESDIR}/electron \
-		${PREFIX}/${DIST_TARGET_DIR}/electron.sh
+		${PREFIX}/${DIST_TARGET}/electron.sh
 	${SUBST_PROGRAM} ${FILESDIR}/electron_nosandbox \
-		${PREFIX}/${DIST_TARGET_DIR}/electron_nosandbox.sh
-	ln -s ${TRUEPREFIX}/${DIST_TARGET_DIR}/electron.sh \
+		${PREFIX}/${DIST_TARGET}/electron_nosandbox.sh
+	ln -s ${TRUEPREFIX}/${DIST_TARGET}/electron.sh \
 		${PREFIX}/bin/electron
 	${INSTALL_PROGRAM} ${BUILDDIR}/chromedriver.unstripped \
-		${PREFIX}/${DIST_TARGET_DIR}/chromedriver
+		${PREFIX}/${DIST_TARGET}/chromedriver
 	# copy .pak
-	${INSTALL_DATA} ${BUILDDIR}/*.pak ${PREFIX}/${DIST_TARGET_DIR}
+	${INSTALL_DATA} ${BUILDDIR}/*.pak ${PREFIX}/${DIST_TARGET}
 	# copy locales & ressources
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}/locales
-	${INSTALL_DATA} ${BUILDDIR}/locales/* \
-		${PREFIX}/${DIST_TARGET_DIR}/locales
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}/resources
-# XXX permission ? no INSTALL* fn ? chown ? chmod o-w ?
-	cp -Rp ${BUILDDIR}/resources/* ${PREFIX}/${DIST_TARGET_DIR}/resources
-	@chown -R ${SHAREOWN}:${SHAREGRP} ${PREFIX}/${DIST_TARGET_DIR}/resources
+	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}/locales
+	${INSTALL_DATA} ${BUILDDIR}/locales/* ${PREFIX}/${DIST_TARGET}/locales
+	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}/resources
+	cp -Rp ${BUILDDIR}/resources/* ${PREFIX}/${DIST_TARGET}/resources
+	@chown -R ${SHAREOWN}:${SHAREGRP} ${PREFIX}/${DIST_TARGET}/resources
 	# ANGLE, EGL, Vk, ...
 .for f in libEGL libGLESv2 libvk_swiftshader libVkICD_mock_icd
-	${INSTALL_DATA} ${BUILDDIR}/${f}.so ${PREFIX}/${DIST_TARGET_DIR}
+	${INSTALL_DATA} ${BUILDDIR}/${f}.so ${PREFIX}/${DIST_TARGET}
 .endfor
 	${INSTALL_DATA} ${BUILDDIR}/libvulkan.so.1 \
-		${PREFIX}/${DIST_TARGET_DIR}/libvulkan.so
+		${PREFIX}/${DIST_TARGET}/libvulkan.so
 .if ${MACHINE_ARCH} != "aarch64"
 	# SwiftShader
 	${INSTALL_DATA} ${BUILDDIR}/libvk_swiftshader.so \
-		${PREFIX}/${DIST_TARGET_DIR}
+		${PREFIX}/${DIST_TARGET}
 .endif
 	# sandbox, unveil & pledge
 	${INSTALL_DATA_DIR} ${PREFIX}/share/examples/electron
@@ -473,47 +499,43 @@ do-install:
 	# data
 .for f in LICENSE LICENSES.chromium.html protoc snapshot_blob.bin \
     v8_context_snapshot.bin version vk_swiftshader_icd.json
-	${INSTALL_DATA} ${BUILDDIR}/${f} ${PREFIX}/${DIST_TARGET_DIR}
+	${INSTALL_DATA} ${BUILDDIR}/${f} ${PREFIX}/${DIST_TARGET}
 .endfor
 	# electron
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}/node_headers
-# XXX permission ? no INSTALL* fn ? chown ? chmod o-w ?
+	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}/node_headers
 	cp -Rp ${BUILDDIR}/gen/node_headers/* \
-		${PREFIX}/${DIST_TARGET_DIR}/node_headers
-	@chown -R ${SHAREOWN}:${SHAREGRP} \
-		${PREFIX}/${DIST_TARGET_DIR}/node_headers
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}/gen/electron/buildflags
+		${PREFIX}/${DIST_TARGET}/node_headers
+	@chown -R ${SHAREOWN}:${SHAREGRP} ${PREFIX}/${DIST_TARGET}/node_headers
+	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}/gen/electron/buildflags
 	${INSTALL_DATA} ${BUILDDIR}/gen/electron/buildflags/* \
-		${PREFIX}/${DIST_TARGET_DIR}/gen/electron/buildflags
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}/gen/v8
+		${PREFIX}/${DIST_TARGET}/gen/electron/buildflags
+	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}/gen/v8
 	${INSTALL_DATA} ${BUILDDIR}/gen/v8/embedded.S \
-		${PREFIX}/${DIST_TARGET_DIR}/gen/v8/embedded.S
-	# release
-# XXX looks like we don't care about distfiles release to install apps, remove ?
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET_DIR}/releases
-	${INSTALL_DATA} ${BUILDDIR}/SHASUMS256.txt \
-		${PREFIX}/${DIST_TARGET_DIR}/releases
-	${INSTALL_DATA} ${BUILDDIR}/*-v${ELECTRON_V}-openbsd-*.zip \
-		${PREFIX}/${DIST_TARGET_DIR}/releases
+		${PREFIX}/${DIST_TARGET}/gen/v8/embedded.S
 
-# XXX openbsd use a wrapper, skip bin/electron check
-# electron/spec/api-app-spec.ts
-# XXX test crashReporter, check if its actually disabled from source ?
-# not ok 709 -> 748
-# electron/spec/disabled-tests.json
-# XXX Need /etc/electron
+# Tests requirements :
+# * needs /etc/electron for pledge/unveil :
 # --no-sandbox (hard to setup, not tested)
-# unveil "/ rwcx" (/etc/electron/unveil.main)
+# unveil "/	rwcx" (/etc/electron/unveil.main)
+# * needs internet for 'yarn install' (could be fixed)
+# * needs 'Xvfb :1 &', env DISPLAY=:1
+
+# XXX still true ? (ELECTRON_EXE_PATH=${BUILDDIR}/electron)
 # some test spawn electron (${LOCALBASE}/electron/x.y.z/electron)
 
+# some note about tests :
+# * openbsd use a wrapper, skip bin/electron check
+# -> electron/spec/api-app-spec.ts
+# * test crashReporter, check if its actually disabled from source ?
+# not ok 709 -> 748
+# -> electron/spec/disabled-tests.json
+
 do-test:
-	# XXX Xvfb :1 &
-	# electron test
-	# DISPLAY=:1 glxinfo
 	rm -rf ${WRKDIR}/.config
-	mkdir -p ${WRKDIR}/.config/Electron
-	ulimit -Sn `ulimit -Hn`
-	ulimit -Sd `ulimit -Hd`
+	mkdir -p ${WRKDIR}/.config
+#XXX ?
+#ulimit -Sn `ulimit -Hn`
+#ulimit -Sd `ulimit -Hd`
 	cd ${WRKSRC}/electron && ${SETENV} ${TEST_ENV} \
 		HOME=${WRKDIR} \
 		ELECTRON_OUT_DIR=${BUILDTYPE} \
@@ -524,15 +546,80 @@ do-test:
 
 ### targets for port maintainer(s)
 
+# run under _pbuild
+_compile_commands:
+	cd ${WRKSRC} && ${MODPY_BIN} tools/clang/scripts/generate_compdb.py \
+		-p out/${BUILDTYPE} -o ${WRKSRC}/compile_commands.json \
+		${BUILD_TARGET}
+	mkdir -p ${WRKSRC}/.cache && chmod a+rwx ${WRKSRC}/.cache
+compile_commands:
+	${_PBUILD} make _compile_commands
+
+# XXX need ~20G, usualy run with a custom _SRC
+# XXX need custom tar -R (reproducible) diff, use gtar alternative ?
+_SRC?=		${WRKDIR}/chromium
+_VER?=		${CHROMIUM_V}
+_PKG?=		chromium
+_FETCH?=	https://chromium.googlesource.com/chromium/src.git \
+		+refs/tags/${_VER}
+tarball:
+	ulimit -d `ulimit -dH`
+	mkdir -p ${_SRC}/src
+	cp ${FILESDIR}/gclient ${_SRC}/.gclient
+	cd ${_SRC}/src && [ -d ".git" ] || ( \
+	HOME=${_SRC} git init && \
+	HOME=${_SRC} git fetch ${_FETCH} --depth 1 && \
+	HOME=${_SRC} git checkout FETCH_HEAD && \
+	HOME=${_SRC} gclient sync --no-history --shallow \
+	    --force --delete_unversioned_trees --reset \
+	    --no-bootstrap --nohooks --noprehooks \
+	    --with_branch_heads --with_tags && \
+	HOME=${_SRC} ${MODPY_BIN} build/util/lastchange.py \
+	    -o build/util/LASTCHANGE && \
+	HOME=${_SRC} ${MODPY_BIN} build/util/lastchange.py \
+	    -m GPU_LISTS_VERSION --revision-id-only \
+	    --header gpu/config/gpu_lists_version.h && \
+	HOME=${_SRC} ${MODPY_BIN} build/util/lastchange.py \
+	    -m SKIA_COMMIT_HASH -s third_party/skia \
+	    --header skia/ext/skia_commit_hash.h && \
+	HOME=${_SRC} ${MODPY_BIN} build/util/lastchange.py \
+	    -s third_party/dawn \
+	    --revision gpu/webgpu/DAWN_VERSION \
+	)
+	# handmade exclusion list based on manual compare with official tarball
+	# how google generated its tarball in the past ?
+	cd ${_SRC} && \
+	find ./src -type f -a ! \( \
+	    -path '*/.git/*' \
+	    -o -path '*/out/*' \
+	    -o \( -path '*/chrome/test/data/*' -a ! -name '*.gn*' \) \
+	    -o -path '*/content/test/data/*' \
+	    -o -path '*/courgette/testdata/*' \
+	    -o -path '*/extensions/test/data/*' \
+	    -o -path '*/media/test/data/*' \
+	    -o -path '*/third_party/blink/tools/*' \
+	    -o -path '*/third_party/blink/web_tests/*' \
+	    -o -path '*/third_party/breakpad/breakpad/src/processor/testdata/*'\
+	    -o -path '*/third_party/catapult/tracing/test_data/*' \
+	    -o -path '*/third_party/hunspell/tests/*' \
+	    -o -path '*/third_party/hunspell_dictionaries/*' \
+	    -o -path '*/third_party/liblouis/src/tests/braille-specs/*' \
+	    -o -path '*/third_party/xdg-utils/tests/*' \
+	    -o \( -path '*/v8/test*/*' -a ! -name '*.gn*' -a ! -name '*.tq' \) \
+	    \) | sort > files && \
+	tar -cRzf ${_PKG}-${_VER}.tgz -I files \
+	    -s '|src/|${_PKG}-${_VER}/|' && \
+	sha256 -b ${_PKG}-${_VER}.tgz
+
 _TMP = /tmp/electron-${ELECTRON_V}
 chromium-patches:
-	make -D _MAKE_PATCHES patch
+	make -D _GEN_PATCHES patch
 	# remember to update cvs co -D "..." if you change targeted version
 	if [ -d ${_TMP}/chromium ]; then \
 		echo "${_TMP}/chromium exists, skip cvs co" ; \
 	else \
 		mkdir -p ${_TMP} && cd ${_TMP} && \
-		cvs co -D "2024-07-20" -d chromium ports/www/chromium ; \
+		cvs co -D '2024/11/07' -d chromium ports/www/chromium ; \
 	fi
 	# test chromium patches on top of electron patch (pre-patch)
 	rm -rf ${_TMP}/patches/chromium*
@@ -545,8 +632,8 @@ chromium-patches:
 		elif [ -f "${WRKSRC}/$$f" ]; then \
 			${PATCH} ${PATCH_DIST_ARGS} -sfC -z .orig.chromium \
 				-d ${WRKSRC} < $${p} && \
-				cp $${p} ${_TMP}/patches/chromium/ || \
-				cp $${p} ${_TMP}/patches/chromium.rej/ ; \
+			cp $${p} ${_TMP}/patches/chromium/ || \
+			cp $${p} ${_TMP}/patches/chromium.rej/ ; \
 		else \
 			echo "missing ${WRKSRC}/$$f" ; \
 			cp $${p} ${_TMP}/patches/chromium.miss/ ; \
@@ -557,13 +644,13 @@ chromium-patches:
 	# if ok, copy ${_TMP}/patches/chromium into port && make clean
 
 node-patches:
-	make -D _MAKE_PATCHES patch
+	make -D _GEN_PATCHES patch
 	# remember to update cvs co -D "..." if you change targeted version
 	if [ -d ${_TMP}/node ]; then \
 		echo "${_TMP}/node exists, skip cvs co" ; \
 	else \
 		mkdir -p ${_TMP} && cd ${_TMP} && \
-		cvs co -d node ports/lang/node ; \
+		cvs co -D '2024/11/08' -d node ports/lang/node ; \
 	fi
 	# test node patches on top of electron patch (pre-patch)
 	rm -rf ${_TMP}/patches/node*
@@ -571,8 +658,8 @@ node-patches:
 	for p in ${_TMP}/node/patches/patch-*; do \
 		${PATCH} ${PATCH_DIST_ARGS} -sfC -z .orig.node \
 			-d ${WRKSRC}/third_party/electron_node/ < $${p} && \
-			cp $${p} ${_TMP}/patches/node/ || \
-			cp $${p} ${_TMP}/patches/node.rej/ ; \
+		cp $${p} ${_TMP}/patches/node/ || \
+		cp $${p} ${_TMP}/patches/node.rej/ ; \
 	done
 	@echo "rejected:"
 	@ls ${_TMP}/patches/node.rej
@@ -581,16 +668,16 @@ node-patches:
 # run under _pbuild
 _gn_args-list:
 	# ${WRKDIR}/gn_args.list
-	@if [[ ! -e "${WRKDIR}/gn_args.list" ]] ; then \
+	@if [ ! -e "${WRKDIR}/gn_args.list" ] ; then \
 		cd ${WRKSRC} && ${SETENV} ${CONFIGURE_ENV} \
-		${WRKSRC}/out/${BUILDTYPE}/gn args out/${BUILDTYPE} \
-		--list > ${WRKDIR}/gn_args.list ; \
+			gn args out/${BUILDTYPE} \
+			--list > ${WRKDIR}/gn_args.list ; \
 	fi
 
 # run under _pbuild
 _gn_args-chromium-list:
 	# ${WRKDIR}/gn_args-chromium.list
-	@if [[ ! -e "${WRKDIR}/gn_args-chromium.list" ]] ; then \
+	@if [ ! -e "${WRKDIR}/gn_args-chromium.list" ] ; then \
 		cd ${PORTSDIR}/www/chromium ; \
 		_wrksrc=$$(make show=WRKSRC) ; \
 		cd $$_wrksrc && ${SETENV} ${CONFIGURE_ENV} \
@@ -599,7 +686,7 @@ _gn_args-chromium-list:
 	fi
 
 gn_args-diff:
-	#make configure
+	make configure
 	${_PBUILD} make _gn_args-list
 	# configure www/chromium in order to compare
 	cd ${PORTSDIR}/www/chromium && make configure ; cd -

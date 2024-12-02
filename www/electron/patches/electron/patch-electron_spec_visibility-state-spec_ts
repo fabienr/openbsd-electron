@@ -1,7 +1,7 @@
 Index: electron/spec/visibility-state-spec.ts
 --- electron/spec/visibility-state-spec.ts.orig
 +++ electron/spec/visibility-state-spec.ts
-@@ -10,7 +10,7 @@ import { setTimeout } from 'node:timers/promises';
+@@ -11,7 +11,7 @@ import { closeAllWindows } from './lib/window-helpers'
  
  // visibilityState specs pass on linux with a real window manager but on CI
  // the environment does not let these specs pass
@@ -9,4 +9,4 @@ Index: electron/spec/visibility-state-spec.ts
 +ifdescribe(!(['freebsd', 'linux', 'openbsd'].includes(process.platform)))('document.visibilityState', () => {
    let w: BaseWindow & {webContents: WebContents};
  
-   afterEach(() => {
+   before(() => {

@@ -1,7 +1,7 @@
 Index: electron/spec/api-tray-spec.ts
 --- electron/spec/api-tray-spec.ts.orig
 +++ electron/spec/api-tray-spec.ts
-@@ -128,7 +128,7 @@ describe('tray module', () => {
+@@ -131,7 +131,7 @@ describe('tray module', () => {
    describe('tray.getBounds()', () => {
      afterEach(() => { tray.destroy(); });
  

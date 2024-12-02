@@ -1,7 +1,7 @@
 Index: electron/spec/api-power-monitor-spec.ts
 --- electron/spec/api-power-monitor-spec.ts.orig
 +++ electron/spec/api-power-monitor-spec.ts
-@@ -16,7 +16,7 @@ import { once } from 'node:events';
+@@ -18,7 +18,7 @@ import { ifdescribe, startRemoteControlApp } from './l
  describe('powerMonitor', () => {
    let logindMock: any, dbusMockPowerMonitor: any, getCalls: any, emitSignal: any, reset: any;
  

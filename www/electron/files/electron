@@ -29,7 +29,7 @@ fi
 
 # Always use our versions of ffmpeg libs.
 # This also makes RPMs find the compatibly-named library symlinks.
-if [[ -n "$LD_LIBRARY_PATH" ]]; then
+if [ -n "$LD_LIBRARY_PATH" ]; then
 	LD_LIBRARY_PATH="${TRUEPREFIX}/electron/${ELECTRON_V}:$LD_LIBRARY_PATH"
 else
 	LD_LIBRARY_PATH="${TRUEPREFIX}/electron/${ELECTRON_V}"

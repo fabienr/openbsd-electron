@@ -1,7 +1,7 @@
 Index: electron/spec/api-content-tracing-spec.ts
 --- electron/spec/api-content-tracing-spec.ts.orig
 +++ electron/spec/api-content-tracing-spec.ts
-@@ -6,7 +6,7 @@ import { setTimeout } from 'node:timers/promises';
+@@ -9,7 +9,7 @@ import { setTimeout } from 'node:timers/promises';
  import { ifdescribe } from './lib/spec-helpers';
  
  // FIXME: The tests are skipped on linux arm/arm64

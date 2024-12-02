@@ -1,7 +1,7 @@
 Index: electron/spec/fixtures/api/safe-storage/decrypt-app/main.js
 --- electron/spec/fixtures/api/safe-storage/decrypt-app/main.js.orig
 +++ electron/spec/fixtures/api/safe-storage/decrypt-app/main.js
-@@ -6,7 +6,7 @@ const pathToEncryptedString = path.resolve(__dirname, 
+@@ -7,7 +7,7 @@ const pathToEncryptedString = path.resolve(__dirname, 
  const readFile = fs.readFile;
  
  app.whenReady().then(async () => {

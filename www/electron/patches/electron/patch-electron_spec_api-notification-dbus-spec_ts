@@ -1,9 +1,9 @@
 Index: electron/spec/api-notification-dbus-spec.ts
 --- electron/spec/api-notification-dbus-spec.ts.orig
 +++ electron/spec/api-notification-dbus-spec.ts
-@@ -12,7 +12,7 @@ import { app } from 'electron/main';
- import { ifdescribe } from './lib/spec-helpers';
- import { promisify } from 'node:util';
+@@ -19,7 +19,7 @@ import { ifdescribe } from './lib/spec-helpers';
+ 
+ const fixturesPath = path.join(__dirname, 'fixtures');
  
 -const skip = process.platform !== 'linux' ||
 +const skip = !(['freebsd', 'linux', 'openbsd'].includes(process.platform)) ||

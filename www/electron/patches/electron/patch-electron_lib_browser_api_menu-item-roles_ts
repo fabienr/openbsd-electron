@@ -1,7 +1,7 @@
 Index: electron/lib/browser/api/menu-item-roles.ts
 --- electron/lib/browser/api/menu-item-roles.ts.orig
 +++ electron/lib/browser/api/menu-item-roles.ts
-@@ -2,7 +2,7 @@ import { app, BrowserWindow, session, webContents, Web
+@@ -2,7 +2,7 @@ import { app, BaseWindow, BrowserWindow, session, webC
  
  const isMac = process.platform === 'darwin';
  const isWindows = process.platform === 'win32';
