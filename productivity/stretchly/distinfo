@@ -82,6 +82,7 @@ SHA256 (npm_modules/@wdio-repl-7.16.13.tgz) = LmvFcFs+Qlrv8t5Mxq/k4SyRC27Pl6zCLn
 SHA256 (npm_modules/@wdio-types-7.16.13.tgz) = oDtYQLVfu2L4pk057oBQDzNCZNATd1PX30YcC40R8HE=
 SHA256 (npm_modules/@wdio-utils-7.16.13.tgz) = GovDX5RG6QIJn+QZDEDWy6wh5dO65XNiIMYj51hjSNo=
 SHA256 (npm_modules/@xmldom-xmldom-0.8.10.tgz) = bTOQgBON7AoVp98YeeNpvl+p91Qr0gGQmPRuuswK1mA=
+SHA256 (npm_modules/Jelmerro-dbus-final-3e43f60d80bbcdf0dfa0b59b838097d6af4d17ba.tar.gz) = 88jambjK2d7rpTjwei0WDvBVmMsg8yy6YVsYExTaU/g=
 SHA256 (npm_modules/acorn-8.12.1.tgz) = R8nEqUiYRiUwvx9lG10WSDtU0Ac48U6ZmKI95y23UrY=
 SHA256 (npm_modules/acorn-jsx-5.3.2.tgz) = 2WewXkDFOWpW1w4NMVBHe5actswQWNaLwrlasBWRWMw=
 SHA256 (npm_modules/agent-base-6.0.2.tgz) = vG2gbyoua8gPpYeL1yJ70DGIEpdtRfR/F+Gq/Owr6DE=
@@ -760,6 +761,7 @@ SIZE (npm_modules/@wdio-repl-7.16.13.tgz) = 4019
 SIZE (npm_modules/@wdio-types-7.16.13.tgz) = 27581
 SIZE (npm_modules/@wdio-utils-7.16.13.tgz) = 24704
 SIZE (npm_modules/@xmldom-xmldom-0.8.10.tgz) = 51858
+SIZE (npm_modules/Jelmerro-dbus-final-3e43f60d80bbcdf0dfa0b59b838097d6af4d17ba.tar.gz) = 111485
 SIZE (npm_modules/acorn-8.12.1.tgz) = 127429
 SIZE (npm_modules/acorn-jsx-5.3.2.tgz) = 7635
 SIZE (npm_modules/agent-base-6.0.2.tgz) = 9273

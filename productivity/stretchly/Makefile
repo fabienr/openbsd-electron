@@ -1,11 +1,13 @@
 COMMENT=	break time reminder app
 
-V=1.16.0
-DIST_TUPLE=	github hovancik stretchly v${V} .
+T=		stretchly
+V=		1.16.0
+DIST_TUPLE=	github hovancik ${T} v${V} .
 
 CATEGORIES=	productivity
 
 HOMEPAGE=	https://hovancik.net/stretchly/
+
 MAINTAINER=	fabien@openbsd.org
 
 # BSD 2-Clause
@@ -18,10 +20,16 @@ RUN_DEPENDS+=	devel/desktop-file-utils \
 
 MODULES=	devel/npm www/electron
 
-MODNPM_OMITOPTIONAL=	Yes
 MODELECTRON_BUILDER=	Yes
 MODELECTRON_SRC=	${WRKSRC}
-MODELECTRON_TARGET=	stretchly
+MODELECTRON_TARGET=	${T}
+
+MODELECTRON_WRAPPER=	Yes
+MODELECTRON_WRAPPER_APP=${T}
+
+MODNPM_BUILD=		No
+MODNPM_INSTALL=		No
+MODNPM_OMITOPTIONAL=	Yes
 
 ICONS_TARGET=		${PREFIX}/share/icons/hicolor
 
@@ -35,9 +43,6 @@ pre-build:
 .endfor
 
 post-install:
-	# wraper
-	${SUBST_PROGRAM} ${FILESDIR}/${MODELECTRON_TARGET} \
-		${PREFIX}/bin/${MODELECTRON_TARGET}
 	# menu
 	${INSTALL_DATA_DIR} ${PREFIX}/share/applications
 	${INSTALL_DATA} ${WRKSRC}/net.hovancik.Stretchly.desktop \
