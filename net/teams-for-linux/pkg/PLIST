@@ -1,0 +1,8 @@
+bin/teams-for-linux
+${ELECTRON_DIST_APPS}/
+${ELECTRON_DIST_APPS}/teams-for-linux.asar
+${ELECTRON_DIST_APPS}/teams-for-linux.asar.unpacked/
+share/applications/teams-for-linux.desktop
+share/pixmaps/
+share/pixmaps/teams-for-linux.png
+@tag update-desktop-database

@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Teams-For-Linux
+Comment=unofficial Microsoft Teams client
+Icon=teams-for-linux
+Exec=teams-for-linux -- %u
+Terminal=false
+Categories=Network;InstantMessaging;
+StartupWMClass=Teams
+Keywords=teams;chat;im;messaging;messenger;sms;security;privat;
+X-GNOME-UsesNotifications=true
