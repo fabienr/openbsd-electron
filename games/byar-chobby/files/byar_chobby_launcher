@@ -7,6 +7,7 @@ xm_log() {
 		${X11BASE}/bin/xmessage -file - -center -buttons yes:0,no:1 -default no
 }
 
+# bump limit
 if [ $(ulimit -Sd) -lt ${DATASIZE} ]; then
 	ulimit -Sd ${DATASIZE} || \
 		xm_log "Cannot increase datasize-cur to at least ${DATASIZE}
@@ -14,5 +15,22 @@ if [ $(ulimit -Sd) -lt ${DATASIZE} ]; then
 		[ $? -eq 0 ] || exit
 fi
 
+# pre-create folder for unveil
+if [ -z "${XDG_CONFIG_HOME}" ]; then
+	[ -d "${HOME}/.config/Beyond-All-Reason" ] || \
+	mkdir -p "${HOME}/.config/Beyond-All-Reason"
+else
+	[ -d "${XDG_CONFIG_HOME}/Beyond-All-Reason" ] || \
+	mkdir -p "${XDG_CONFIG_HOME}/Beyond-All-Reason"
+fi
+if [ -z "${XDG_STATE_HOME}" ]; then
+	[ -d "${HOME}/.local/state/Beyond All Reason" ] || \
+	mkdir -p "${HOME}/.local/state/Beyond All Reason"
+else
+	[ -d "${XDG_STATE_HOME}/Beyond All Reason" ] || \
+	mkdir -p "${XDG_STATE_HOME}/Beyond All Reason"
+fi
+
+#start
 exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
 	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar" $@

@@ -5,6 +5,9 @@ DISTNAME =	BYAR-Chobby-${V}
 PKGNAME=	${DISTNAME:L}
 REVISION=	1
 
+# EACCES: '/launcher/node_modules/pngjs/lib/*'
+FIX_EXTRACT_PERMISSIONS=Yes
+
 DIST_TUPLE =	github beyond-all-reason BYAR-Chobby v${V} .
 
 COMMIT =	2c0a6e17b50ab04ea592c53963c571e5ccb071ba
@@ -26,8 +29,11 @@ RUN_DEPENDS+=	archivers/p7zip \
 
 MODULES =	devel/npm www/electron
 
-MODNPM_OMITOPTIONAL=	Yes
 MODNPM_TARGETS=		${WRKSRC}/launcher
+MODNPM_OMITOPTIONAL=	Yes
+MODNPM_BUILD=		No
+MODNPM_INSTALL=		No
+
 MODELECTRON_BUILDER=	Yes
 MODELECTRON_SRC=	${WRKSRC}/launcher
 MODELECTRON_TARGET=	byar_chobby_launcher
