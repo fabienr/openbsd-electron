@@ -3,36 +3,38 @@ BROKEN-sparc64= Doesn't support sparc64 as an architecture
 COMMENT=	meta build framework for ninja
 DPB_PROPERTIES=	parallel
 
-CATEGORIES =	devel
-
-DATE =		20230419
+COMMIT=		95b0f8fe31a992a33c040bbe3867901335c12762
+DATE =		20240924
 VERSION =	0.0.${DATE}
 DISTNAME =	gn-${DATE}
 PKGNAME =	gn-${VERSION}
-REVISION =	0
 
-# gn.googlesource.com does not provide stable snapshots
-SITES =		https://codeberg.org/vlkrs/gn/archive/
+CATEGORIES =	devel
 
 HOMEPAGE =	https://gn.googlesource.com/gn/
 
 # BSD 3-Clause
 PERMIT_PACKAGE =	Yes
 
+WANTLIB += ${COMPILER_LIBCXX} c m
+
+# gn.googlesource.com does not provide stable snapshots
+SITES =		http://distfiles.opencrew.tech/gn/
+
 COMPILER =	base-clang ports-gcc
-CONFIGURE_ARGS +=	--platform openbsd
-CONFIGURE_ENV +=	GN_VERSION=${DATE}
-CONFIGURE_STYLE =	simple
-CONFIGURE_SCRIPT =	${MODPY_BIN} build/gen.py
 
 MODULES +=	lang/python
 
 BUILD_DEPENDS =	devel/ninja
 RUN_DEPENDS =	devel/ninja
 
+CONFIGURE_STYLE =	simple
+CONFIGURE_SCRIPT =	${MODPY_BIN} build/gen.py
+CONFIGURE_ARGS +=	--platform openbsd
+CONFIGURE_ENV +=	GN_VERSION=${DATE}
+
 DOCDIR =	${PREFIX}/share/doc/gn
 WRKDIST =	${WRKDIR}/gn
-WANTLIB += ${COMPILER_LIBCXX} c m
 
 post-patch:
 	${SUBST_CMD} ${WRKSRC}/src/util/exe_path.cc \
@@ -49,5 +51,21 @@ do-install:
 do-test:
 	cd ${WRKBUILD} && \
 		out/gn_unittests
+
+### targets for port maintainer(s)
+
+_SRC?=		${WRKDIR}/gn
+_FETCH?=	https://gn.googlesource.com/gn ${COMMIT}
+tarball:
+	mkdir -p ${_SRC}/gn
+	cd ${_SRC}/gn && [ -d ".git" ] || ( \
+	HOME=${_SRC} git init && \
+	HOME=${_SRC} git fetch ${_FETCH} --depth 1 && \
+	HOME=${_SRC} git checkout FETCH_HEAD \
+	)
+	cd ${_SRC} && \
+	find ./gn -type f -a ! -path '*/.git/*' | sort > files && \
+	tar -cRzf ${DISTNAME}${EXTRACT_SUFX} -I files && \
+	sha256 -b ${DISTNAME}${EXTRACT_SUFX}
 
 .include <bsd.port.mk>
