@@ -1,4 +1,0 @@
-#!/bin/sh
-
-exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
-	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/stretchly.asar" $@

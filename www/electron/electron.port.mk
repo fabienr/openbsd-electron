@@ -1,5 +1,6 @@
 # sync with Makefile
-ELECTRON_V=		31.3.1
+ELECTRON_V=		33.2.1
+
 ELECTRON_DIST_APPS=	electron/resources
 ELECTRON_WRAPPER=	electron/${ELECTRON_V}/electron.sh
 
@@ -10,15 +11,21 @@ REV:=${REVISION}
 .endif
 REVISION=${ELECTRON_REV}${REV}
 
-MODELECTRON_BUILDER?=No
-# directory to build/install with app-builder
-MODELECTRON_SRC?=
-ELECTRON_BUILDER_DIR=${MODELECTRON_SRC}/dist/linux-unpacked/resources
-
 # XXX target based on pkgname ?
 # target application's name
 MODELECTRON_TARGET?=
 ELECTRON_DIST_TARGET=${ELECTRON_DIST_APPS}/${MODELECTRON_TARGET}
+
+MODELECTRON_WRAPPER?=No
+# setup common wrapper during build
+MODELECTRON_WRAPPER_APP?=
+MODELECTRON_WRAPPER_ENV?=
+MODELECTRON_WRAPPER_ARG?=
+
+MODELECTRON_BUILDER?=No
+# directory to build/install with app-builder
+MODELECTRON_SRC?=
+ELECTRON_BUILDER_DIR=${MODELECTRON_SRC}/dist/linux-unpacked/resources
 
 .if ${NO_BUILD:L} == "no"
 MODELECTRON_BUILDDEP ?=	Yes
@@ -32,10 +39,18 @@ MODELECTRON_TESTDEP ?=	Yes
 MODELECTRON_TESTDEP ?=	No
 .endif
 
-SUBST_VARS+=		ELECTRON_V ELECTRON_DIST_APPS ELECTRON_WRAPPER
+MODELECTRON_BUILD?=	Yes
+MODELECTRON_INSTALL?=	Yes
+
+SUBST_VARS+=		ELECTRON_V ELECTRON_DIST_APPS ELECTRON_WRAPPER \
+			MODELECTRON_TARGET MODELECTRON_WRAPPER_ENV \
+			MODELECTRON_WRAPPER_ARG
 
 .if ${MODELECTRON_BUILDDEP:L} == "yes"
 BUILD_DEPENDS +=	www/electron
+.  if ${MODELECTRON_BUILDER:L} == "yes"
+BUILD_DEPENDS +=	devel/app-builder
+.  endif
 .endif
 .if ${MODELECTRON_RUNDEP:L} == "yes"
 RUN_DEPENDS +=		www/electron
@@ -71,28 +86,53 @@ ELECTRON_BUILDER_BUILD=\
 		--config.npmRebuild=false \
 		--config.electronVersion=${ELECTRON_V} \
 		--config.electronDist=${WRKDIR}/electron
-# XXX permission ? no INSTALL* fn ? chown ? chmod o-w ?
+
 ELECTRON_BUILDER_INSTALL=\
-	${INSTALL_DATA_DIR} ${PREFIX}/${ELECTRON_DIST_APPS} ; \
-	${INSTALL_DATA_DIR} ${PREFIX}/${ELECTRON_DIST_TARGET}.asar.unpacked ; \
+	[ -d ${ELECTRON_BUILDER_DIR}/app.asar.unpacked ] && \
+	${INSTALL_DATA_DIR} ${PREFIX}/${ELECTRON_DIST_TARGET}.asar.unpacked && \
 	cp -Rp ${ELECTRON_BUILDER_DIR}/app.asar.unpacked/* \
 		${PREFIX}/${ELECTRON_DIST_TARGET}.asar.unpacked ; \
+	${INSTALL_DATA_DIR} ${PREFIX}/${ELECTRON_DIST_APPS} && \
 	${INSTALL_DATA} ${ELECTRON_BUILDER_DIR}/app.asar \
 		${PREFIX}/${ELECTRON_DIST_TARGET}.asar
+
 # XXX how app use this file ?
 #	${INSTALL_DATA} ${BUILDDIR}/app-update.yml \
 #		${PREFIX}/${ELECTRON_DIST_TARGET}-update.yml
 
-.if !target(do-build)
+ELECTRON_WRAPPER_SCRIPT=\
+\#!/bin/sh \n\
+\# pre-create folder for unveil \n\
+if [ -z "$${XDG_CONFIG_HOME}" ]; then \n\
+	[ -d "$${HOME}/.config/${MODELECTRON_APPNAME}" ] || \
+	mkdir -p "$${HOME}/.config/${MODELECTRON_APPNAME}" \n\
+else \n\
+	[ -d "$${XDG_CONFIG_HOME}/${MODELECTRON_APPNAME}" ] || \
+	mkdir -p "$${XDG_CONFIG_HOME}/${MODELECTRON_APPNAME}" \n\
+fi \n\
+\# start \n\
+${MODELECTRON_WRAPPER_ENV} exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
+	${MODELECTRON_WRAPPER_ARG} \
+	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/${MODELECTRON_TARGET}.asar" \
+	$$@ \n
+ELECTRON_WRAPPER_INSTALL=\
+	echo '${ELECTRON_WRAPPER_SCRIPT}' \
+		> ${PREFIX}/bin/${MODELECTRON_TARGET} && \
+		chmod +x ${PREFIX}/bin/${MODELECTRON_TARGET}
+
+.if !target(do-build) && ${MODELECTRON_BUILD:L} == "yes"
 do-build:
 .  if ${MODELECTRON_BUILDER:L} == "yes"
 	${ELECTRON_BUILDER_BUILD}
 .  endif
 .endif
 
-.if !target(do-install)
+.if !target(do-install) && ${MODELECTRON_INSTALL:L} == "yes"
 do-install:
 .  if ${MODELECTRON_BUILDER:L} == "yes"
 	${ELECTRON_BUILDER_INSTALL}
+.  endif
+.  if ${MODELECTRON_WRAPPER:L} == "yes"
+	${ELECTRON_WRAPPER_INSTALL}
 .  endif
 .endif
