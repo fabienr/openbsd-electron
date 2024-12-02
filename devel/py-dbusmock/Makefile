@@ -7,6 +7,7 @@ PKGNAME=		py-dbusmock-${MODPY_EGG_VERSION}
 CATEGORIES=		devel
 
 HOMEPAGE=		https://martinpitt.github.io/python-dbusmock/index.html
+
 MAINTAINER=		fabien@openbsd.org
 
 # LGPLv3+

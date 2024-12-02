@@ -23,8 +23,8 @@ use warnings;
 die if @ARGV < 1;
 
 my $dists_yarn = ();
-my $dists_npm = ();
-my $dists_github = ();
+my @dists_npm = ();
+my @dists_github = ();
 
 while (my $file = shift) {
 
@@ -68,7 +68,7 @@ while (my $file = shift) {
 			$id =~ s|/-/.*||;
 			$project = $id;
 			$type = "npm";
-			$dists = \@{$dists_npm};
+			$dists = \@dists_npm;
 		}
 		elsif (index($id, "https://codeload.github.com/") == 0) {
 			$id =~ s|https://codeload.github.com/||;
@@ -77,7 +77,7 @@ while (my $file = shift) {
 			$id =~ s|/tar.gz/.*||;
 			$project = $id;
 			$type = "codeload";
-			$dists = \@{$dists_github};
+			$dists = \@dists_github;
 		}
 		elsif (index($id, "https://github.com/") == 0) {
 			$id =~ s|https://github.com/||;
@@ -86,7 +86,7 @@ while (my $file = shift) {
 			$id =~ s|.git#.*||;
 			$project = $id;
 			$type = "github";
-			$dists = \@{$dists_github};
+			$dists = \@dists_github;
 		}
 		if (not $project) {
 			say STDERR "invalid resolved : " . $id;
@@ -104,7 +104,7 @@ while (my $file = shift) {
 			($account, $project) = split '/', $id;
 			if ($type eq "github") {
 				$dist .= $account."%".$project.".git-";
-			} else {
+			} else { # $type eq "codeload"
 				$dist .= $account."-".$project."%";
 			}
 			$dist .= "{".$id."/archive/}".$version;
@@ -125,16 +125,16 @@ foreach my $dist (uniq sort @{$dists_yarn}) {
 }
 say "";
 
-if ($dists_npm) {
+if (scalar @dists_npm) {
 	say "DISTFILES.npm += \\";
-	foreach my $dist (uniq sort @{$dists_npm}) {
+	foreach my $dist (uniq sort @dists_npm) {
 		say $dist." \\";
 	}
 	say "";
 }
-if ($dists_github) {
+if (scalar @dists_github) {
 	say "DISTFILES.github += \\";
-	foreach my $dist (uniq sort @{$dists_github}) {
+	foreach my $dist (uniq sort @dists_github) {
 		say $dist." \\";
 	}
 	say "";

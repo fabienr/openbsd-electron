@@ -16,6 +16,16 @@ BUILD_DEPENDS+=		devel/yarn
 EXTRACT_CASES+=		${MODNPM_DIST}/*.tgz) ;;
 EXTRACT_CASES+=		${MODYARN_DIST}/*) ;;
 
+# bring module in yarn cache
+EXTRACT_YARN=		${MODYARN_DIST}/*|${MODNPM_DIST}/*.tgz) \
+	_filename=$$(echo $${archive\#\#*/} | \
+		sed -e '/%/s/${EXTRACT_SUFX.github}//' \
+		-e '/%/s/.*%//' -e 's/\.-//') ; \
+	ln -fs ${FULLDISTDIR}/$$archive \
+		${MODYARN_CACHE}/$$_filename \
+	;;
+
+# re-tarball to match Yarn's expectation
 EXTRACT_GITHUB=		${MODYARN_DIST}/*.git-*) \
 	_filename=$$(echo $${archive\#\#*/} | \
 		sed -e '/%/s/${EXTRACT_SUFX.github}//' \
@@ -26,18 +36,11 @@ EXTRACT_GITHUB=		${MODYARN_DIST}/*.git-*) \
 	${TAR} -cf ${MODYARN_CACHE}/$$_filename -C $$_module ./ && \
 	rm -rf $$_module \
 	;;
-EXTRACT_YARN=		${MODYARN_DIST}/*|${MODNPM_DIST}/*.tgz) \
-	_filename=$$(echo $${archive\#\#*/} | \
-		sed -e '/%/s/${EXTRACT_SUFX.github}//' \
-		-e '/%/s/.*%//' -e 's/\.-//') ; \
-	ln -fs ${FULLDISTDIR}/$$archive \
-		${MODYARN_CACHE}/$$_filename \
-	;;
 
 .if empty(_GEN_MODULES)
 MODYARN_post-extract += \
 	PATH=${PORTPATH}; set -e; cd ${WRKDIR}; \
-	[[ -d ${MODYARN_CACHE} ]] || mkdir -p ${MODYARN_CACHE}; \
+	[ -d ${MODYARN_CACHE} ] || mkdir -p ${MODYARN_CACHE}; \
 	for archive in ${EXTRACT_ONLY}; do \
 		case $$archive in \
 		${EXTRACT_GITHUB} \
