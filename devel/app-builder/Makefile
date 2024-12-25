@@ -8,7 +8,7 @@ REVISION = 0
 
 CATEGORIES =	devel
 
-MAINTAINER=	fabien@openbsd.org
+MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
 # MIT
 PERMIT_PACKAGE=	Yes

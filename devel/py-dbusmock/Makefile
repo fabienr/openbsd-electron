@@ -8,7 +8,7 @@ CATEGORIES=		devel
 
 HOMEPAGE=		https://martinpitt.github.io/python-dbusmock/index.html
 
-MAINTAINER=		fabien@openbsd.org
+MAINTAINER=		Fabien Romano <fabien@openbsd.org>
 
 # LGPLv3+
 PERMIT_PACKAGE=		Yes

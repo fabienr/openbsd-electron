@@ -15,7 +15,7 @@ CATEGORIES=	editors
 
 HOMEPAGE=	https://code.visualstudio.com/
 
-MAINTAINER=	fabien@openbsd.org
+MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
 # MIT
 PERMIT_PACKAGE=	Yes

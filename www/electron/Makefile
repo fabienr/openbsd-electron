@@ -73,7 +73,7 @@ CATEGORIES=		www
 
 HOMEPAGE=		https://www.electronjs.org/
 
-MAINTAINER=		fabien@openbsd.org
+MAINTAINER=		Fabien Romano <fabien@openbsd.org>
 
 # MIT
 PERMIT_PACKAGE=		Yes

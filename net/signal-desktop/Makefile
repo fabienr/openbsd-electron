@@ -13,7 +13,7 @@ CATEGORIES=	net
 
 HOMEPAGE=	https://signal.org/
 
-MAINTAINER=	fabien@openbsd.org
+MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
 # BSD 2-Clause
 PERMIT_PACKAGE=	Yes
@@ -439,7 +439,7 @@ webrtc-compile_commands:
 	${_PBUILD} make _webrtc-compile_commands
 
 # make versions : download, extract then print versions for depends
-# XXX note : maintener still have to manually update BORINGSSL_ID
+# XXX note : maintainer still have to manually update BORINGSSL_ID
 # make modyarn-gen-modules : regen modules.inc, see devel/yarn
 # make modnpm-gen-modules : regen modules.inc, see devel/npm
 # make modcargo-gen-crates : handle multiple Cargo.toml, regen crates.inc

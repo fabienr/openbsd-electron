@@ -1,22 +1,22 @@
-COMMENT =	launcher for Beyond All Reason
+COMMENT=	launcher for Beyond All Reason
 
-V =		1.2988.0
-DISTNAME =	BYAR-Chobby-${V}
+V=		1.2988.0
+DISTNAME=	BYAR-Chobby-${V}
 PKGNAME=	${DISTNAME:L}
 REVISION=	1
 
 # EACCES: '/launcher/node_modules/pngjs/lib/*'
 FIX_EXTRACT_PERMISSIONS=Yes
 
-DIST_TUPLE =	github beyond-all-reason BYAR-Chobby v${V} .
+DIST_TUPLE=	github beyond-all-reason BYAR-Chobby v${V} .
 
-COMMIT =	2c0a6e17b50ab04ea592c53963c571e5ccb071ba
-DIST_TUPLE +=	github beyond-all-reason spring-launcher ${COMMIT} .
+COMMIT=		2c0a6e17b50ab04ea592c53963c571e5ccb071ba
+DIST_TUPLE+=	github beyond-all-reason spring-launcher ${COMMIT} .
 
-CATEGORIES =	games
+CATEGORIES=	games
 
-HOMEPAGE =	https://www.beyondallreason.info/
-MAINTAINER =	fabien@openbsd.org
+HOMEPAGE=	https://www.beyondallreason.info/
+MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
 # XXX licence ??? (spring-launcher = MIT)
 PERMIT_PACKAGE=	Yes
@@ -27,7 +27,7 @@ RUN_DEPENDS+=	archivers/p7zip \
 		devel/desktop-file-utils \
 		www/electron
 
-MODULES =	devel/npm www/electron
+MODULES=	devel/npm www/electron
 
 MODNPM_TARGETS=		${WRKSRC}/launcher
 MODNPM_OMITOPTIONAL=	Yes

@@ -17,7 +17,7 @@ CATEGORIES =	devel
 
 HOMEPAGE =	https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
-MAINTAINER =	fabien@openbsd.org
+MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
 # BSD-like & Apache 2.0
 PERMIT_PACKAGE=	Yes

@@ -6,7 +6,7 @@ DIST_TUPLE =	github IsmaelMartinez ${T} v${V} .
 
 CATEGORIES =	net
 
-MAINTAINER=	fabien@openbsd.org
+MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
 # GPLv3
 PERMIT_PACKAGE =	Yes
