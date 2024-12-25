@@ -124,7 +124,14 @@ sub _modules_add
 		$id = $path;
 		$id =~ s|(.*/)?node_modules/||;
 	}
-	if (exists $excludes{$id}) {
+	my $exclude = 0;
+	for my $p (keys(%excludes)) {
+		if (index($path, $p) != -1) {
+			$exclude = 1;
+			last;
+		}
+	}
+	if ($exclude) {
 		say STDERR "exclude : " . $path;
 		return;
 	} elsif (exists $includes{$id}) {
