@@ -6,7 +6,7 @@ ONLY_FOR_ARCHS=	amd64
 
 COMMENT=	Visual Studio Code - Open Source ("Code - OSS")
 
-V=		1.95.3
+V=		1.96.2
 COMMIT=		f1a4fb101478ce6ec82fe9627c43efbf9e98c813
 PKGNAME=	vscode-${V}
 DIST_TUPLE=	github microsoft vscode ${V} .
@@ -22,7 +22,7 @@ PERMIT_PACKAGE=	Yes
 
 # check builtInExtensions from product.json, use pre-build .vsix (.zip)
 VSCODE_EXTENSIONS=	js-debug-companion js-debug-companion 1.1.3 \
-			js-debug js-debug 1.95.3 \
+			js-debug js-debug 1.96.0 \
 			js-profile-visualizer vscode-js-profile-table 1.0.10
 SITES.exts=		https://github.com/microsoft/
 
@@ -181,10 +181,10 @@ pre-test:
 	mkdir -p ${WRKDIR}/.config/electron
 # XXX not ok 95 app module sandbox options
 # Unhandled exception in main spec runner:... to not include '--no-sandbox'
-#	cp ${TRUEPREFIX}/bin/electron_nosandbox \
-#		${WRKSRC}/.build/electron/code-oss
-	cp ${TRUEPREFIX}/bin/electron \
+	cp ${LOCALBASE}/electron/${ELECTRON_V}/electron_nosandbox.sh \
 		${WRKSRC}/.build/electron/code-oss
+#	cp ${TRUEPREFIX}/bin/electron \
+#		${WRKSRC}/.build/electron/code-oss
 .for _git _ext _v in ${VSCODE_EXTENSIONS}
 	_dst='${WRKSRC}/.build/builtInExtensions' && \
 	mkdir -p $${_dst}/ms-vscode.${_ext} && \
@@ -193,6 +193,7 @@ pre-test:
 .endfor
 
 # XXX Xvfb :1 &
+# XXX nosandbox || unveil /
 do-test:
 	# unit tests
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
@@ -201,7 +202,7 @@ do-test:
 # XXX Error: Unsupported platform: openbsd
 # node_modules/playwright-core/lib/server/registry/index.js
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron_nosandbox \
+		ELECTRON_PATH=${LOCALBASE}/bin/electron \
 		npm run smoketest
 
 .include "modules.inc"
