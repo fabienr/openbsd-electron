@@ -1,4 +1,4 @@
-SHA256 (hovancik-stretchly-v1.17.0.tar.gz) = z/7B8NmFBcAHJqBHcfKqSW22jN7TlJiwaBGWSTlAKHY=
+SHA256 (hovancik-stretchly-v1.17.1.tar.gz) = wPgtYanwRaT8Sp6TvJJOdfBKgdtVg2daBf7oFPn4sU8=
 SHA256 (npm_modules/7zip-bin-5.2.0.tgz) = BPlzjuAL6L5T9dBiVKnm5LURexf4t0BYR32HDmJ2Sn0=
 SHA256 (npm_modules/@ampproject-remapping-2.3.0.tgz) = +L9xIAhlbFq8g92FlGPLoxk8dvTNH+itNjf3rhi/02g=
 SHA256 (npm_modules/@babel-code-frame-7.26.2.tgz) = wnMtU2GG5d9LoUgpR2yfZo3ybWR/O4R8xwiSyOZawgI=
@@ -730,7 +730,7 @@ SHA256 (npm_modules/yargs-parser-21.1.1.tgz) = NCt9Un1KciZbZPJ3EVFzScPAXuMCqzuMd
 SHA256 (npm_modules/yauzl-2.10.0.tgz) = VQ8xg117ZABzCQM9+zNXGCW0zP2S0xcpdJE5tQTCbLE=
 SHA256 (npm_modules/yocto-queue-0.1.0.tgz) = x3K87KWPIPDqCKxhIbo4X1XbcVzTwsRrKzjQbTxhKfE=
 SHA256 (npm_modules/zip-stream-4.1.1.tgz) = E4MAUlu37ZyWLIROwdg5qOBi4SwUmpKaCbOJokvfTFg=
-SIZE (hovancik-stretchly-v1.17.0.tar.gz) = 60571329
+SIZE (hovancik-stretchly-v1.17.1.tar.gz) = 60571898
 SIZE (npm_modules/7zip-bin-5.2.0.tgz) = 5625880
 SIZE (npm_modules/@ampproject-remapping-2.3.0.tgz) = 15562
 SIZE (npm_modules/@babel-code-frame-7.26.2.tgz) = 9971

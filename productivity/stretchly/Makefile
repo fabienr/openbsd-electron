@@ -1,7 +1,7 @@
 COMMENT=	break time reminder app
 
 T=		stretchly
-V=		1.17.0
+V=		1.17.1
 DIST_TUPLE=	github hovancik ${T} v${V} .
 
 CATEGORIES=	productivity
