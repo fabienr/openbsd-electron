@@ -1,8 +1,8 @@
 COMMENT=		mock D-Bus objects
 
-MODPY_EGG_VERSION=	0.31.1
-DISTNAME=		python-dbusmock-${MODPY_EGG_VERSION}
-PKGNAME=		py-dbusmock-${MODPY_EGG_VERSION}
+MODPY_DISTV=		0.31.1
+DISTNAME=		python-dbusmock-${MODPY_DISTV}
+PKGNAME=		py-dbusmock-${MODPY_DISTV}
 
 CATEGORIES=		devel
 
