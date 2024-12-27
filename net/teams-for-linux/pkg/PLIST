@@ -1,8 +1,7 @@
-bin/teams-for-linux
+bin/${MODELECTRON_TARGET}
 ${ELECTRON_DIST_APPS}/
-${ELECTRON_DIST_APPS}/teams-for-linux.asar
-${ELECTRON_DIST_APPS}/teams-for-linux.asar.unpacked/
-share/applications/teams-for-linux.desktop
+${ELECTRON_DIST_APPS}/${MODELECTRON_TARGET}.asar
+share/applications/${MODELECTRON_TARGET}.desktop
 share/pixmaps/
-share/pixmaps/teams-for-linux.png
+share/pixmaps/${MODELECTRON_TARGET}.png
 @tag update-desktop-database

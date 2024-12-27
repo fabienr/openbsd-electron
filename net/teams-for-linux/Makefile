@@ -1,7 +1,7 @@
 COMMENT =	unofficial Microsoft Teams client
 
 T=		teams-for-linux
-V=		1.11.5
+V=		1.12.5
 DIST_TUPLE =	github IsmaelMartinez ${T} v${V} .
 
 CATEGORIES =	net
