@@ -1,7 +1,7 @@
 Index: libsignal/Cargo.toml
 --- libsignal/Cargo.toml.orig
 +++ libsignal/Cargo.toml
-@@ -152,11 +152,10 @@ uuid = "1.1.2"
+@@ -153,11 +153,10 @@ uuid = "1.1.2"
  x25519-dalek = "2.0.0"
  zerocopy = "0.7.34"
  

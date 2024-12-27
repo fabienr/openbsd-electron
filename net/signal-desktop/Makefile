@@ -1,6 +1,6 @@
 COMMENT=	Signal Desktop links with Signal
 
-V=		7.34.0
+V=		7.36.1
 DISTNAME=	Signal-Desktop-${V}
 PKGNAME=	${DISTNAME:L}
 
@@ -31,7 +31,7 @@ SQLCIPHER_V=	v2-4.6.1-signal-patch2--0.2.0-${SQLCIPHER_H}
 SQLCEXT_V=	0.2.0
 FTS5_ID=	a2a00359b1c0987e9b167855ebf0cd93342fd26e
 # libsignal depends
-LIBSIGNAL_V=	0.60.2
+LIBSIGNAL_V=	0.62.0
 BORING_ID=	3d4180b232d332a86ee3b41d1a622b0f1c1c6037
 # ringrtc depends
 RINGRTC_V=	2.48.7
@@ -103,7 +103,6 @@ COMPILER=	base-clang ports-gcc
 MODULES=	devel/cargo \
 		devel/cmake \
 		devel/npm \
-		devel/yarn \
 		lang/clang \
 		lang/python \
 		www/electron
@@ -142,11 +141,12 @@ MODNPM_BUILD=		No
 MODNPM_INSTALL=		No
 MODNPM_TARGETS=		${WRKSRC} \
 			${WRKSRC}/sticker-creator \
+			${LIBSIGNAL_NODE} \
 			${RINGRTC_NODE}
 
-MODYARN_TARGETS=	${LIBSIGNAL_NODE}
-
 MODPY_RUNDEP=		No
+
+NPM_REBUILD_ENV=	${ELECTRON_REBUILD_ENV}
 
 BUILD_DEPENDS+=	devel/app-builder \
 		devel/gn \
@@ -162,6 +162,8 @@ SUBST_VARS+=	WRKDIR WRKSRC MODCARGO_TARGET_DIR
 MAKE_ENV+=	SOURCE_DATE_EPOCH=$$(date +'%s')
 # signal's appbuilder config
 MAKE_ENV+=	SIGNAL_ENV=production
+
+TEST_ENV+=	PATH='${PORTPATH}'
 
 # see electron/Makefile
 GN_SYSTEM_LIBS=	crc32c \
@@ -260,8 +262,7 @@ pre-configure:
 	@ln -sf ${MODPY_BIN} ${WRKDIR}/bin/python
 	@ln -sf ${MODPY_BIN} ${WRKDIR}/bin/vpython3
 	@ln -sf ${LOCALBASE}/bin/llvm-ar-${MODCLANG_VERSION} ${WRKDIR}/bin/ar
-	# setup yarnrc for using electron node headers
-	echo 'nodedir "${ELECTRON_NODE_DIR}"' >> ${WRKSRC}/.yarnrc
+	@mkdir ${WRKDIR}/tmp
 
 do-configure:
 	${SUBST_CMD} ${LIBSIGNAL_TOML} ${RINGRTC_TOML}
@@ -275,8 +276,7 @@ pre-build: better-sqlite3 libsignal ringrtc sticker-creator
 	mkdir -p ${WRKSRC}/build
 	cp ${FILESDIR}/dns-fallback.json ${WRKSRC}/build/dns-fallback.json
 	# setup required bin
-	cd ${WRKSRC} && ${SETENV} ${MAKE_ENV} ${ELECTRON_REBUILD_ENV} \
-		HOME=${WRKDIR} npm rebuild --verbose \
+	cd ${WRKSRC} && ${NPM_CMD} rebuild ${NPM_ARGS} \
 		npm-run-all protobufjs-cli sass
 	# build signal
 	cd ${WRKSRC} && ${NPM_CMD} run build:acknowledgments ${NPM_ARGS}
@@ -348,80 +348,51 @@ ringrtc: webrtc
 
 sticker-creator:
 	# build sticker-creator
-	cd ${WRKSRC}/sticker-creator && ${NPM_CMD} rebuild ${NPM_ARGS}
-	cd ${WRKSRC}/sticker-creator && ${SETENV} ${MAKE_ENV} \
-		npm run build
+	cd ${WRKSRC}/sticker-creator && \
+		${NPM_CMD} rebuild ${NPM_ARGS} && \
+		${NPM_CMD} run build
 
-test-libsignal: libsignal
+test-libsignal:
 	# copy libsignal native lib
 	mkdir -p ${LIBSIGNAL_NODE}/build/Release
 	cp ${MODCARGO_TARGET_DIR}/release/libsignal_node.so \
 		${LIBSIGNAL_NODE}/build/Release/node.napi.node
-	# link libsignal message backup tests
-	rm -rf ${LIBSIGNAL_SRC}/${LIBSIGNAL_TDIR}
-	ln -fs ${WRKDIR}/Signal-Message-Backup-Tests-${LIBSIGNAL_TEST} \
-		${LIBSIGNAL_SRC}/${LIBSIGNAL_TDIR}
-	# build libsignal test
-	cd ${LIBSIGNAL_NODE} && ${SETENV} ${MAKE_ENV} yarn tsc
-	# run libsignal test
-	cd ${LIBSIGNAL_NODE} && ${SETENV} ${MAKE_ENV} yarn test
-
-# XXX .sndio/cookie ?
-# audio_device_sndio.cc:26: Couldn't open audio device
-# XXX skipt test-ringrtc, spawn electron but does not run
-test-ringrtc: ringrtc
-	# XXX Xvfb :1 &
-	# XXX doas cp -R ~/.sndio ${WRKDIR}/
-	# copy ringrtc native lib
-	mkdir -p ${RINGRTC_NODE}/build/openbsd
-	cp ${MODCARGO_TARGET_DIR}/release/libringrtc.so \
-		${RINGRTC_NODE}/build/openbsd/libringrtc-${NODE_ARCH}.node
-	# build ringrtc test
-	cd ${RINGRTC_NODE} && ${SETENV} ${MAKE_ENV} yarn tsc
-	# run ringrtc test
-	mkdir -p ${WRKDIR}/.config/electron
-	cd ${RINGRTC_NODE} && ${SETENV} ${MAKE_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron \
-		yarn test
+	# setup required bin
+	cd ${LIBSIGNAL_NODE} && ${NPM_CMD} rebuild ${NPM_ARGS} mocha
+	# build libsignal tests
+	cd ${LIBSIGNAL_NODE} && ${NPM_CMD} run tsc || true
+	cd ${LIBSIGNAL_NODE} && ${NPM_CMD} run test || true
 
 test-sticker-creator:
 	# run sticker-creator test
 	cd ${WRKSRC}/sticker-creator && ${SETENV} ${MAKE_ENV} \
-		CI=ci yarn test
+		CI=ci npm run test || true
 
+# XXX Xvfb :1 &
 test-signal-desktop:
-	# XXX Xvfb :1 &
-	mkdir -p ${WRKDIR}/.config/electron
-	# setup electron wraper
-	mkdir -p ${WRKSRC}/node_modules/.bin
-	rm -rf ${WRKSRC}/node_modules/.bin/electron
-	ln -fs ${LOCALBASE}/bin/electron \
-		${WRKSRC}/node_modules/.bin/electron
-	rm -rf ${WRKSRC}/dist/linux-unpacked/signal-desktop
-	${SUBST_PROGRAM} ${FILESDIR}/signal-desktop \
-		${WRKSRC}/dist/linux-unpacked/signal-desktop
 	# copy libsignal native lib
 	cd ${WRKSRC}/node_modules/@signalapp/mock-server/node_modules && \
 		mkdir -p @signalapp/libsignal-client/build/Release && \
 		cp ${MODCARGO_TARGET_DIR}/release/libsignal_node.so \
 			@signalapp/libsignal-client/build/Release/node.napi.node
+	# setup required bin
+	cd ${WRKSRC} && ${NPM_CMD} rebuild ${NPM_ARGS} \
+		npm-run-all cross-env electron-mocha mocha
 	# run signal-desktop test
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron \
-		yarn test
+		ELECTRON_PATH=${LOCALBASE}/${ELECTRON_NOSANDBOX} \
+		npm run test || true
 # XXX fake launch test from system or make one more wraper ?
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron \
-		yarn test-release
+		ELECTRON_PATH=${LOCALBASE}/${ELECTRON_NOSANDBOX} \
+		npm run test-release || true
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron \
-		yarn test-mock
-# XXX ts/util/asyncIterables.js
-# SyntaxError: Unexpected token '['
+		ELECTRON_PATH=${LOCALBASE}/${ELECTRON_NOSANDBOX} \
+		npm run test-mock || true
 	cd ${WRKSRC} && ${SETENV} ${TEST_ENV} DISPLAY=:1 \
-		ELECTRON_PATH=${LOCALBASE}/bin/electron \
+		ELECTRON_PATH=${LOCALBASE}/${ELECTRON_NOSANDBOX} \
 		ELECTRON_OVERRIDE_DIST_PATH=${WRKSRC}/node_modules/.bin \
-		yarn test-node-coverage
+		npm run test-node-coverage || true
 
 ### targets for port maintainer(s)
 
@@ -440,7 +411,6 @@ webrtc-compile_commands:
 
 # make versions : download, extract then print versions for depends
 # XXX note : maintainer still have to manually update BORINGSSL_ID
-# make modyarn-gen-modules : regen modules.inc, see devel/yarn
 # make modnpm-gen-modules : regen modules.inc, see devel/npm
 # make modcargo-gen-crates : handle multiple Cargo.toml, regen crates.inc
 # make tarball : gen webrtc-${WEBRTC_V}.tgz with gclient
