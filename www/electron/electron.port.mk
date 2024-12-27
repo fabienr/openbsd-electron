@@ -3,6 +3,7 @@ ELECTRON_V=		33.2.1
 
 ELECTRON_DIST_APPS=	electron/resources
 ELECTRON_WRAPPER=	electron/${ELECTRON_V}/electron.sh
+ELECTRON_NOSANDBOX=	electron/${ELECTRON_V}/electron_nosandbox.sh
 
 # rebuild/update depends if version changed
 ELECTRON_REV=${ELECTRON_V:S/.//g}
