@@ -27,8 +27,8 @@ VSCODE_EXTENSIONS=	js-debug-companion js-debug-companion 1.1.3 \
 SITES.exts=		https://github.com/microsoft/
 
 .for _git _ext _v in ${VSCODE_EXTENSIONS}
-SITES.${_ext}=		${SITES.exts}/vscode-${_git}/releases/download/v${_v}/
-DISTFILES.${_ext}=	ms-vscode.${_ext}.${_v}.vsix
+DISTFILES.exts+= \
+	vscode-${_git}/releases/download/v${_v}/ms-vscode.${_ext}.${_v}.vsix
 .endfor
 
 EXTRACT_CASES+=		*.vsix) \
