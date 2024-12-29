@@ -50,6 +50,9 @@
 # XXX .node detection in pkg tools
 # @bin *.node is wrong ?
 
+# XXX services/device/device_service.cc crash
+# NOTREACHED_IN_MIGRATION() << "Serial devices not supported on this platform.";
+
 BROKEN-i386=v8/src/compiler/turboshaft/int64-lowering-reducer.h:295:24: error:
 # call to member function 'Word32Constant' is ambiguous
 # (but will probably run out of memory linking under DPB even if fixed)
