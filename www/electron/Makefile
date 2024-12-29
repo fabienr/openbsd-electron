@@ -47,6 +47,9 @@
 #         Please refer to BUILDING.md
 #WARNING: warnings were emitted in the configure phase
 
+# XXX .node detection in pkg tools
+# @bin *.node is wrong ?
+
 BROKEN-i386=v8/src/compiler/turboshaft/int64-lowering-reducer.h:295:24: error:
 # call to member function 'Word32Constant' is ambiguous
 # (but will probably run out of memory linking under DPB even if fixed)
@@ -62,7 +65,7 @@ DPB_PROPERTIES+=	lonesome
 COMMENT=		cross-platform desktop applications
 
 # sync with electron.port.mk
-ELECTRON_V=		33.2.1
+ELECTRON_V=		33.3.0
 
 # make update-patches happy
 FIX_EXTRACT_PERMISSIONS=Yes
@@ -80,7 +83,7 @@ PERMIT_PACKAGE=		Yes
 
 # XXX make version
 # See electron/DEPS for versions, post-extract & pre-patch
-CHROMIUM_V=		130.0.6723.137
+CHROMIUM_V=		130.0.6723.152
 NODE_V=			20.18.1
 NAN_V=			e14bdcd1f72d62bca1d541b66da43130384ec213
 SQUIRREL_MAC_V=		0e5d146ba13101a1302d59ea6e6e0b3cace4ae38
@@ -517,7 +520,6 @@ do-install:
 # * needs /etc/electron for pledge/unveil :
 # --no-sandbox (hard to setup, not tested)
 # unveil "/	rwcx" (/etc/electron/unveil.main)
-# * needs internet for 'yarn install' (could be fixed)
 # * needs 'Xvfb :1 &', env DISPLAY=:1
 
 # XXX still true ? (ELECTRON_EXE_PATH=${BUILDDIR}/electron)
@@ -539,7 +541,6 @@ do-test:
 	cd ${WRKSRC}/electron && ${SETENV} ${TEST_ENV} \
 		HOME=${WRKDIR} \
 		ELECTRON_OUT_DIR=${BUILDTYPE} \
-		ELECTRON_EXE_PATH=${BUILDDIR}/electron \
 		LD_LIBRARY_PATH=${BUILDDIR} \
 		DISPLAY=:1 \
 		npm run test -- --ci
@@ -605,6 +606,8 @@ tarball:
 	    -o -path '*/third_party/hunspell_dictionaries/*' \
 	    -o -path '*/third_party/liblouis/src/tests/braille-specs/*' \
 	    -o -path '*/third_party/xdg-utils/tests/*' \
+	    -o -path '*/third_party/depot_tools/*' \
+	    -o -path '*/__pycache__/*' -o -name '*.pyc' \
 	    -o \( -path '*/v8/test*/*' -a ! -name '*.gn*' -a ! -name '*.tq' \) \
 	    \) | sort > files && \
 	tar -cRzf ${_PKG}-${_VER}.tgz -I files \

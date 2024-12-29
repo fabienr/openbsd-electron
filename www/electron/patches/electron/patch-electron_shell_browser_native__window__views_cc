@@ -172,7 +172,7 @@ Index: electron/shell/browser/native_window_views.cc
  void NativeWindowViews::SetIcon(const gfx::ImageSkia& icon) {
    auto* tree_host = views::DesktopWindowTreeHostLinux::GetHostForWidget(
        GetAcceleratedWidget());
-@@ -1681,7 +1681,7 @@ bool NativeWindowViews::CanMaximize() const {
+@@ -1691,7 +1691,7 @@ bool NativeWindowViews::CanMaximize() const {
  bool NativeWindowViews::CanMinimize() const {
  #if BUILDFLAG(IS_WIN)
    return minimizable_;
@@ -181,7 +181,7 @@ Index: electron/shell/browser/native_window_views.cc
    return true;
  #endif
  }
-@@ -1737,7 +1737,7 @@ void NativeWindowViews::HandleKeyboardEvent(
+@@ -1747,7 +1747,7 @@ void NativeWindowViews::HandleKeyboardEvent(
    if (widget_destroyed_)
      return;
  
@@ -190,7 +190,7 @@ Index: electron/shell/browser/native_window_views.cc
    if (event.windows_key_code == ui::VKEY_BROWSER_BACK)
      NotifyWindowExecuteAppCommand(kBrowserBackward);
    else if (event.windows_key_code == ui::VKEY_BROWSER_FORWARD)
-@@ -1756,7 +1756,7 @@ void NativeWindowViews::OnMouseEvent(ui::MouseEvent* e
+@@ -1766,7 +1766,7 @@ void NativeWindowViews::OnMouseEvent(ui::MouseEvent* e
    // Alt+Click should not toggle menu bar.
    root_view_.ResetAltState();
  
