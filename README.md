@@ -1,8 +1,8 @@
 # OpenBSD + Electron
 
-<div style="text-align: center;">
+<p align="center">
     <img src=".readme/openbsd-electron.png" alt="OpenBSD + Electron logo" width="256"/>
-</div>
+</p>
 
 An effort to port electron (and thus VScode) on OpenBSD.
 It comes with customs modnpm and modyarn modules.
