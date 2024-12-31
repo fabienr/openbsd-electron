@@ -4,46 +4,46 @@
     <img src=".readme/openbsd-electron.png" alt="OpenBSD + Electron logo" width="256"/>
 </p>
 
-An effort to port electron (and thus VScode) on OpenBSD.
-It comes with customs modnpm and modyarn modules.
+An effort to port Electron (and, by extension, VS Code) to OpenBSD.  
+It includes custom `modnpm` and `modyarn` modules to facilitate the integration of Node-based ports.
 
-Status : Working, need some more cleaning.
+***Status : Working**, need some more cleaning.*
 
 ## Electron
 
-Electron is based on Chromium, thus we share all features with this port.
-We have OpenBSD support for pledge, unveil and are working on a per application design.
+Electron is built on Chromium, utilizing the same patches and features as the current port.
+The implementation includes OpenBSD-specific support for pledge and unveil, with a per-application design.
 
-Electron is installed only once on the system and all applications have to support this version.
-We do not build distfiles, and we do not bundle Electron in each application (we could).
-Each application has its wrapper to start Electron properly with it's configuration and resources.
+Electron is installed system-wide with a single installation, and applications should be compatible with this shared version.
+Instead of creating distfiles or bundling Electron with individual applications (though technically feasible), each application 
+includes a dedicated wrapper to properly initialize Electron with its specific configuration and resources.
 
-Fuses are a subject we are working on, we want sensible defaults for all applications.
+*Efforts are underway to implement [fuses](https://www.electronjs.org/docs/latest/tutorial/fuses) support with a single, sensible default.*
 
-## Node package manager in ports
+## Node packages managers
 
-When it comes to node package manager, there aren't a lot of options.
+To avoid network usage during the build process, the available options are quite limited:
 
-* use a pre-made cache to work offline, someone has to distribute this archive
-* fill the cache before extract, some tool has to be able to insert into the cache 
-* extract directly into node_modules, that should be the package manager job and is tricky
+* Using a pre-made cache for offline functionality, which requires someone to distribute the archive
+* Filling the cache before the extraction phase, necessitating a tool to populate the cache
+* Extracting directly into node_modules, which should be the package manager's job and is complex to implement
 
-We think the best solution is to fill the cache before extract.
+*The most viable solution seems to fill the cache before extraction.*
 
-* Yarn : works well with a simple, flat, directory cache
-* Npm : use cacache and also repository API, not only package module
-* Pnpm : todo
-* Berry : to study
+* `yarn`: works well with a simple, flat, directory cache
+* `npm`: use cacache and also repository API, not only package module
+* `pnpm`: todo
+* `berry`: to study
 
-Each package manager implements a *lock* file describing all depends and the *node_modules* shape.
-Thus, port-modules have to parse this file in order to generate a *modules.inc* file.
+Each package manager generates a lock file that describes all dependencies and the structure of `node_modules`.  
+The `port-modules` tool parses these lock files to produce a `modules.inc` file.
 
-* moyarn : fill the cache during extract, limited support for Electron ports only
-* modnpm : setup node_modules, lightly tested on different kinds of ports
+* `moyarn`: fill the cache during extract, limited support for Electron ports only
+* `modnpm`: setup node_modules, lightly tested on different kinds of ports
 
-Our plan is to implement a **cache add** cli for each package manager in hope this could be upstream.
+*The plan is to implement a `cache-add` CLI for each package manager, aiming for upstream adoption.*
 
-## Main app 
+## Ports included
 
 * VScode : everythings seems to works **without sandboxing**, kerberos support not tested
 * teams-for-linux : screen share, webcam, audio tested ok
