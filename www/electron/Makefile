@@ -1,8 +1,3 @@
-# XXX annoying
-#[ERROR:bus.cc(407)] Failed to connect to the bus:
-# Could not parse server address: Unknown address type (examples of valid types
-# are "tcp" and on UNIX "unix")
-
 # XXX start apps with --app= instead of a bundle electron copy
 # runing command line without args bring a different config, diff ?
 # note also some installer use fuses (hotfix into bin)
@@ -36,11 +31,6 @@
 # teams-for-linux
 #[FuseV1Options.EnableCookieEncryption]: true,
 
-# XXX pledge & unveil integration
-# unveil too restrictive on vscode (--no-sandbox)
-# test does not pass without unveil ("/ rwcx")
-# need more app to learn from ecosystem
-
 # XXX something to consider
 #WARNING: --openssl-no-asm will result in binaries that do not take advantage
 #         of modern CPU cryptographic instructions and will therefore be slower.
@@ -69,6 +59,7 @@ COMMENT=		cross-platform desktop applications
 
 # sync with electron.port.mk
 ELECTRON_V=		33.3.0
+REVISION=		0
 
 # make update-patches happy
 FIX_EXTRACT_PERMISSIONS=Yes
@@ -109,7 +100,6 @@ DISTFILES.chromium=	chromium-${CHROMIUM_V}.tgz
 SITES.nodemodule=https://commondatastorage.googleapis.com/chromium-nodejs/
 DISTFILES.nodemodule=	chromium-nodejs-{}${NODE_MODULES_HASH}
 
-# XXX see post-extract, custom extract in node_modules then mv ?
 EXTRACT_CASES+=		chromium-nodejs-${NODE_MODULES_HASH});;
 
 # uses pledge()

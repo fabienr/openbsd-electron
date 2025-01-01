@@ -1,6 +1,6 @@
 bin/${MODELECTRON_TARGET}
 ${ELECTRON_DIST_APPS}/
-${ELECTRON_DIST_APPS}/${MODELECTRON_TARGET}.asar
+${MODELECTRON_DIST_T}.asar
 share/applications/${MODELECTRON_TARGET}.desktop
 share/icons/hicolor/1024x1024/
 share/icons/hicolor/1024x1024/apps/

@@ -1,32 +1,28 @@
-COMMENT =	unofficial Microsoft Teams client
+COMMENT=		unofficial Microsoft Teams client
 
-T=		teams-for-linux
-V=		1.12.5
-DIST_TUPLE =	github IsmaelMartinez ${T} v${V} .
+REVISION=		0
 
-CATEGORIES =	net
+DIST_TUPLE=		github IsmaelMartinez teams-for-linux v1.12.5 .
 
-MAINTAINER=	Fabien Romano <fabien@openbsd.org>
+CATEGORIES=		net
+
+MAINTAINER=		Fabien Romano <fabien@openbsd.org>
 
 # GPLv3
-PERMIT_PACKAGE =	Yes
+PERMIT_PACKAGE=		Yes
 
 # Any modules we may be using
-MODULES =		devel/npm \
+MODULES=		devel/npm \
 			www/electron
 
+MODELECTRON_TARGET=	teams-for-linux
 MODELECTRON_BUILDER=	Yes
-MODELECTRON_SRC=	${WRKSRC}
-MODELECTRON_TARGET=	${T}
-
 MODELECTRON_WRAPPER=	Yes
-MODELECTRON_WRAPPER_APP=${T}
-MODELECTRON_WRAPPER_ARG=--no-sandbox # temporary, untested
 
 MODNPM_BUILD=		No
 MODNPM_INSTALL=		No
 
-RUN_DEPENDS+=devel/desktop-file-utils
+RUN_DEPENDS+=		devel/desktop-file-utils
 
 post-install:
 	# menu

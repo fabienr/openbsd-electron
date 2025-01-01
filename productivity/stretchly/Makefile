@@ -1,36 +1,33 @@
-COMMENT=	break time reminder app
+COMMENT=		break time reminder app
 
-T=		stretchly
-V=		1.17.1
-DIST_TUPLE=	github hovancik ${T} v${V} .
+DIST_TUPLE=		github hovancik stretchly v1.17.1 .
 
-CATEGORIES=	productivity
+CATEGORIES=		productivity
 
-HOMEPAGE=	https://hovancik.net/stretchly/
+HOMEPAGE=		https://hovancik.net/stretchly/
 
-MAINTAINER=	Fabien Romano <fabien@openbsd.org>
+MAINTAINER=		Fabien Romano <fabien@openbsd.org>
 
 # BSD 2-Clause
-PERMIT_PACKAGE=	Yes
+PERMIT_PACKAGE=		Yes
 
-BUILD_DEPENDS+=	devel/app-builder
+MODULES=		devel/npm \
+			www/electron
 
-RUN_DEPENDS+=	devel/desktop-file-utils \
-		x11/gtk+4,-guic
-
-MODULES=	devel/npm www/electron
-
+MODELECTRON_TARGET=	stretchly
+MODELECTRON_APP_NAME=	Stretchly
 MODELECTRON_BUILDER=	Yes
-MODELECTRON_SRC=	${WRKSRC}
-MODELECTRON_TARGET=	${T}
-
 MODELECTRON_WRAPPER=	Yes
-MODELECTRON_WRAPPER_APP=${T}
 
 MODNPM_BUILD=		No
 MODNPM_INSTALL=		No
 MODNPM_OMITOPTIONAL=	Yes
 MODNPM_EXCLUDES=	macos-notification-state
+
+BUILD_DEPENDS+=		devel/app-builder
+
+RUN_DEPENDS+=		devel/desktop-file-utils \
+			x11/gtk+4,-guic
 
 ICONS_TARGET=		${PREFIX}/share/icons/hicolor
 

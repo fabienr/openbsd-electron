@@ -1,11 +1,31 @@
 use electron specific files.
+introduce env variables ELECTRON_APP_NAME and ELECTRON_UNVEIL.
+handle ~/.config and ~/.cache based on ELECTRON_APP_NAME.
 strsep unveil lines by tabulation, allow space in path.
 allow unveil failures to list non-existent directories.
+extend rules by loading file ELECTRON_UNVEIL.
 
 Index: sandbox/policy/openbsd/sandbox_openbsd.cc
 --- sandbox/policy/openbsd/sandbox_openbsd.cc.orig
 +++ sandbox/policy/openbsd/sandbox_openbsd.cc
-@@ -65,11 +65,11 @@
+@@ -13,6 +13,7 @@
+ #include <sys/types.h>
+ #include <unistd.h>
+ #include <util.h>
++#include <stdlib.h>
+ 
+ #include <limits>
+ #include <memory>
+@@ -48,7 +49,7 @@
+ #include "sandbox/policy/sandbox_type.h"
+ #include "sandbox/policy/mojom/sandbox.mojom.h"
+ #include "sandbox/policy/switches.h"
+-#include "sandbox/sandbox_buildflags.h" 
++#include "sandbox/sandbox_buildflags.h"
+ 
+ #if BUILDFLAG(USING_SANITIZER)
+ #include <sanitizer/common_interface_defs.h>
+@@ -65,11 +66,11 @@
  
  #define MAXTOKENS	3
  
@@ -22,7 +42,100 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
  
  namespace sandbox {
  namespace policy {
-@@ -234,7 +234,7 @@ bool SandboxLinux::SetUnveil(const std::string process
+@@ -100,6 +101,7 @@ void SandboxLinux::StopThread(base::Thread* thread) {
+ }
+ 
+ void SandboxLinux::PreinitializeSandbox(sandbox::mojom::Sandbox sandbox_type) {
++  char *env;
+   CHECK(!pre_initialized_);
+ #if BUILDFLAG(USING_SANITIZER)
+   // Sanitizers need to open some resources before the sandbox is enabled.
+@@ -125,12 +127,28 @@ void SandboxLinux::PreinitializeSandbox(sandbox::mojom
+ #endif
+       CRYPTO_pre_sandbox_init();
+ 
+-      base::FilePath cache_directory, local_directory;
++      base::FilePath cache_directory, config_directory, local_directory;
+ 
++      /* by default, create ~/.config|.cache/<app_name> */
+       base::PathService::Get(base::DIR_CACHE, &cache_directory);
+-      base::PathService::Get(base::DIR_HOME, &local_directory);   
++      if ((env = getenv("XDG_CONFIG_HOME")) != NULL && *env != '\0') {
++        config_directory = base::FilePath(env);
++      } else if ((env = getenv("HOME")) != NULL && *env != '\0') {
++        config_directory = base::FilePath(env);
++        config_directory = config_directory.AppendASCII(".config");
++      } else {
++        LOG(ERROR) << "failed to get home";
++        _exit(1);
++      }
++      if ((env = getenv("ELECTRON_APP_NAME")) != NULL && *env != '\0') {
++        cache_directory = cache_directory.AppendASCII(env);
++        config_directory = config_directory.AppendASCII(env);
++      } else {
++        cache_directory = cache_directory.AppendASCII("Electron");
++        config_directory = config_directory.AppendASCII("Electron");
++      }
+ 
+-      cache_directory = cache_directory.AppendASCII("chromium");
++      base::PathService::Get(base::DIR_HOME, &local_directory);
+       local_directory = local_directory.AppendASCII(".local").AppendASCII("share").AppendASCII("applications");
+ 
+       if (!base::CreateDirectory(cache_directory)) {
+@@ -188,34 +206,13 @@ err:
+   return false;
+ }
+ 
+-bool SandboxLinux::SetUnveil(const std::string process_type, sandbox::mojom::Sandbox sandbox_type) {
++void unveil_ufile(const char *ufile)
++{
+   FILE *fp;
+   char *s = NULL, *cp = NULL, *home = NULL, **ap, *tokens[MAXTOKENS];
+-  char path[PATH_MAX];
+-  const char *ufile;
+   size_t len = 0, lineno = 0;
++  char path[PATH_MAX];
+ 
+-  switch (sandbox_type) {
+-    case sandbox::mojom::Sandbox::kNoSandbox:
+-      ufile = _UNVEIL_MAIN;
+-      break;
+-    case sandbox::mojom::Sandbox::kGpu:
+-      ufile = _UNVEIL_GPU;
+-      break;
+-    case sandbox::mojom::Sandbox::kNetwork:
+-      ufile = _UNVEIL_UTILITY_NETWORK;
+-      break;
+-    case sandbox::mojom::Sandbox::kAudio:
+-      ufile = _UNVEIL_UTILITY_AUDIO;
+-      break;
+-    case sandbox::mojom::Sandbox::kVideoCapture:
+-      ufile = _UNVEIL_UTILITY_VIDEO;
+-      break;
+-    default:
+-      unveil("/dev/null", "r");
+-      goto done;
+-  }
+-
+   fp = fopen(ufile, "r");
+   if (fp != NULL) {
+     while (!feof(fp)) {
+@@ -223,10 +220,10 @@ bool SandboxLinux::SetUnveil(const std::string process
+           FPARSELN_UNESCCOMM | FPARSELN_UNESCCONT)) == NULL) {
+         if (ferror(fp)) {
+           LOG(ERROR) << "ferror(), errno: " << errno;
+-	  _exit(1);
+-	} else {
+-          continue;
+-	}
++          _exit(1);
++        } else {
++                continue;
++        }
+       }
+       cp = s;
+       cp += strspn(cp, " \t\n"); /* eat whitespace */
+@@ -234,7 +231,7 @@ bool SandboxLinux::SetUnveil(const std::string process
          continue;
  
        for (ap = tokens; ap < &tokens[MAXTOKENS - 1] &&
@@ -31,7 +144,18 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
          if (**ap != '\0')
            ap++;
        }
-@@ -261,7 +261,6 @@ bool SandboxLinux::SetUnveil(const std::string process
+@@ -248,8 +245,8 @@ bool SandboxLinux::SetUnveil(const std::string process
+       if (tokens[0][0] == '~') {
+         if ((home = getenv("HOME")) == NULL || *home == '\0') {
+           LOG(ERROR) << "failed to get home";
+-	  _exit(1);
+-	}
++          _exit(1);
++        }
+         memmove(tokens[0], tokens[0] + 1, strlen(tokens[0]));
+         strncpy(path, home, sizeof(path) - 1);
+         path[sizeof(path) - 1] = '\0';
+@@ -261,7 +258,6 @@ bool SandboxLinux::SetUnveil(const std::string process
  
        if (unveil(path, tokens[1]) == -1) {
          LOG(ERROR) << "failed unveiling " << path << " with permissions " << tokens[1];
@@ -39,7 +163,74 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
        } else {
          VLOG(5) << "unveiling " << path << " with permissions " << tokens[1];
        }
-@@ -320,7 +319,7 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
+@@ -271,7 +267,66 @@ bool SandboxLinux::SetUnveil(const std::string process
+         LOG(ERROR) << "failed to open " << ufile << " errno: " << errno;
+         _exit(1);
+   }
++}
+ 
++bool SandboxLinux::SetUnveil(const std::string process_type, sandbox::mojom::Sandbox sandbox_type) {
++  char *env;
++  const char *ufile;
++  base::FilePath cache_directory, config_directory;
++
++  /* by default, unveil ~/.config|.cache/<app_name> */
++  base::PathService::Get(base::DIR_CACHE, &cache_directory);
++  if ((env = getenv("XDG_CONFIG_HOME")) != NULL && *env != '\0') {
++    config_directory = base::FilePath(env);
++  } else if ((env = getenv("HOME")) != NULL && *env != '\0') {
++    config_directory = base::FilePath(env);
++    config_directory = config_directory.AppendASCII(".config");
++  } else {
++    LOG(ERROR) << "failed to get home";
++    _exit(1);
++  }
++  if ((env = getenv("ELECTRON_APP_NAME")) != NULL && *env != '\0') {
++    cache_directory = cache_directory.AppendASCII(env);
++    config_directory = config_directory.AppendASCII(env);
++  } else {
++    cache_directory = cache_directory.AppendASCII("Electron");
++    config_directory = config_directory.AppendASCII("Electron");
++  }
++
++  switch (sandbox_type) {
++    case sandbox::mojom::Sandbox::kNoSandbox:
++      ufile = _UNVEIL_MAIN;
++      break;
++    case sandbox::mojom::Sandbox::kGpu:
++      ufile = _UNVEIL_GPU;
++      break;
++    case sandbox::mojom::Sandbox::kNetwork:
++      ufile = _UNVEIL_UTILITY_NETWORK;
++      break;
++    case sandbox::mojom::Sandbox::kAudio:
++      ufile = _UNVEIL_UTILITY_AUDIO;
++      break;
++    case sandbox::mojom::Sandbox::kVideoCapture:
++      ufile = _UNVEIL_UTILITY_VIDEO;
++      break;
++    default:
++      unveil("/dev/null", "r");
++      goto done;
++  }
++
++  unveil_ufile(ufile);
++  if (sandbox_type == sandbox::mojom::Sandbox::kNoSandbox &&
++      (env = getenv("ELECTRON_UNVEIL")) != NULL && *env != '\0') {
++    unveil_ufile(env);
++  }
++  if (sandbox_type == sandbox::mojom::Sandbox::kNetwork ||
++      sandbox_type == sandbox::mojom::Sandbox::kNoSandbox) {
++    unveil(cache_directory.value().c_str(), "rwc");
++    VLOG(5) << "unveiling " << cache_directory << " with permissions rwc";
++    unveil(config_directory.value().c_str(), "rwc");
++    VLOG(5) << "unveiling " << config_directory << " with permissions rwc";
++  }
++
+ done:
+   unveil_initialized_ = true;
+ 
+@@ -320,7 +375,7 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
  
    switch(sandbox_type) {
      case sandbox::mojom::Sandbox::kNoSandbox:
@@ -48,7 +239,7 @@ Index: sandbox/policy/openbsd/sandbox_openbsd.cc
        break;
      case sandbox::mojom::Sandbox::kRenderer:
        // prot_exec needed by v8
-@@ -337,13 +336,13 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
+@@ -337,13 +392,13 @@ bool SandboxLinux::InitializeSandbox(sandbox::mojom::S
        break;
  #endif
      case sandbox::mojom::Sandbox::kAudio:

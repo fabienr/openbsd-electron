@@ -3,7 +3,7 @@ COMMENT=	launcher for Beyond All Reason
 V=		1.2988.0
 DISTNAME=	BYAR-Chobby-${V}
 PKGNAME=	${DISTNAME:L}
-REVISION=	1
+REVISION=	2
 
 # EACCES: '/launcher/node_modules/pngjs/lib/*'
 FIX_EXTRACT_PERMISSIONS=Yes
@@ -34,9 +34,11 @@ MODNPM_OMITOPTIONAL=	Yes
 MODNPM_BUILD=		No
 MODNPM_INSTALL=		No
 
+MODELECTRON_TARGET=	byar_chobby_launcher
+MODELECTRON_APP_NAME=	Beyond-All-Reason
+MODELECTRON_UNVEIL=	Yes
 MODELECTRON_BUILDER=	Yes
 MODELECTRON_SRC=	${WRKSRC}/launcher
-MODELECTRON_TARGET=	byar_chobby_launcher
 
 # DIST_TUPLE run after MODNPM_post-extract
 post-extract:
@@ -76,7 +78,7 @@ post-install:
 	${INSTALL_DATA} ${WRKSRC}/dist_cfg/build/icon.png \
 		${PREFIX}/share/pixmaps/${MODELECTRON_TARGET}.png
 	# remove uneded files
-	cd ${PREFIX}/${ELECTRON_DIST_TARGET}.asar.unpacked/ && \
+	cd ${PREFIX}/${MODELECTRON_DIST_T}.asar.unpacked/ && \
 		rm -rf node_modules/7zip-bin/linux && \
 		rm -rf node_modules/7zip-bin/mac
 

@@ -12,30 +12,6 @@
 
 ~/.pki			rwc
 
-# electron
-~/.cache/Electron			rwc
-~/.cache/Electron Test Main		rwc
-~/.cache/electron-test-mixed-sandbox	rwc
-~/.cache/electron-test-remote-control	rwc
-~/.config/Electron			rwc
-~/.config/Electron Test Main		rwc
-~/.config/electron-test-mixed-sandbox	rwc
-~/.config/electron-test-remote-control	rwc
-
-# byar_chobby_launcher
-~/.cache/Beyond-All-Reason		rwc
-~/.config/Beyond-All-Reason		rwc
-
-# signal-desktop
-~/.cache/Signal				rwc
-~/.config/Signal			rwc
-
-# stretchly
-~/.cache/Stretchly			rwc
-~/.config/Stretchly			rwc
-
-# XXX extras
-
-# vscode
-~/.cache/Code - OSS			rwc
-~/.config/Code - OSS			rwc
+# by default, unveil ELECTRON_APP_NAME (fallback on Electron)
+#~/.local/${ELECTRON_APP_NAME}
+#~/.cache/${ELECTRON_APP_NAME}

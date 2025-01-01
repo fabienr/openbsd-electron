@@ -81,53 +81,11 @@
 ~/.local/share/recently-used.xbel	rwc
 ~/.local/share/themes			r
 
-# electron
-~/.config/Electron			rwc
-~/.config/Electron Test Main		rwc
-~/.config/electron-test-mixed-sandbox	rwc
-~/.config/electron-test-remote-control	rwc
+# by default, unveil ELECTRON_APP_NAME (fallback on Electron)
+#~/.local/${ELECTRON_APP_NAME}
+#~/.cache/${ELECTRON_APP_NAME}
 
-# byar_chobby_launcher
-/usr/local/bin/7za			rx
-/usr/local/bin/pr-downloader		rx
-/usr/local/bin/spring			rx
-~/.config/Beyond-All-Reason		rwc
-~/.local/state/Beyond All Reason	rwc
-
-# signal-desktop
-~/.config/Signal			rwc
-
-# stretchly
-~/.config/Stretchly			rwc
-
+# Note, to ease diagnose unveil issues :
 # ktrace -Bdi 'command'
 # kdump | awk '/NAMI/{$1="";$2="";$3="";print}' | sort | uniq > ktrace.NAMI 
 #/					rwcx
-
-# XXX extras
-
-# vscode
-#/bin/ksh				rx	# terminal
-#/bin/sh				rx	# python ?
-#/bin/which				rx	# needed ?
-/usr/bin/cvs				rx	# cvs
-/usr/local/bin/git			rx	# git
-#/usr/local/bin/go			rx	# go
-#/usr/local/bin/gopls			rx	# go
-#/usr/local/bin/python3			rx	# python
-/etc/gitconfig				r	# git
-~/.config/git				r	# git
-~/.cvsrc				r	# cvs
-~/.config/Code - OSS			rwc
-~/.vscode-oss				rwc
-~/workspaces				rwc
-# common src trees
-/usr/ports				rwc
-/usr/src				rwc
-/usr/www				rwc
-
-# vscode, custom settings
-/home/_pobj				rwc
-~/sync/diff				r
-~/mystuff				rwc
-~/stuff					rwc

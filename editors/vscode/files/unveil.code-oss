@@ -1,0 +1,23 @@
+# XXX wip
+
+# plugins
+#/bin/ksh				rx	# terminal
+#/bin/sh				rx	# python ?
+#/bin/which				rx	# needed ?
+/usr/bin/cvs				rx	# cvs
+/usr/local/bin/git			rx	# git
+#/usr/local/bin/go			rx	# go
+#/usr/local/bin/gopls			rx	# go
+#/usr/local/bin/python3			rx	# python
+/etc/gitconfig				r	# git
+~/.config/git				r	# git
+~/.cvsrc				r	# cvs
+
+# vscode
+~/.vscode-oss				rwc
+~/workspaces				rwc
+
+# common src trees
+/usr/ports				rwc
+/usr/src				rwc
+/usr/www				rwc

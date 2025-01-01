@@ -9,6 +9,8 @@ COMMENT=	Visual Studio Code - Open Source ("Code - OSS")
 V=		1.96.2
 COMMIT=		f1a4fb101478ce6ec82fe9627c43efbf9e98c813
 PKGNAME=	vscode-${V}
+REVISION=	0
+
 DIST_TUPLE=	github microsoft vscode ${V} .
 
 CATEGORIES=	editors
@@ -58,6 +60,9 @@ MODNPM_LOCKS=$$( \
 MODNPM_BUILD=	No
 MODNPM_INSTALL=	No
 
+MODELECTRON_TARGET=	code-oss
+MODELECTRON_APP_NAME=	"Code - OSS"
+MODELECTRON_UNVEIL=	Yes
 MODELECTRON_BUILD=	No
 MODELECTRON_INSTALL=	No
 
@@ -83,8 +88,6 @@ MAKE_ENV+=	PLAYWRIGHT_BROWSERS_PATH=${WRKDIR}/pw-browsers \
 
 MAKE_ENV+=	CXXFLAGS="${CXXFLAGS}" LDFLAGS="${LDFLAGS}"
 
-DIST_TARGET =	${ELECTRON_DIST_APPS}/code-oss
-
 post-extract:
 	cp ${WRKSRC}/build/.moduleignore{.linux,.openbsd}
 
@@ -92,15 +95,15 @@ do-configure:
 	mkdir -p ${WRKDIR}/tmp
 	# preset desktop files
 	sed -i.bak \
-		's/@@NAME_LONG@@/Code - OSS/; \
-		s/@@NAME_SHORT@@/Code - OSS/; \
-		s/@@PRODNAME@@/Code - OSS/; \
-		s/@@NAME@@/code-oss/g; \
+		's/@@NAME_LONG@@/${MODELECTRON_APP_NAME}/; \
+		s/@@NAME_SHORT@@/${MODELECTRON_APP_NAME}/; \
+		s/@@PRODNAME@@/${MODELECTRON_APP_NAME}/; \
+		s/@@NAME@@/${MODELECTRON_TARGET}/g; \
 		s|@@EXEC@@|${PREFIX}/bin/vscode|; \
-		s/@@ICON@@/code-oss/; \
-		s/@@URLPROTOCOL@@/code-oss/; \
+		s/@@ICON@@/${MODELECTRON_TARGET}/; \
+		s/@@URLPROTOCOL@@/${MODELECTRON_TARGET}/; \
 		s/@@LICENSE@@/MIT/; \
-		s/@@APPNAME@@/code-oss/g; \
+		s/@@APPNAME@@/${MODELECTRON_TARGET}/g; \
 		s|/usr/share|${PREFIX}/share|' \
 		${WRKSRC}/resources/linux/code.appdata.xml \
 		${WRKSRC}/resources/linux/code.desktop \
@@ -118,8 +121,8 @@ pre-build:
 			node ${NPM_GYP_BIN} rebuild --verbose ; \
 		touch $${subdir}/.build_done; \
 	done
-	cd ${WRKSRC}/extensions && ${SETENV} ${MAKE_ENV} \
-		${ELECTRON_REBUILD_ENV} npm rebuild --verbose
+	cd ${WRKSRC}/extensions && ${SETENV} ${MAKE_ENV} ${ELECTRON_REBUILD_ENV}
+		npm rebuild --verbose
 	# rebuild native node modules for node
 .for dir in build remote
 	cd ${WRKSRC}/${dir} && ${NPM_CMD} rebuild ${NPM_ARGS}
@@ -154,26 +157,28 @@ do-build:
 .endfor
 
 do-install:
+	# unveil
+	${MODELECTRON_UNVEIL_INSTALL}
+	# resources
+	${INSTALL_DATA_DIR} ${PREFIX}/${MODELECTRON_DIST_T}
+	@cp -Rp ${WRKDIR}/VSCode-linux-x64/* ${PREFIX}/${MODELECTRON_DIST_T}/
+	@chown -R ${SHAREOWN}:${SHAREGRP} ${PREFIX}/${MODELECTRON_DIST_T}
+	@rm -rf ${PREFIX}/${MODELECTRON_DIST_T}/bin
+	@rm -rf ${PREFIX}/${MODELECTRON_DIST_T}/resources/completions
 	# wraper
 	${SUBST_PROGRAM} ${FILESDIR}/vscode ${PREFIX}/bin/vscode
 	# menu
 	${INSTALL_DATA_DIR} ${PREFIX}/share/appdata
 	${INSTALL_DATA} ${WRKSRC}/resources/linux/code.appdata.xml \
-		${PREFIX}/share/appdata/code-oss.appdata.xml
+		${PREFIX}/share/appdata/${MODELECTRON_TARGET}.appdata.xml
 	${INSTALL_DATA_DIR} ${PREFIX}/share/applications
 .for f in code.desktop code-url-handler.desktop
 	${INSTALL_DATA} ${WRKSRC}/resources/linux/${f} \
-		${PREFIX}/share/applications/${f:S/code/code-oss/}
+		${PREFIX}/share/applications/${f:S/code/${MODELECTRON_TARGET}/}
 .endfor
 	${INSTALL_DATA_DIR} ${PREFIX}/share/pixmaps
 	${INSTALL_DATA} ${WRKSRC}/resources/linux/code.png \
-		${PREFIX}/share/pixmaps/code-oss.png
-	# resources
-	${INSTALL_DATA_DIR} ${PREFIX}/${DIST_TARGET}
-	@cp -Rp ${WRKDIR}/VSCode-linux-x64/* ${PREFIX}/${DIST_TARGET}/
-	@chown -R ${SHAREOWN}:${SHAREGRP} ${PREFIX}/${DIST_TARGET}
-	@rm -rf ${PREFIX}/${DIST_TARGET}/bin
-	@rm -rf ${PREFIX}/${DIST_TARGET}/resources/completions
+		${PREFIX}/share/pixmaps/${MODELECTRON_TARGET}.png
 
 pre-test:
 	# setup electron dependency for unit tests
@@ -182,9 +187,9 @@ pre-test:
 # XXX not ok 95 app module sandbox options
 # Unhandled exception in main spec runner:... to not include '--no-sandbox'
 	cp ${LOCALBASE}/electron/${ELECTRON_V}/electron_nosandbox.sh \
-		${WRKSRC}/.build/electron/code-oss
+		${WRKSRC}/.build/electron/${MODELECTRON_TARGET}
 #	cp ${TRUEPREFIX}/bin/electron \
-#		${WRKSRC}/.build/electron/code-oss
+#		${WRKSRC}/.build/electron/${MODELECTRON_TARGET}
 .for _git _ext _v in ${VSCODE_EXTENSIONS}
 	_dst='${WRKSRC}/.build/builtInExtensions' && \
 	mkdir -p $${_dst}/ms-vscode.${_ext} && \

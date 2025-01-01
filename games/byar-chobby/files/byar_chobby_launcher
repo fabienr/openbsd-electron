@@ -16,13 +16,6 @@ if [ $(ulimit -Sd) -lt ${DATASIZE} ]; then
 fi
 
 # pre-create folder for unveil
-if [ -z "${XDG_CONFIG_HOME}" ]; then
-	[ -d "${HOME}/.config/Beyond-All-Reason" ] || \
-	mkdir -p "${HOME}/.config/Beyond-All-Reason"
-else
-	[ -d "${XDG_CONFIG_HOME}/Beyond-All-Reason" ] || \
-	mkdir -p "${XDG_CONFIG_HOME}/Beyond-All-Reason"
-fi
 if [ -z "${XDG_STATE_HOME}" ]; then
 	[ -d "${HOME}/.local/state/Beyond All Reason" ] || \
 	mkdir -p "${HOME}/.local/state/Beyond All Reason"
@@ -32,5 +25,7 @@ else
 fi
 
 #start
+ELECTRON_APP_NAME="${MODELECTRON_APP_NAME}" \
+ELECTRON_UNVEIL="${MODELECTRON_UNVEIL_FILE}" \
 exec ${TRUEPREFIX}/${ELECTRON_WRAPPER} \
-	--app="${TRUEPREFIX}/${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar" $@
+	--app="${TRUEPREFIX}/${MODELECTRON_DIST_T}.asar" $@

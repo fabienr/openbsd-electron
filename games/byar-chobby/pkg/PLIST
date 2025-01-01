@@ -1,14 +1,16 @@
-bin/byar_chobby_launcher
+bin/${MODELECTRON_TARGET}
 ${ELECTRON_DIST_APPS}/
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/7x.sh
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/LICENSE.txt
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/index.js
-${ELECTRON_DIST_APPS}/byar_chobby_launcher.asar.unpacked/node_modules/7zip-bin/package.json
-share/applications/byar_chobby_launcher.desktop
+${MODELECTRON_DIST_T}.asar
+${MODELECTRON_DIST_T}.asar.unpacked/
+${MODELECTRON_DIST_T}.asar.unpacked/node_modules/
+${MODELECTRON_DIST_T}.asar.unpacked/node_modules/7zip-bin/
+${MODELECTRON_DIST_T}.asar.unpacked/node_modules/7zip-bin/7x.sh
+${MODELECTRON_DIST_T}.asar.unpacked/node_modules/7zip-bin/LICENSE.txt
+${MODELECTRON_DIST_T}.asar.unpacked/node_modules/7zip-bin/index.js
+${MODELECTRON_DIST_T}.asar.unpacked/node_modules/7zip-bin/package.json
+share/applications/${MODELECTRON_TARGET}.desktop
+share/examples/electron/unveil.${MODELECTRON_TARGET}
+@sample ${MODELECTRON_UNVEIL_FILE}
 share/pixmaps/
-share/pixmaps/byar_chobby_launcher.png
+share/pixmaps/${MODELECTRON_TARGET}.png
 @tag update-desktop-database
