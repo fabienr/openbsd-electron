@@ -1,12 +1,14 @@
-COMMENT =	generic helper tool to build app in a distributable format
+COMMENT=	generic helper tool to build app in a distributable format
 
-MODGO_MODNAME =	github.com/develar/app-builder
-MODGO_VERSION =	v0.0.0-20240625173044-ea95e30dbc1a
+MODGO_MODNAME=	github.com/develar/app-builder
+MODGO_VERSION=	v0.0.0-20240625173044-ea95e30dbc1a
 
-DISTNAME =	app-builder-v5.0.0
-REVISION = 0
+DISTNAME=	app-builder-v5.0.0
+REVISION=	0
 
-CATEGORIES =	devel
+CATEGORIES=	devel
+
+HOMEPAGE=	https://github.com/develar/app-builder
 
 MAINTAINER=	Fabien Romano <fabien@openbsd.org>
 
@@ -17,9 +19,9 @@ WANTLIB += c pthread
 
 TEST_DEPENDS+=	lang/node devel/pnpm devel/yarn
 
-MODULES =	lang/go
+MODULES=	lang/go
 
-WRKDIST =	${WRKSRC}
+WRKDIST=	${WRKSRC}
 
 # XXX test need internet acces, check pf.conf for _pbuild
 pre-test:
